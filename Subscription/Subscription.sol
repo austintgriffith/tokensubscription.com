@@ -32,6 +32,9 @@ contract Subscription is Ownable {
     using ECDSA for bytes32;
     using SafeMath for uint256;
 
+    string public author = "Austin Thomas Griffith - https://austingriffith.com";
+    string public purpose = "Wyoming Hackathon - https://wyominghackathon.devpost.com/";
+
     // the publisher may optionally deploy requirements for the subscription
     // so only meta transactions that match the requirements can be relayed
     address public requiredToAddress;
@@ -233,7 +236,7 @@ contract Subscription is Ownable {
 
         // it is possible for the subscription execution to be run by a third party
         // incentivized in the terms of the subscription with a gasPrice of the tokens
-        // pay that out now...
+        //  - pay that out now...
         if (gasPrice > 0) {
             //the relayer is incentivized by a little of the same token from
             // the subscriber ... as far as the subscriber knows, they are

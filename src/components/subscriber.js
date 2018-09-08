@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { Address, Button, Blockie } from "dapparatus"
 import axios from 'axios'
 
-
-
 class Publisher extends Component {
   constructor(props) {
     super(props);
@@ -15,7 +13,6 @@ class Publisher extends Component {
       tokenName:"TokenExampleSubscriptionToken",
       gasPrice:0.01,
       prefilledParams:false,
-
     };
   }
   handleInput(e){
