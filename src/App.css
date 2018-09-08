@@ -1,7 +1,7 @@
 
 body {
   font-family: 'Roboto', sans-serif;
-  color:#333333;
+  color:#fff;
   font-size:28px;
   font-weight:bold;
   background-color: #162129;
@@ -16,12 +16,14 @@ a:visited {
   color:#555555;
   text-decoration: none;
 }
-
 button {
   border-radius: 25px;
   background-color: #5396FD;
   opacity: 75%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+}
+input[type="text"] {
+    background: transparent;
+    border: none;
+    outline: none;
+    border-bottom: 2px solid #5396fd;
 }
