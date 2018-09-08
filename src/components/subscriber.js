@@ -93,7 +93,7 @@ class Publisher extends Component {
     }
 
     console.log("postData",postData)
-    /*axios.post(backendUrl+'saveSubscription', postData, {
+    axios.post(backendUrl+'saveSubscription', postData, {
       headers: {
           'Content-Type': 'application/json',
       }
@@ -102,7 +102,7 @@ class Publisher extends Component {
     })
     .catch((error)=>{
       console.log(error);
-    });*/
+    });
   }
 
   async componentDidMount() {

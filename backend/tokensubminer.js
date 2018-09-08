@@ -21,6 +21,8 @@ web3.setProvider(new web3.providers.HttpProvider('http://0.0.0.0:8545'));
 
 const DESKTOPMINERACCOUNT = 3 //index in geth
 
+const APPPORT = 10003
+
 let accounts
 web3.eth.getAccounts().then((_accounts)=>{
   accounts=_accounts
@@ -301,8 +303,8 @@ app.post('/saveSubscription', (req, res) => {
   res.set('Content-Type', 'application/json');
   res.end(JSON.stringify({hello:"world"}));
 });
-app.listen(10002);
-console.log(`http listening on 10002`);
+app.listen(APPPORT);
+console.log(`http listening on `,APPPORT);
 
 
 function doTransaction(contract,txObject){
