@@ -8,6 +8,8 @@ import PublisherDeploy from './components/publisherDeploy.js'
 import queryString from 'query-string';
 var RLP = require('rlp');
 
+let backendUrl = "http://localhost:10003/"
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -62,9 +64,12 @@ class App extends Component {
     }
 
     let requiredTokenAmount=0
-    if(tokenAmount){
+    if(tokenAmount&&requiredTokenAddress!="0x0000000000000000000000000000000000000000"){
       //don't forget decimals.. you do a number * (10**##DECIMALS##)
       //requiredTokenAmount = tokenAmount
+      let tokenContract = this.props.customContractLoader("TokenExampleSubscriptionToken",requiredTokenAddress)
+      let decimals = await tokenContract.decimals().call()
+
     }
 
     let requiredPeriodSeconds=0
@@ -140,7 +145,7 @@ class App extends Component {
          require={path => {return require(`${__dirname}/${path}`)}}
          onReady={(contracts,customLoader)=>{
            console.log("contracts loaded",contracts)
-           this.setState({contracts:contracts},async ()=>{
+           this.setState({contracts:contracts,customContractLoader:customLoader},async ()=>{
              console.log("Contracts Are Ready:",this.state.contracts)
            })
          }}
@@ -181,7 +186,11 @@ class App extends Component {
             )
           }else{
             body = (
-              <Subscriber {...this.state} deploySubscription={this.deploySubscription.bind(this)}/>
+              <Subscriber
+                {...this.state}
+                backendUrl={backendUrl}
+                deploySubscription={this.deploySubscription.bind(this)}
+              />
             )
           }
 

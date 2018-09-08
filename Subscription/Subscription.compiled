@@ -485,11 +485,11 @@ contract Subscription is Ownable {
 
     // the publisher may optionally deploy requirements for the subscription
     // so only meta transactions that match the requirements can be relayed
-    address requiredToAddress;
-    address requiredTokenAddress;
-    uint256 requiredTokenAmount;
-    uint256 requiredPeriodSeconds;
-    uint256 requiredGasPrice;
+    address public requiredToAddress;
+    address public requiredTokenAddress;
+    uint256 public requiredTokenAmount;
+    uint256 public requiredPeriodSeconds;
+    uint256 public requiredGasPrice;
 
     constructor(
         address _toAddress,
