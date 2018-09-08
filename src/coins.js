@@ -32,7 +32,7 @@ module.exports = [
         "name":"Reputation",
         "symbol":"REP",
         "decimals":18,
-        "imageUrl":"https://raw.githubusercontent.com/TrustWallet/tokens/master/images/0xe94327d07fc17907b4db788e5adf2ed424addff6.png"
+        "imageUrl":"https://s2.coinmarketcap.com/static/img/coins/32x32/1104.png"
     },
     {
         "address":"0xa74476443119A942dE498590Fe1f2454d7D4aC0d",

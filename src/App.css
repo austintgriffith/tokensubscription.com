@@ -3,7 +3,7 @@ body {
   font-family: 'Roboto', sans-serif;
   color:#333333;
   font-size:28px;
-  font-weight:bold;
+  font-weight: 300;
   background-color: #FFFFFF;
 }
 a {
@@ -13,4 +13,11 @@ a {
 a:visited {
   color:#555555;
   text-decoration: none;
+}
+
+button {
+  border-radius: 25px;
+  background-color: #5396FD;
+  opacity: 75%;
+  
 }
