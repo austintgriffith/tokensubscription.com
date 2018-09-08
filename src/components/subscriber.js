@@ -226,47 +226,7 @@ class Subscriber extends Component {
     }else{
       return (
         <div style={{paddingLeft:40}}>
-          <div>
-            To Address:<Blockie
-              address={toAddress.toLowerCase()}
-              config={{size:3}}
-            /> <input
-              style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-              type="text" name="toAddress" value={toAddress} onChange={this.handleInput.bind(this)}
-            />
-          </div>
-          <div>
-            Token: <select value={tokenName} name="tokenName" onChange={this.handleInput}>
-              {coinOptions}
-            </select>
-
-             Amount: <input
-               style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-               type="text" name="tokenAmount" value={tokenAmount} onChange={this.handleInput.bind(this)}
-             />
-          </div>
-          <div>
-            Recurring Every: <input
-              style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-              type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)}
-            /><select value={timeType} name="timeType" onChange={this.handleInput}>
-              <option value="months">Month(s)</option>
-              <option value="days">Day(s)</option>
-              <option value="hours">Hour(s)</option>
-              <option value="minutes">Minute(s)</option>
-            </select>
-          </div>
-          <div>
-            Gas Price:   <input
-              style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-              type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)}
-            /> {tokenName}
-          </div>
-          <Button size="2" onClick={()=>{
-              this.props.deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice)
-            }}>
-            Deploy Contract
-          </Button>
+          TODO
         </div>
       );
     }

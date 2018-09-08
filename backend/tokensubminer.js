@@ -82,13 +82,7 @@ function startParsers(){
           let contract = new web3.eth.Contract(contracts.Subscription._jsonInterface,subscriptions[t].subscriptionContract)
           console.log("loading hash...")
           let doubleCheckHash = await contract.methods.getSubscriptionHash(subscriptions[t].parts[0],subscriptions[t].parts[1],subscriptions[t].parts[2],subscriptions[t].parts[3],subscriptions[t].parts[4],subscriptions[t].parts[5]).call()
-          console.log("check status of subscription...")
-          let status = await contract.methods.getSubscriptionStatus(doubleCheckHash).call()
-          let prettyStatus = SubscriptionStatusEnum[status];
-          console.log("STATUS: ["+prettyStatus+"]")
-          if(prettyStatus=="PAUSED"){
-            console.log("do nothing... paused...")
-          }else if(prettyStatus=="ACTIVE"){
+          console.log("doubleCheckHash:",doubleCheckHash)
             console.log("checking if ready...")
             let ready = await contract.methods.isSubscriptionReady(subscriptions[t].parts[0],subscriptions[t].parts[1],subscriptions[t].parts[2],subscriptions[t].parts[3],subscriptions[t].parts[4],subscriptions[t].parts[5],subscriptions[t].signature).call()
             console.log("READY:",ready)
@@ -96,10 +90,7 @@ function startParsers(){
               console.log("subscription says it's ready...........")
               doSubscription(contract,subscriptions[t])
             }
-          }else{
-            console.log("Remove Subscription.")
-            removeSubscription(subscriptions[t].signature)
-          }
+
         }
       });
     },10000)
