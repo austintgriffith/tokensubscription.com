@@ -48,6 +48,7 @@ class Publisher extends Component {
   }
 
   render() {
+    let {contracts} = this.props
     let {items,toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice} = this.state
     /*
     let coinOptions = []
@@ -59,6 +60,24 @@ class Publisher extends Component {
     }
     */
     let coinOptions = []
+    coinOptions.push({
+      key: contracts.TokenExampleSubscriptionToken._address,
+      value: contracts.TokenExampleSubscriptionToken._address,
+      image:{
+        avatar : true,
+        src    : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png",
+      },
+      text: "TEST" + '(TEST)'
+    })
+    coinOptions.push({
+      key: "0x0000000000000000000000000000000000000000",
+      value: "0x0000000000000000000000000000000000000000",
+      image:{
+        avatar : true,
+        src    : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png",
+      },
+      text: "ANY" + '(*)'
+    })
     for(let i = 0; i < Coins.length; i++){
       coinOptions.push({
          key: Coins[i].address,
