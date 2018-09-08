@@ -110,7 +110,7 @@ class App extends Component {
     return (
       <div className="App">
         <Metamask
-          config={{requiredNetwork:['Unknown','Rinkeby']}}
+          config={{requiredNetwork:['Unknown','Mainnet']}}
           onUpdate={(state)=>{
            console.log("metamask state update:",state)
            if(state.web3Provider) {

@@ -1,3 +1,4 @@
+cloudfront.id
 src/contracts/*
 deploy.network
 aws.json
