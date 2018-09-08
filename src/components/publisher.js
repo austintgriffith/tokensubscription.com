@@ -34,39 +34,20 @@ class Publisher extends Component {
   }
   componentDidMount() {
     let {contracts} = this.props
-    /*fetch('https://api.0xtracker.com/tokens')
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.setState({
-            isLoaded: true,
-            items: result
-          })
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      )*/
-      console.log("contracts",contracts)
-      this.setState({
-        isLoaded: true,
-        items: [ {
-          address: this.props.contracts.TokenExampleSubscriptionToken._address,
-          decimals: 18,
-          name: "TokenExampleSubscriptionToken",
-          symbol: "TEST"
-        } ]
-      })
+    console.log("contracts",contracts)
+    this.setState({
+      isLoaded: true,
+      items: [ {
+        address: this.props.contracts.TokenExampleSubscriptionToken._address,
+        decimals: 18,
+        name: "TokenExampleSubscriptionToken",
+        symbol: "TEST"
+      } ]
+    })
   }
 
   render() {
-    let {items,toAddress,timeType,timeAmount,tokenName} = this.state
+    let {items,toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice} = this.state
     let coinOptions = []
     for(let i in items){
       console.log(items[i].name)
@@ -92,13 +73,13 @@ class Publisher extends Component {
 
            Amount: <input
              style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-             type="text" name="tokenAmount" value={this.state.tokenAmount} onChange={this.handleInput.bind(this)}
+             type="text" name="tokenAmount" value={tokenAmount} onChange={this.handleInput.bind(this)}
            />
         </div>
         <div>
           Recurring Every:   <input
             style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-            type="text" name="timeAmount" value={this.state.timeAmount} onChange={this.handleInput.bind(this)}
+            type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)}
           /><select value={timeType} name="timeType" onChange={this.handleInput}>
             <option value="months">Month(s)</option>
             <option value="days">Day(s)</option>
@@ -109,9 +90,14 @@ class Publisher extends Component {
         <div>
           Gas Price:   <input
             style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-            type="text" name="gasPrice" value={this.state.gasPrice} onChange={this.handleInput.bind(this)}
+            type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)}
           /> {tokenName}
         </div>
+        <Button size="2" onClick={()=>{
+            this.props.deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice)
+          }}>
+          Deploy Contract
+        </Button>
       </div>
     );
   }
