@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Metamask, Gas, ContractLoader, Transactions, Events, Scaler, Blockie, Address, Button } from "dapparatus"
+import { Metamask, Gas, ContractLoader, Transactions, Button } from "dapparatus"
 import Web3 from 'web3';
 import Subscriber from './components/subscriber.js'
 import Publisher from './components/publisher.js'

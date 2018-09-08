@@ -21,5 +21,7 @@ button {
   border-radius: 25px;
   background-color: #5396FD;
   opacity: 75%;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
