@@ -5,6 +5,7 @@ import Web3 from 'web3';
 import Subscriber from './components/subscriber.js'
 import Publisher from './components/publisher.js'
 import PublisherDeploy from './components/publisherDeploy.js'
+import Coins from './contracts/coins.js'
 import queryString from 'query-string';
 var RLP = require('rlp');
 
@@ -25,30 +26,12 @@ class App extends Component {
       mode: startMode
     }
   }
-  componentDidMount() {
-    fetch('https://api.0xtracker.com/tokens')
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.setState({
-            isLoaded: true,
-            items: result
-          })
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      )
-  }
+
   async deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice) {
     console.log("deploySubscription",this.state)
     let {web3,tx,contracts} = this.state
+
+
 
     //requiredToAddress,requiredTokenAddress,requiredTokenAmount,requiredPeriodSeconds,requiredGasPrice
     let requiredToAddress = "0x0000000000000000000000000000000000000000"
@@ -56,26 +39,43 @@ class App extends Component {
       requiredToAddress = toAddress
     }
 
+    let foundToken
     let requiredTokenAddress = "0x0000000000000000000000000000000000000000"
     if(tokenName){
       //translate tokenName to tokenAddress
+      for(let i = 0; i < Coins.length; i++){
+        if(tokenName == Coins[i].name){
+          requiredTokenAddress = Coins[i].address
+          foundToken = Coins[i]
+        }
+      }
     }
 
     let requiredTokenAmount=0
-    if(tokenAmount){
+    if(tokenAmount && foundToken){
       //don't forget decimals.. you do a number * (10**##DECIMALS##)
-      //requiredTokenAmount = tokenAmount
+      requiredTokenAmount = tokenAmount * (10**foundToken.decimals)
     }
 
     let requiredPeriodSeconds=0
     if(timeAmount){
       //translate timeAmount&timeType to requiredPeriodSeconds
+      let periodSeconds = this.state.timeAmount;
+      if(timeType=="minutes"){
+        periodSeconds*=60
+      }else if(timeType=="hours"){
+        periodSeconds*=3600
+      }else if(timeType=="days"){
+        periodSeconds*=86400
+      }else if(timeType=="months"){
+        periodSeconds*=2592000
+      }
     }
 
     let requiredGasPrice=0
-    if(gasPrice){
+    if(gasPrice && foundToken){
       //don't forget decimals.. you do a number * (10**##DECIMALS##)
-      //requiredGasPrice=gasPrice
+      requiredGasPrice = gasPrice * (10**foundToken.decimals)
     }
 
     console.log("we can guess what the contract address is going to be, this let's us get the UI going without it being deployed yet...")
