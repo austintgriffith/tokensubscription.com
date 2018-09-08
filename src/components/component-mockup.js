@@ -94,7 +94,7 @@ class App extends Component {
           value: items[i].name,
           image:{
             avatar : true,
-            src    : items[i].imgUrl,
+            src    : items[i].imageUrl,
           },
           text: items[i].name
         })
