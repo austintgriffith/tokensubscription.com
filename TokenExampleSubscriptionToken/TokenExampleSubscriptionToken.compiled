@@ -449,7 +449,7 @@ contract ERC20Mintable is ERC20, MinterRole {
 }
 
 
-contract ExampleToken is ERC20Mintable {
+contract TokenExampleSubscriptionToken is ERC20Mintable {
 
   string public name = "TokenExampleSubscriptionToken";
   string public symbol = "TEST";
