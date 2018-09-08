@@ -21,21 +21,52 @@ button {
   background-color: #5396FD;
   opacity: 75%;
 }
-input[type="text"] {
-    background: transparent;
-    border: none;
-    outline: none;
-    border-bottom: 2px solid #5396fd;
-    color:#fff;
+input[type="text"], select {
+  background: transparent;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #5396fd;
+  color:#fff;
+  text-align: center;
+  width: 60px;
+  margin: 0px 40px;
+}
+select {
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+  padding: 1px 0;
 }
 label {
   font-size: 18px;
+  margin-right: 20px;
 }
 .container {
   margin: auto;
-  width: 60%;
+  width: 50%;
   padding: 10px;
 }
 .form-field {
   padding: 20px 0px;
+}
+.ui.selection.dropdown {
+  background: none;
+  color:#fff;
+  border-bottom: 2px solid #5396fd;
+  border-radius: 0px;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+  margin: 0 50px;
+}
+.ui.selection.dropdown .menu>.item, .ui.selection.active.dropdown, .ui.selection.active.dropdown .menu {
+  border: none !important;
+}
+.ui.selection.dropdown:hover {
+  border-bottom: 2px solid #5396fd;
+}
+.ui.selection.dropdown .menu>.item {
+  background: none;
+  color:#fff;
+}
+.ui.selection.visible.dropdown>.text:not(.default) {
+  color:#fff;
 }

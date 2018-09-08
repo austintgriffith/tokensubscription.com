@@ -92,7 +92,7 @@ class Publisher extends Component {
             address={toAddress.toLowerCase()}
             config={{size:3}}
           /> <input
-            type="text" name="toAddress" value={toAddress} onChange={this.handleInput.bind(this)}
+            type="text" style={{width: '415px'}} name="toAddress" value={toAddress} onChange={this.handleInput.bind(this)}
           />
         </div>
         <div className="form-field">
@@ -116,7 +116,7 @@ class Publisher extends Component {
           <label>Recurring Every:</label>
           <input
             type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)}
-          /><select value={timeType} name="timeType" onChange={this.handleInput.bind(this)}>
+          /><select value={timeType} name="timeType" onChange={this.handleInput.bind(this)} style={{width: '80px'}}>
             <option value="months">Month(s)</option>
             <option value="days">Day(s)</option>
             <option value="hours">Hour(s)</option>
