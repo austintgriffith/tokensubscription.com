@@ -85,13 +85,12 @@ class Publisher extends Component {
     }
 
     return (
-      <div style={{paddingLeft:40}}>
+      <div className="container">
         <div>
           To Address:<Blockie
             address={toAddress.toLowerCase()}
             config={{size:3}}
           /> <input
-            style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
             type="text" name="toAddress" value={toAddress} onChange={this.handleInput.bind(this)}
           />
         </div>
@@ -108,13 +107,11 @@ class Publisher extends Component {
             />
 
            Amount: <input
-             style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
              type="text" name="tokenAmount" value={tokenAmount} onChange={this.handleInput.bind(this)}
            />
         </div>
         <div>
           Recurring Every:   <input
-            style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
             type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)}
           /><select value={timeType} name="timeType" onChange={this.handleInput.bind(this)}>
             <option value="months">Month(s)</option>
@@ -125,7 +122,6 @@ class Publisher extends Component {
         </div>
         <div>
           Gas Price:   <input
-            style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
             type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)}
           />
         </div>
