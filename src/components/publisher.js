@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Address, Button, Blockie } from "dapparatus"
-
+import Coins from './../coins.js'
+import { Dropdown } from 'semantic-ui-react'
 
 class Publisher extends Component {
   constructor(props) {
@@ -48,6 +49,7 @@ class Publisher extends Component {
 
   render() {
     let {items,toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice} = this.state
+    /*
     let coinOptions = []
     for(let i in items){
       console.log(items[i].name)
@@ -55,6 +57,20 @@ class Publisher extends Component {
           <option key={items[i].name} value={items[i].name}>{items[i].name}</option>
       )
     }
+    */
+    let coinOptions = []
+    for(let i = 0; i < Coins.length; i++){
+      coinOptions.push({
+         key: Coins[i].address,
+         value: Coins[i].address,
+         image:{
+           avatar : true,
+           src    : Coins[i].imageUrl,
+         },
+         text: Coins[i].name + ' (' + Coins[i].symbol + ')'
+       })
+    }
+
     return (
       <div style={{paddingLeft:40}}>
         <div>
@@ -67,9 +83,15 @@ class Publisher extends Component {
           />
         </div>
         <div>
-          Token: <select value={tokenName} name="tokenName" onChange={this.handleInput}>
-            {coinOptions}
-          </select>
+          Token:
+            <Dropdown
+              selectOnNavigation={false}
+              selection
+              name='coinSelect'
+              options={coinOptions}
+              placeholder='Choose Token'
+              onChange={this.handleChange}
+            />
 
            Amount: <input
              style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
