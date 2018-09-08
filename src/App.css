@@ -2,7 +2,7 @@
 body {
   font-family: 'Roboto', sans-serif;
   color:#fff;
-  font-size:28px;
+  font-size:18px;
   font-weight:bold;
   background-color: #162129;
   background-image: -webkit-linear-gradient(120deg, #162129 50%, #0f171c 25%);
@@ -26,4 +26,16 @@ input[type="text"] {
     border: none;
     outline: none;
     border-bottom: 2px solid #5396fd;
+    color:#fff;
+}
+label {
+  font-size: 18px;
+}
+.container {
+  margin: auto;
+  width: 60%;
+  padding: 10px;
+}
+.form-field {
+  padding: 20px 0px;
 }
