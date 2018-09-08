@@ -5,7 +5,7 @@ import Web3 from 'web3';
 import Subscriber from './components/subscriber.js'
 import Publisher from './components/publisher.js'
 import PublisherDeploy from './components/publisherDeploy.js'
-import Coins from './contracts/coins.js'
+import Coins from './coins.js'
 import queryString from 'query-string';
 var RLP = require('rlp');
 
