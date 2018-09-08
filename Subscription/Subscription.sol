@@ -32,7 +32,27 @@ contract Subscription is Ownable {
     using ECDSA for bytes32;
     using SafeMath for uint256;
 
-    constructor() public {}
+    // the publisher may optionally deploy requirements for the subscription
+    // so only meta transactions that match the requirements can be relayed
+    address requiredToAddress;
+    address requiredTokenAddress;
+    uint256 requiredTokenAmount;
+    uint256 requiredPeriodSeconds;
+    uint256 requiredGasPrice;
+
+    constructor(
+        address _toAddress,
+        address _tokenAddress,
+        uint256 _tokenAmount,
+        uint256 _periodSeconds,
+        uint256 _gasPrice
+    ) public {
+        requiredToAddress=_toAddress;
+        requiredTokenAddress=_tokenAddress;
+        requiredTokenAmount=_tokenAmount;
+        requiredPeriodSeconds=_periodSeconds;
+        requiredGasPrice=_gasPrice;
+    }
 
     event ExecuteSubscription(
         address indexed from, //the subscriber
@@ -191,6 +211,14 @@ contract Subscription is Ownable {
             "Subscription is not ready"
         );
 
+        // if there are requirements from the deployer, let's make sure
+        // those are met exactly
+        require( requiredToAddress == address(0) || to == requiredToAddress );
+        require( requiredTokenAddress == address(0) || tokenAddress == requiredTokenAddress );
+        require( requiredTokenAmount == 0 || tokenAmount == requiredTokenAmount );
+        require( requiredPeriodSeconds == 0 || periodSeconds == requiredPeriodSeconds );
+        require( requiredGasPrice == 0 || gasPrice == requiredGasPrice );
+
         nextValidTimestamp[subscriptionHash] = block.timestamp.add(periodSeconds);
 
         // now, let make the transfer from the subscriber to the publisher
@@ -202,6 +230,24 @@ contract Subscription is Ownable {
         emit ExecuteSubscription(
             from, to, tokenAddress, tokenAmount, periodSeconds, gasPrice
         );
+
+        // it is possible for the subscription execution to be run by a third party
+        // incentivized in the terms of the subscription with a gasPrice of the tokens
+        // pay that out now...
+        if (gasPrice > 0) {
+            //the relayer is incentivized by a little of the same token from
+            // the subscriber ... as far as the subscriber knows, they are
+            // just sending X tokens to the publisher, but the publisher can
+            // choose to send Y of those X to a relayer to run their transactions
+            // the publisher will receive X - Y tokens
+            // this must all be setup in the constructor
+            // if not, the subscriber chooses all the params including what goes
+            // to the publisher and what goes to the relayer
+            require(
+                ERC20(tokenAddress).transferFrom(from, msg.sender, gasPrice),
+                "Failed to pay gas as from account"
+            );
+        }
 
         return true;
     }
