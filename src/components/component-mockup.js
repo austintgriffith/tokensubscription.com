@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { Dropdown } from 'semantic-ui-react';
 
 class App extends Component {
 
@@ -78,6 +78,9 @@ class App extends Component {
 
   render() {
     const { error, isLoaded, items } = this.state;
+
+
+
     if (error) {
       return <div>Error: {error.message}</div>;
     } else if (!isLoaded) {
@@ -85,11 +88,18 @@ class App extends Component {
     } else {
       let coins = []
       for(let i in items){
-        console.log(items[i].name)
-        coins.push(
-            items[i].name
-        )
+        console.log(items[i])
+        coins.push({
+          key: items[i].address,
+          value: items[i].name,
+          image:{
+            avatar : true,
+            src    : items[i].imgUrl,
+          },
+          text: items[i].name
+        })
       }
+
       return (
         <form onSubmit={this.handleSubmit}>
           <label>
@@ -97,15 +107,12 @@ class App extends Component {
             <input type="text" value={this.state.addressValue} onChange={this.handleAddressChange} />
           </label>
           <br />
+
+
+          <br />
           <label>
-           Coin:
-           <select value={this.state.coin} onChange={this.handleCoinChange}>
-             {coins.map(coin => (
-               <option value={coin}>{coin}</option>
-             ))}
-             <option value="weely">Weekly</option>
-             <option value="monthly">Monthly</option>
-           </select>
+           Coin: <Dropdown placeholder='Select Coin' fluid search selection options={coins} />
+
          </label>
           <br />
           <label>
