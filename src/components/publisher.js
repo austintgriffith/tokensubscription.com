@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Address, Button, Blockie } from "dapparatus"
-import Coins from './../coins.js'
 import { Dropdown } from 'semantic-ui-react'
 
 class Publisher extends Component {
@@ -11,15 +10,35 @@ class Publisher extends Component {
       tokenAmount: 1,
       timeAmount: 1,
       timeType:"months",
-      tokenName:"TokenExampleSubscriptionToken",
-      gasPrice:0.01
+      tokenAddress:"0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
+      gasPrice:0.25
     };
   }
-  handleInput(e){
+  handleInput(e,data){
+    console.log("INPUT",e,data)
     let update = {}
-    update[e.target.name] = e.target.value
+    if(data){
+      update[data.name] = data.value
+      if(data.name=="tokenAddress"&&data.value=="0x0000000000000000000000000000000000000000"){
+        update.tokenAmount=""
+        update.gasPrice=""
+        update.timeAmount=""
+      }else{
+        if(this.state.tokenAmount==""){
+          update.tokenAmount=1
+        }
+        if(this.state.gasPrice==""){
+          update.gasPrice=0.25
+        }
+        if(this.state.timeAmount==""){
+          update.timeAmount=1
+        }
+      }
+    }else{
+      update[e.target.name] = e.target.value
+    }
     this.setState(update,()=>{
-      this.updateUrl()
+    //  this.updateUrl()
     })
   }
   updateUrl(){
@@ -48,45 +67,20 @@ class Publisher extends Component {
   }
 
   render() {
-    let {contracts} = this.props
-    let {items,toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice} = this.state
-    /*
+    let {contracts,coins} = this.props
+    let {items,toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice} = this.state
+
     let coinOptions = []
-    for(let i in items){
-      console.log(items[i].name)
-      coinOptions.push(
-          <option key={items[i].name} value={items[i].name}>{items[i].name}</option>
-      )
-    }
-    */
-    let coinOptions = []
-    coinOptions.push({
-      key: contracts.TokenExampleSubscriptionToken._address,
-      value: contracts.TokenExampleSubscriptionToken._address,
-      image:{
-        avatar : true,
-        src    : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png",
-      },
-      text: "TEST" + '(TEST)'
-    })
-    coinOptions.push({
-      key: "0x0000000000000000000000000000000000000000",
-      value: "0x0000000000000000000000000000000000000000",
-      image:{
-        avatar : true,
-        src    : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png",
-      },
-      text: "ANY" + '(*)'
-    })
-    for(let i = 0; i < Coins.length; i++){
+
+    for(let i = 0; i < coins.length; i++){
       coinOptions.push({
-         key: Coins[i].address,
-         value: Coins[i].address,
+         key: coins[i].address,
+         value: coins[i].address,
          image:{
            avatar : true,
-           src    : Coins[i].imageUrl,
+           src    : coins[i].imageUrl,
          },
-         text: Coins[i].name + ' (' + Coins[i].symbol + ')'
+         text: coins[i].name + ' (' + coins[i].symbol + ')'
        })
     }
 
@@ -106,10 +100,11 @@ class Publisher extends Component {
             <Dropdown
               selectOnNavigation={false}
               selection
-              name='coinSelect'
+              value={tokenAddress}
+              name='tokenAddress'
               options={coinOptions}
               placeholder='Choose Token'
-              onChange={this.handleChange}
+              onChange={this.handleInput.bind(this)}
             />
 
            Amount: <input
@@ -121,7 +116,7 @@ class Publisher extends Component {
           Recurring Every:   <input
             style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
             type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)}
-          /><select value={timeType} name="timeType" onChange={this.handleInput}>
+          /><select value={timeType} name="timeType" onChange={this.handleInput.bind(this)}>
             <option value="months">Month(s)</option>
             <option value="days">Day(s)</option>
             <option value="hours">Hour(s)</option>
@@ -132,10 +127,10 @@ class Publisher extends Component {
           Gas Price:   <input
             style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
             type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)}
-          /> {tokenName}
+          />
         </div>
         <Button size="2" onClick={()=>{
-            this.props.deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice)
+            this.props.deploySubscription(toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice)
           }}>
           Deploy Contract
         </Button>

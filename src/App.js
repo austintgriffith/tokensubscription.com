@@ -19,20 +19,21 @@ class App extends Component {
     if(contract){
       startMode = "subscriber"
     }
+
     this.state = {
       web3: false,
       account: false,
       gwei: 4,
       doingTransaction: false,
       contract: contract,
-      mode: startMode
+      mode: startMode,
+      coins:false
     }
   }
 
   async deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice) {
     console.log("deploySubscription",this.state)
     let {web3,tx,contracts} = this.state
-
 
 
     //requiredToAddress,requiredTokenAddress,requiredTokenAmount,requiredPeriodSeconds,requiredGasPrice
@@ -44,14 +45,16 @@ class App extends Component {
     let foundToken
     let requiredTokenAddress = "0x0000000000000000000000000000000000000000"
     if(tokenName){
+      console.log("searching for ",tokenName," in ",this.state.coins)
       //translate tokenName to tokenAddress
-      for(let i = 0; i < Coins.length; i++){
-        if(tokenName == Coins[i].name){
-          requiredTokenAddress = Coins[i].address
-          foundToken = Coins[i]
+      for(let i = 0; i < this.state.coins.length; i++){
+        if(tokenName == this.state.coins[i].address){
+          requiredTokenAddress = this.state.coins[i].address
+          foundToken = this.state.coins[i]
         }
       }
     }
+    console.log("FOUND TOKEN:",foundToken)
 
     let requiredTokenAmount=0
     if(tokenAmount && foundToken){
@@ -62,7 +65,7 @@ class App extends Component {
     let requiredPeriodSeconds=0
     if(timeAmount){
       //translate timeAmount&timeType to requiredPeriodSeconds
-      let periodSeconds = this.state.timeAmount;
+      let periodSeconds = timeAmount;
       if(timeType=="minutes"){
         periodSeconds*=60
       }else if(timeType=="hours"){
@@ -72,13 +75,19 @@ class App extends Component {
       }else if(timeType=="months"){
         periodSeconds*=2592000
       }
+      if(periodSeconds){
+        requiredPeriodSeconds=periodSeconds
+      }
     }
+
 
     let requiredGasPrice=0
     if(gasPrice && foundToken){
       //don't forget decimals.. you do a number * (10**##DECIMALS##)
       requiredGasPrice = gasPrice * (10**foundToken.decimals)
     }
+
+
 
     console.log("we can guess what the contract address is going to be, this let's us get the UI going without it being deployed yet...")
     let txCount = await this.state.web3.eth.getTransactionCount(this.state.account,'pending')
@@ -87,8 +96,6 @@ class App extends Component {
 
     console.log("Deploying Subscription Contract...")
     let code = require("./contracts/Subscription.bytecode.js")
-    console.log(code)
-    console.log(contracts)
 
     let args = [
       requiredToAddress,
@@ -107,7 +114,6 @@ class App extends Component {
         this.setState({deployedAddress:receipt.contractAddress})
       }
     })
-
 
 
   }
@@ -144,6 +150,23 @@ class App extends Component {
            console.log("contracts loaded",contracts)
            this.setState({contracts:contracts,customContractLoader:customLoader},async ()=>{
              console.log("Contracts Are Ready:",this.state.contracts)
+             Coins.unshift(
+               {
+                   address:this.state.contracts.TokenExampleSubscriptionToken._address,
+                   name:"TEST",
+                   symbol:"TEST",
+                   decimals:18,
+                   imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png"
+               },
+               {
+                   address:"0x0000000000000000000000000000000000000000",
+                   name:"ANY",
+                   symbol:"*",
+                   decimals:18,
+                   imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png"
+               }
+             )
+             this.setState({coins:Coins})
            })
          }}
         />
