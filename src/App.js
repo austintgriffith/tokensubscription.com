@@ -13,8 +13,30 @@ class App extends Component {
       account: false,
       gwei: 4,
       doingTransaction: false,
-      mode: "",
+    //  mode: "publisher",
+    mode:""
     }
+  }
+  componentDidMount() {
+    fetch('https://api.0xtracker.com/tokens')
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+            items: result
+          })
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      )
   }
   handleInput(e){
     let update = {}
@@ -22,6 +44,7 @@ class App extends Component {
     this.setState(update)
   }
   render() {
+    const { error, isLoaded, items } = this.state;
     let {web3,account,contracts,tx,gwei,block,avgBlockTime,etherscan,mode} = this.state
     let connectedDisplay = []
     let contractsDisplay = []
@@ -78,11 +101,11 @@ class App extends Component {
         let body
         if(mode=="subscriber"){
           body = (
-            <Subscriber />
+            <Subscriber {...this.state}/>
           )
         }else{
           body = (
-            <Publisher />
+            <Publisher {...this.state}/>
           )
         }
 
@@ -96,7 +119,7 @@ class App extends Component {
         )
       }else{
         connectedDisplay.push(
-          <div>
+          <div key="mainUI">
 
             <h1>tokensubscription.com</h1>
 

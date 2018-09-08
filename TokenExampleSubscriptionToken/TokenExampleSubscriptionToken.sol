@@ -6,7 +6,7 @@ pragma solidity ^0.4.24;
 
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20Mintable.sol";
 
-contract ExampleToken is ERC20Mintable {
+contract TokenExampleSubscriptionToken is ERC20Mintable {
 
   string public name = "TokenExampleSubscriptionToken";
   string public symbol = "TEST";
