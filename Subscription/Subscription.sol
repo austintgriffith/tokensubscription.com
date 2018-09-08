@@ -32,8 +32,8 @@ contract Subscription is Ownable {
     using ECDSA for bytes32;
     using SafeMath for uint256;
 
-    string public author = "Austin Thomas Griffith - https://austingriffith.com"
-    string public purpose = "Wyoming Hackathon - https://wyominghackathon.devpost.com/"
+    string public author = "Austin Thomas Griffith - https://austingriffith.com";
+    string public purpose = "Wyoming Hackathon - https://wyominghackathon.devpost.com/";
 
     // the publisher may optionally deploy requirements for the subscription
     // so only meta transactions that match the requirements can be relayed
