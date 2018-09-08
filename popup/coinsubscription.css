@@ -1,0 +1,46 @@
+#coinsubscriptionbtn {
+  background-color: #162129;
+  color: #fff;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  position: fixed;
+  bottom: -2px;
+  right: 20px;
+  width: 280px;
+  border-radius: 20px 20px 0 0;
+  border: 2px solid #5396fd;
+}
+#coinsubscriptioncont {
+  max-width: 300px;
+  padding: 10px;
+  background-color: #162129;
+  font-family: sans-serif;
+  display: none;
+  position: fixed;
+  padding: 16px 20px;
+  bottom: -2px;
+  right: 20px;
+  border: 2px solid #5396fd;
+  z-index: 9;
+  background-color: #162129;
+  color:#fff;
+  width: 236px;
+  border-radius: 20px 20px 0 0;
+  text-align:center;
+}
+#coinsubscriptioncont .btn:hover, #coinsubscriptionbtn:hover {
+  opacity: 1;
+}
+#coinsubscriptionclosebtn {
+  float:right;
+}
+#subscribenowbtn {
+  border: 1px solid #fff;
+  text-decoration: none;
+  color:#fff;
+  padding:5px;
+  padding: 6px 26px;
+  border-radius: 20px;
+}
