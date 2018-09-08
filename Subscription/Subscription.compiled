@@ -676,9 +676,14 @@ contract Subscription is Ownable {
         nextValidTimestamp[subscriptionHash] = block.timestamp.add(periodSeconds);
 
         // now, let make the transfer from the subscriber to the publisher
+        uint256 startingBalance = ERC20(tokenAddress).balanceOf(to);
         require(
           ERC20(tokenAddress).transferFrom(from,to,tokenAmount),
           "Transfer Failed"
+        );
+        require(
+          (startingBalance+tokenAmount) == ERC20(tokenAddress).balanceOf(to),
+          "Crappy ERC20 is a bad kitty."
         );
 
         emit ExecuteSubscription(
@@ -697,6 +702,7 @@ contract Subscription is Ownable {
             // this must all be setup in the constructor
             // if not, the subscriber chooses all the params including what goes
             // to the publisher and what goes to the relayer
+
             require(
                 ERC20(tokenAddress).transferFrom(from, msg.sender, gasPrice),
                 "Failed to pay gas as from account"

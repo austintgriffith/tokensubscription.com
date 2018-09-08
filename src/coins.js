@@ -56,6 +56,7 @@ module.exports = [
         "imageUrl":"https://raw.githubusercontent.com/TrustWallet/tokens/master/images/0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c.png"
     },
     {
+        "address": "0x35a9b440da4410dd63df8c54672b728970560328",
         "name":"Decentraland",
         "symbol":"MANA",
         "decimals":18,

@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import { Address, Button, Blockie } from "dapparatus"
 import axios from 'axios'
 
-class Publisher extends Component {
+class Subscriber extends Component {
   constructor(props) {
     super(props);
     this.state = {
       toAddress: "",
-      tokenAmount: 1,
-      timeAmount: 1,
-      timeType:"months",
-      tokenName:"TokenExampleSubscriptionToken",
-      gasPrice:0.01,
+      tokenAmount: "",
+      timeAmount: "",
+      timeType:"",
+      tokenName:"",
+      gasPrice:"",
       prefilledParams:false,
     };
   }
@@ -123,25 +123,62 @@ class Publisher extends Component {
       console.log("subscriptionsContract",subscriptionsContract)
       let requiredToAddress = await subscriptionsContract.requiredToAddress().call()
       let requiredTokenAddress = await subscriptionsContract.requiredTokenAddress().call()
-
+      let requiredTokenName
       //TODO: translate requiredTokenAddress to a requiredTokenName
 
-      let requiredTokenAmount = await subscriptionsContract.requiredTokenAmount().call()
-      let requiredPeriodSeconds = await subscriptionsContract.requiredPeriodSeconds().call()
+      let tokenDecimals = 0
 
-      //TODO: translate requiredPeriodSeconds to a requiredTimeAmount and requiredTimeType
-      let requiredTimeAmount = 1
-      let requiredTimeType = "months"
+      if(requiredTokenAddress){
+        console.log("using",requiredTokenAddress,"search through",this.props.coins)
+        for(let c in this.props.coins){
+          console.log("CHECKING",this.props.coins[c])
+          if(this.props.coins[c] && this.props.coins[c].address && this.props.coins[c].address.toLowerCase()==requiredTokenAddress.toLowerCase()){
+
+            console.log("FOUND!!!!!!!!")
+            requiredTokenName = this.props.coins[c].name
+            tokenDecimals = this.props.coins[c].decimals
+          }
+        }
+      }
+
+      let requiredTokenAmount = await subscriptionsContract.requiredTokenAmount().call()
+      console.log("requiredTokenAmount",requiredTokenAmount)
+      let requiredPeriodSeconds = await subscriptionsContract.requiredPeriodSeconds().call()
+      let requiredTimeAmount = 0
+      let requiredTimeType = ""
+      if(requiredPeriodSeconds){
+        if(requiredPeriodSeconds>=2592000){
+          requiredTimeAmount = requiredPeriodSeconds/2592000
+          requiredTimeType = "months"
+        }else if(requiredPeriodSeconds>=86400){
+          requiredTimeAmount = requiredPeriodSeconds/86400
+          requiredTimeType = "days"
+        }else if(requiredPeriodSeconds>=3600){
+          requiredTimeAmount = requiredPeriodSeconds/3600
+          requiredTimeType = "hours"
+        }else{
+          requiredTimeAmount = requiredPeriodSeconds/60
+          requiredTimeType = "minutes"
+        }
+      }
 
       let requiredGasPrice = await subscriptionsContract.requiredGasPrice().call()
 
+      if(tokenDecimals){
+        requiredGasPrice=requiredGasPrice/(10**tokenDecimals)
+        requiredTokenAmount=requiredTokenAmount/(10**tokenDecimals)
+      }
+      console.log("requiredTokenAmount",requiredTokenAmount)
+      console.log(requiredGasPrice);
       this.setState({
         prefilledParams:true,
         toAddress:requiredToAddress,
         tokenAddress:requiredTokenAddress,
         tokenAmount:requiredTokenAmount,
+        tokenName:requiredTokenName,
         timeAmount:requiredTimeAmount,
-        timeType:requiredTimeType
+        timeType:requiredTimeType,
+        gasPrice:requiredGasPrice,
       })
     }
   }
@@ -173,14 +210,11 @@ class Publisher extends Component {
             </div>
             <div>
               Token: {tokenName}
-
-               -   Amount: {parseFloat(tokenAmount) + parseFloat(gasPrice)}
-
+              Amount: {parseFloat(tokenAmount) + parseFloat(gasPrice)}
             </div>
             <div>
               Recurring Every: {timeAmount} {timeType}
             </div>
-
             <Button size="2" onClick={()=>{
                 this.sendSubscription()
               }}>
@@ -212,7 +246,7 @@ class Publisher extends Component {
              />
           </div>
           <div>
-            Recurring Every:   <input
+            Recurring Every: <input
               style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
               type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)}
             /><select value={timeType} name="timeType" onChange={this.handleInput}>
@@ -240,4 +274,4 @@ class Publisher extends Component {
   }
 }
 
-export default Publisher;
+export default Subscriber;

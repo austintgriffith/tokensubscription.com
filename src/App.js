@@ -32,7 +32,6 @@ class App extends Component {
   }
 
   async deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice) {
-    console.log("deploySubscription",this.state)
     let {web3,tx,contracts} = this.state
 
 
@@ -45,7 +44,6 @@ class App extends Component {
     let foundToken
     let requiredTokenAddress = "0x0000000000000000000000000000000000000000"
     if(tokenName){
-      console.log("searching for ",tokenName," in ",this.state.coins)
       //translate tokenName to tokenAddress
       for(let i = 0; i < this.state.coins.length; i++){
         if(tokenName == this.state.coins[i].address){
@@ -53,13 +51,6 @@ class App extends Component {
           foundToken = this.state.coins[i]
         }
       }
-    }
-    console.log("FOUND TOKEN:",foundToken)
-
-    let requiredTokenAmount=0
-    if(tokenAmount && foundToken){
-      //don't forget decimals.. you do a number * (10**##DECIMALS##)
-      requiredTokenAmount = tokenAmount * (10**foundToken.decimals)
     }
 
     let requiredPeriodSeconds=0
@@ -80,13 +71,17 @@ class App extends Component {
       }
     }
 
-
+    let requiredTokenAmount=0
     let requiredGasPrice=0
-    if(gasPrice && foundToken){
+    if(tokenAmount && foundToken){
       //don't forget decimals.. you do a number * (10**##DECIMALS##)
-      requiredGasPrice = gasPrice * (10**foundToken.decimals)
+      requiredTokenAmount = tokenAmount * (10**foundToken.decimals)
+      if(gasPrice && foundToken){
+        //don't forget decimals.. you do a number * (10**##DECIMALS##)
+        requiredGasPrice = gasPrice * (10**foundToken.decimals)
+        requiredTokenAmount -= requiredGasPrice
+      }
     }
-
 
 
     console.log("we can guess what the contract address is going to be, this let's us get the UI going without it being deployed yet...")
@@ -263,7 +258,6 @@ class App extends Component {
         <div key="mainUI">
 
           <h1>tokensubscription.com</h1>
-
 
           <Button size="2" onClick={()=>{
               alert("Please connect and unlock web3 to send tokens.")
