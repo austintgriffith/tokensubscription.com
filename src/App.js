@@ -5,18 +5,24 @@ import Web3 from 'web3';
 import Subscriber from './components/subscriber.js'
 import Publisher from './components/publisher.js'
 import PublisherDeploy from './components/publisherDeploy.js'
+import queryString from 'query-string';
 var RLP = require('rlp');
 
 class App extends Component {
   constructor(props) {
     super(props);
+    let contract = window.location.pathname.replace("/","")
+    let startMode = ""
+    if(contract){
+      startMode = "subscriber"
+    }
     this.state = {
       web3: false,
       account: false,
       gwei: 4,
       doingTransaction: false,
-      //  mode: "publisher",
-      mode:""
+      contract: contract,
+      mode: startMode
     }
   }
   componentDidMount() {
@@ -207,7 +213,7 @@ class App extends Component {
           <div key="mainUI">
 
             <h1>tokensubscription.com</h1>
-
+                {this.state.contract}
 
             <Button size="2" onClick={()=>{
                 this.setState({mode:"subscriber"})

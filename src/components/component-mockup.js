@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+/*import React, { Component } from 'react';
 import './App.css';
 import { Dropdown } from 'semantic-ui-react';
 
@@ -140,4 +140,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default App;*/

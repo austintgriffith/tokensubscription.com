@@ -6,12 +6,13 @@ class Publisher extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      toAddress: props.account,
+      toAddress: "",
       tokenAmount: 1,
       timeAmount: 1,
       timeType:"months",
       tokenName:"TokenExampleSubscriptionToken",
-      gasPrice:0.01
+      gasPrice:0.01,
+      prefilledParams:false
     };
   }
   handleInput(e){
@@ -44,10 +45,13 @@ class Publisher extends Component {
         symbol: "TEST"
       } ]
     })
+    if(this.props.contract){
+      console.log("poll contract for values...")
+    }
   }
-
   render() {
-    let {items,toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice} = this.state
+    let {contract} = this.props
+    let {items,toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice,prefilledParams} = this.state
     let coinOptions = []
     for(let i in items){
       console.log(items[i].name)
@@ -55,51 +59,68 @@ class Publisher extends Component {
           <option key={items[i].name} value={items[i].name}>{items[i].name}</option>
       )
     }
-    return (
-      <div style={{paddingLeft:40}}>
-        <div>
-          To Address:<Blockie
-            address={toAddress.toLowerCase()}
-            config={{size:3}}
-          /> <input
-            style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-            type="text" name="toAddress" value={toAddress} onChange={this.handleInput.bind(this)}
-          />
-        </div>
-        <div>
-          Token: <select value={tokenName} name="tokenName" onChange={this.handleInput}>
-            {coinOptions}
-          </select>
+    if(contract){
+      if(!prefilledParams){
+        return (
+          <div style={{paddingLeft:40}}>
+            loading...
+          </div>
+        );
+      }else{
+        return (
+          <div style={{paddingLeft:40}}>
+            autofill...
+          </div>
+        );
+      }
+    }else{
+      return (
+        <div style={{paddingLeft:40}}>
+          <div>
+            To Address:<Blockie
+              address={toAddress.toLowerCase()}
+              config={{size:3}}
+            /> <input
+              style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
+              type="text" name="toAddress" value={toAddress} onChange={this.handleInput.bind(this)}
+            />
+          </div>
+          <div>
+            Token: <select value={tokenName} name="tokenName" onChange={this.handleInput}>
+              {coinOptions}
+            </select>
 
-           Amount: <input
-             style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-             type="text" name="tokenAmount" value={tokenAmount} onChange={this.handleInput.bind(this)}
-           />
+             Amount: <input
+               style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
+               type="text" name="tokenAmount" value={tokenAmount} onChange={this.handleInput.bind(this)}
+             />
+          </div>
+          <div>
+            Recurring Every:   <input
+              style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
+              type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)}
+            /><select value={timeType} name="timeType" onChange={this.handleInput}>
+              <option value="months">Month(s)</option>
+              <option value="days">Day(s)</option>
+              <option value="hours">Hour(s)</option>
+              <option value="minutes">Minute(s)</option>
+            </select>
+          </div>
+          <div>
+            Gas Price:   <input
+              style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
+              type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)}
+            /> {tokenName}
+          </div>
+          <Button size="2" onClick={()=>{
+              this.props.deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice)
+            }}>
+            Deploy Contract
+          </Button>
         </div>
-        <div>
-          Recurring Every:   <input
-            style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-            type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)}
-          /><select value={timeType} name="timeType" onChange={this.handleInput}>
-            <option value="months">Month(s)</option>
-            <option value="days">Day(s)</option>
-            <option value="hours">Hour(s)</option>
-            <option value="minutes">Minute(s)</option>
-          </select>
-        </div>
-        <div>
-          Gas Price:   <input
-            style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-            type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)}
-          /> {tokenName}
-        </div>
-        <Button size="2" onClick={()=>{
-            this.props.deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice)
-          }}>
-          Deploy Contract
-        </Button>
-      </div>
-    );
+      );
+    }
+
   }
 }
 
