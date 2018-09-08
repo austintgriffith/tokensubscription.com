@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import { Metamask, Gas, ContractLoader, Transactions, Events, Scaler, Blockie, Address, Button } from "dapparatus"
 import Web3 from 'web3';
+import Subscriber from './components/subscriber.js'
+import Publisher from './components/publisher.js'
 
 class App extends Component {
   constructor(props) {
@@ -11,6 +13,7 @@ class App extends Component {
       account: false,
       gwei: 4,
       doingTransaction: false,
+      mode: "",
     }
   }
   handleInput(e){
@@ -19,7 +22,7 @@ class App extends Component {
     this.setState(update)
   }
   render() {
-    let {web3,account,contracts,tx,gwei,block,avgBlockTime,etherscan} = this.state
+    let {web3,account,contracts,tx,gwei,block,avgBlockTime,etherscan,mode} = this.state
     let connectedDisplay = []
     let contractsDisplay = []
     if(web3){
@@ -34,7 +37,6 @@ class App extends Component {
          }}
        />
       )
-      /*
       connectedDisplay.push(
         <ContractLoader
          key="ContractLoader"
@@ -69,43 +71,50 @@ class App extends Component {
             console.log("Transaction Receipt",transaction,receipt)
           }}
         />
-      )*/
-      /*
-      if(contracts){
+      )
+
+      if(contracts&&mode){
+
+        let body
+        if(mode=="subscriber"){
+          body = (
+            <Subscriber />
+          )
+        }else{
+          body = (
+            <Publisher />
+          )
+        }
+
         contractsDisplay.push(
           <div key="UI" style={{padding:30}}>
+            <a href="/"><h4>tokensubscription.com</h4></a>
             <div>
-              <Address
-                {...this.state}
-                address={contracts.YOURCONTRACT._address}
-              />
+              {body}
             </div>
-            broadcast string: <input
-                style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-                type="text" name="broadcastText" value={this.state.broadcastText} onChange={this.handleInput.bind(this)}
-            />
-            <Button color={this.state.doingTransaction?"orange":"green"} size="2" onClick={()=>{
-                this.setState({doingTransaction:true})
-                //tx(contracts.YOURCONTRACT.YOURFUNCTION(YOURARGUMENTS),(receipt)=>{
-                //  this.setState({doingTransaction:false})
-                //})
+          </div>
+        )
+      }else{
+        connectedDisplay.push(
+          <div>
+
+            <h1>tokensubscription.com</h1>
+
+
+            <Button size="2" onClick={()=>{
+                this.setState({mode:"subscriber"})
               }}>
-              Send
+              Send Tokens on Subscription
             </Button>
-            <Events
-              config={{hide:false}}
-              contract={contracts.YOURCONTRACT}
-              eventName={"YOUREVENT"}
-              block={block}
-              onUpdate={(eventData,allEvents)=>{
-                console.log("EVENT DATA:",eventData)
-                this.setState({events:allEvents})
-              }}
-            />
+            <Button size="2" onClick={()=>{
+                this.setState({mode:"publisher"})
+              }}>
+              Accept Tokens on Subscription
+            </Button>
+
           </div>
         )
       }
-      */
     }
     return (
       <div className="App">
