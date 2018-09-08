@@ -4,6 +4,8 @@ import { Metamask, Gas, ContractLoader, Transactions, Events, Scaler, Blockie, A
 import Web3 from 'web3';
 import Subscriber from './components/subscriber.js'
 import Publisher from './components/publisher.js'
+import PublisherDeploy from './components/publisherDeploy.js'
+var RLP = require('rlp');
 
 class App extends Component {
   constructor(props) {
@@ -13,8 +15,8 @@ class App extends Component {
       account: false,
       gwei: 4,
       doingTransaction: false,
-    //  mode: "publisher",
-    mode:""
+      //  mode: "publisher",
+      mode:""
     }
   }
   componentDidMount() {
@@ -38,6 +40,69 @@ class App extends Component {
         }
       )
   }
+  async deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice) {
+    console.log("deploySubscription",this.state)
+    let {web3,tx,contracts} = this.state
+
+    //requiredToAddress,requiredTokenAddress,requiredTokenAmount,requiredPeriodSeconds,requiredGasPrice
+    let requiredToAddress = "0x0000000000000000000000000000000000000000"
+    if(toAddress){
+      requiredToAddress = toAddress
+    }
+
+    let requiredTokenAddress = "0x0000000000000000000000000000000000000000"
+    if(tokenName){
+      //translate tokenName to tokenAddress
+    }
+
+    let requiredTokenAmount=0
+    if(tokenAmount){
+      //don't forget decimals.. you do a number * (10**##DECIMALS##)
+      //requiredTokenAmount = tokenAmount
+    }
+
+    let requiredPeriodSeconds=0
+    if(timeAmount){
+      //translate timeAmount&timeType to requiredPeriodSeconds
+    }
+
+    let requiredGasPrice=0
+    if(gasPrice){
+      //don't forget decimals.. you do a number * (10**##DECIMALS##)
+      //requiredGasPrice=gasPrice
+    }
+
+    console.log("we can guess what the contract address is going to be, this let's us get the UI going without it being deployed yet...")
+    let txCount = await this.state.web3.eth.getTransactionCount(this.state.account,'pending')
+    let deployingAddress = "0x"+this.state.web3.utils.keccak256(RLP.encode([this.state.account,txCount])).substr(26)
+    this.setState({deployingAddress:deployingAddress})
+
+    console.log("Deploying Subscription Contract...")
+    let code = require("./contracts/Subscription.bytecode.js")
+    console.log(code)
+    console.log(contracts)
+
+    let args = [
+      requiredToAddress,
+      requiredTokenAddress,
+      web3.utils.toTwosComplement(requiredTokenAmount),
+      web3.utils.toTwosComplement(requiredPeriodSeconds),
+      web3.utils.toTwosComplement(requiredGasPrice)
+    ]
+
+    console.log("ARGS",args)
+
+    tx(contracts.Subscription._contract.deploy({data:code,arguments:args}),1000000,(receipt)=>{
+      console.log("~~~~~~ DEPLOY FROM DAPPARATUS:",receipt)
+      if(receipt.contractAddress){
+        console.log("CONTRACT DEPLOYED:",receipt.contractAddress)
+        this.setState({deployedAddress:receipt.contractAddress})
+      }
+    })
+
+
+
+  }
   handleInput(e){
     let update = {}
     update[e.target.name] = e.target.value
@@ -45,9 +110,10 @@ class App extends Component {
   }
   render() {
     const { error, isLoaded, items } = this.state;
-    let {web3,account,contracts,tx,gwei,block,avgBlockTime,etherscan,mode} = this.state
+    let {web3,account,contracts,tx,gwei,block,avgBlockTime,etherscan,mode,deployingAddress,deployedAddress} = this.state
     let connectedDisplay = []
     let contractsDisplay = []
+    let noWeb3Display = ""
     if(web3){
       connectedDisplay.push(
        <Gas
@@ -100,13 +166,32 @@ class App extends Component {
 
         let body
         if(mode=="subscriber"){
-          body = (
-            <Subscriber {...this.state}/>
-          )
+
+          if(deployingAddress||deployedAddress){
+            body = (
+              <div>
+                subscriber deploy page {deployingAddress} => {deployedAddress}
+              </div>
+            )
+          }else{
+            body = (
+              <Subscriber {...this.state} deploySubscription={this.deploySubscription.bind(this)}/>
+            )
+          }
+
         }else{
-          body = (
-            <Publisher {...this.state}/>
-          )
+          if(deployingAddress||deployedAddress){
+            body = (
+              <PublisherDeploy {...this.state}
+                deployingAddress={deployingAddress}
+                deployedAddress={deployedAddress}
+              />
+            )
+          }else{
+            body = (
+              <Publisher {...this.state} deploySubscription={this.deploySubscription.bind(this)}/>
+            )
+          }
         }
 
         contractsDisplay.push(
@@ -138,11 +223,31 @@ class App extends Component {
           </div>
         )
       }
+    }else{
+      noWeb3Display = (
+        <div key="mainUI">
+
+          <h1>tokensubscription.com</h1>
+
+
+          <Button size="2" onClick={()=>{
+              alert("Please connect and unlock web3 to send tokens.")
+            }}>
+            Send Tokens on Subscription
+          </Button>
+          <Button size="2" onClick={()=>{
+              alert("Please connect and unlock web3 to accept tokens.")
+            }}>
+            Accept Tokens on Subscription
+          </Button>
+
+        </div>
+      )
     }
     return (
       <div className="App">
         <Metamask
-          config={{requiredNetwork:['Unknown','Mainnet']}}
+          config={{requiredNetwork:['Unknown','Rinkeby','Mainnet']}}
           onUpdate={(state)=>{
            console.log("metamask state update:",state)
            if(state.web3Provider) {
@@ -153,6 +258,7 @@ class App extends Component {
         />
         {connectedDisplay}
         {contractsDisplay}
+        {noWeb3Display}
       </div>
     );
   }
