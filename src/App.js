@@ -8,6 +8,8 @@ import PublisherDeploy from './components/publisherDeploy.js'
 import SubscriberApprove from './components/subscriberApprove.js'
 import Coins from './coins.js'
 import queryString from 'query-string';
+import Logo from './logo-icon.png';
+import Particles from './particles.png';
 var RLP = require('rlp');
 
 let backendUrl = "http://localhost:10003/"
@@ -252,6 +254,12 @@ class App extends Component {
         connectedDisplay.push(
           <div key="mainUI" className="center">
 
+            <img style={{position:"absolute",left:-500,top:400}} src={Particles} />
+
+            <div style={{marginTop:120}}>
+            <img src={Logo} />
+            </div>
+
             <h1><i>Welcome to Token Subscription</i></h1>
             <h3>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
                 {this.state.contract}
@@ -271,6 +279,8 @@ class App extends Component {
     }else{
       noWeb3Display = (
         <div className="center">
+
+          <img src={Logo} />
 
           <h1><i>Welcome to Token Subscription</i></h1>
           <h3>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
