@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Address, Button, Blockie } from "dapparatus"
+import { Address, Blockie } from "dapparatus"
 import { Dropdown } from 'semantic-ui-react'
 
 class Publisher extends Component {
@@ -127,11 +127,11 @@ class Publisher extends Component {
               type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)}
             />
           </div>
-          <Button size="2" onClick={()=>{
+          <button size="2" onClick={()=>{
               this.props.deploySubscription(toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice)
             }}>
             Create a new Subscription
-          </Button>
+          </button>
         </div>
     );
   }

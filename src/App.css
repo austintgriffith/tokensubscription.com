@@ -31,9 +31,10 @@ button {
   color:#fff;
   padding:10px 20px;
 }
-button :hover {
+button:hover {
   background-color:#5396fd;
-  opacity: 75%;
+  opacity: 0.8;
+  cursor: pointer;
 }
 input[type="text"], select {
   background: transparent;

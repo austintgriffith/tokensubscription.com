@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Address, Button, Blockie } from "dapparatus"
+import { Address, Blockie } from "dapparatus"
 import axios from 'axios'
 
 class Subscriber extends Component {
@@ -214,11 +214,11 @@ class Subscriber extends Component {
             <div className="form-field">
               Recurring Every: {timeAmount} {timeType}
             </div>
-            <Button size="2" onClick={()=>{
+            <button size="2" onClick={()=>{
                 this.sendSubscription()
               }}>
               Sign
-            </Button>
+            </button>
           </div>
         );
       }
@@ -258,11 +258,11 @@ class Subscriber extends Component {
             <input type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)} />
             {tokenName}
           </div>
-          <Button size="2" onClick={()=>{
+          <button size="2" onClick={()=>{
               this.props.deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice)
             }}>
             Deploy Contract
-          </Button>
+          </button>
         </div>
       );
     }
