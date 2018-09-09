@@ -259,15 +259,12 @@ class App extends Component {
             <button onClick={()=>{
                 this.setState({mode:"subscriber"})
               }}>
-              Create Subscription
-            </Button>
-            or
-            <Button size="2" onClick={()=>{
+              Create Subscription</button>
+            <span>or</span>
+            <button size="2" onClick={()=>{
                 this.setState({mode:"publisher"})
               }}>
-              Accept Subscription
-            </Button>
-
+              Accept Subscription</button>
           </div>
         )
       }
@@ -281,15 +278,12 @@ class App extends Component {
           <button onClick={()=>{
               alert("Please connect and unlock web3 to send tokens.")
             }}>
-            Create Subscription
-          </Button>
-          or
-          <Button size="2" onClick={()=>{
+            Create Subscription</button>
+          <span>or</span>
+          <button size="2" onClick={()=>{
               alert("Please connect and unlock web3 to accept tokens.")
             }}>
-            Accept Subscription
-          </Button>
-
+            Accept Subscription</button>
         </div>
       )
     }
