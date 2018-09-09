@@ -7,9 +7,9 @@ import Publisher from './components/publisher.js'
 import PublisherDeploy from './components/publisherDeploy.js'
 import SubscriberApprove from './components/subscriberApprove.js'
 import Coins from './coins.js'
-import queryString from 'query-string';
 import Logo from './logo-icon.png';
 import Particles from './particles.png';
+
 var RLP = require('rlp');
 
 let backendUrl = "http://localhost:10003/"
@@ -131,6 +131,11 @@ class App extends Component {
     this.setState(update)
   }
   render() {
+
+    let particleRender = (
+      <img style={{zIndex:-1,position:"absolute",left:-500,top:400}} src={Particles} />
+    )
+
     const { error, isLoaded, items } = this.state;
     let {web3,account,contracts,tx,gwei,block,avgBlockTime,etherscan,mode,deployingAddress,deployedAddress} = this.state
     let connectedDisplay = []
@@ -253,10 +258,10 @@ class App extends Component {
       }else{
         connectedDisplay.push(
           <div key="mainUI" className="center">
+            {particleRender}
 
-            <img style={{position:"absolute",left:-500,top:400}} src={Particles} />
 
-            <div style={{marginTop:120}}>
+            <div style={{marginTop:160}}>
             <img src={Logo} />
             </div>
 
@@ -272,15 +277,17 @@ class App extends Component {
             <button size="2" onClick={()=>{
                 this.setState({mode:"publisher"})
               }}>
-              Accept Subscription</button>
+              Accept Subscriptions</button>
           </div>
         )
       }
     }else{
       noWeb3Display = (
         <div className="center">
-
+          {particleRender}
+          <div style={{marginTop:160}}>
           <img src={Logo} />
+          </div>
 
           <h1 style={{margin: '30px 0 0 0'}}><i>Welcome to Token Subscription</i></h1>
           <h3 style={{margin: '0 0 65px 0'}}>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
