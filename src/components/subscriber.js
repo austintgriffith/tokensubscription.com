@@ -98,7 +98,8 @@ class Subscriber extends Component {
           'Content-Type': 'application/json',
       }
     }).then((response)=>{
-      console.log("TX RESULT",response)
+      console.log("TX RESULT",response.data.subscriptionHash)
+      window.location = "/"+response.data.subscriptionHash
     })
     .catch((error)=>{
       console.log(error);
@@ -198,9 +199,12 @@ class Subscriber extends Component {
             <div className="center">loading...</div>
         );
       }else{
+        if(timeAmount==1){
+          timeType = timeType.substring(0, timeType.length - 1)
+        }
         return (
           <div>
-            <div className="form-field">
+            <div style={{marginTop:110}} className="form-field">
               <label>To Address:</label>
               <Blockie
                 address={toAddress.toLowerCase()}
@@ -209,12 +213,14 @@ class Subscriber extends Component {
             </div>
             <div className="form-field">
               <label>Token:</label> {tokenName}
+            </div>
+            <div>
               <label>Amount:</label> {parseFloat(tokenAmount) + parseFloat(gasPrice)}
             </div>
             <div className="form-field">
               Recurring Every: {timeAmount} {timeType}
             </div>
-            <button size="2" onClick={()=>{
+            <button size="2" style={{marginTop:50}} onClick={()=>{
                 this.sendSubscription()
               }}>
               Sign
@@ -225,44 +231,7 @@ class Subscriber extends Component {
     }else{
       return (
         <div>
-          <h1>Create a new subscription</h1>
-          <h3>Setup the parameters of your subscription model</h3>
-          <div className="form-field">
-            <label>To Address:</label>
-            <Blockie
-              address={toAddress.toLowerCase()}
-              config={{size:3}}
-            />
-            <input type="text" style={{width: '415px'}} name="toAddress" value={toAddress} onChange={this.handleInput.bind(this)} />
-          </div>
-          <div className="form-field">
-            <label>Token:</label>
-            <select value={tokenName} name="tokenName" onChange={this.handleInput}>
-              {coinOptions}
-            </select>
-             <label>Amount:</label>
-             <input type="text" name="tokenAmount" value={tokenAmount} onChange={this.handleInput.bind(this)} />
-          </div>
-          <div className="form-field">
-            <label>Recurring Every:</label>
-            <input type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)} />
-            <select value={timeType} name="timeType" onChange={this.handleInput} style={{width:"90px",padding:"0 0 0 10px"}}>
-              <option value="months">Month(s)</option>
-              <option value="days">Day(s)</option>
-              <option value="hours">Hour(s)</option>
-              <option value="minutes">Minute(s)</option>
-            </select>
-          </div>
-          <div className="form-field">
-            <label>Gas Price:</label>
-            <input type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)} />
-            {tokenName}
-          </div>
-          <button size="2" onClick={()=>{
-              this.props.deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice)
-            }}>
-            Deploy Contract
-          </button>
+          TODO 
         </div>
       );
     }

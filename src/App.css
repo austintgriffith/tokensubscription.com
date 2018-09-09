@@ -97,7 +97,7 @@ label {
 }
 .ui.selection.dropdown .menu>.item {
   background: none;
-  color:#fff;
+  color:#000000;
 }
 .ui.selection.visible.dropdown>.text:not(.default) {
   color:#fff;

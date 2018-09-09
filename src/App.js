@@ -125,6 +125,9 @@ class App extends Component {
 
 
   }
+  setMode(mode){
+    this.setState({mode:mode})
+  }
   handleInput(e){
     let update = {}
     update[e.target.name] = e.target.value
@@ -169,14 +172,14 @@ class App extends Component {
                    name:"TEST",
                    symbol:"TEST",
                    decimals:18,
-                   imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png"
+                   imageUrl:"https://tokensubscription.com/logo.png"
                },
                {
                    address:"0x0000000000000000000000000000000000000000",
                    name:"ANY",
                    symbol:"*",
                    decimals:18,
-                   imageUrl:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png"
+                   imageUrl:"https://tokensubscription.com/logo.png"
                }
              )
              this.setState({coins:Coins})
@@ -237,13 +240,18 @@ class App extends Component {
           if(deployingAddress||deployedAddress){
             body = (
               <PublisherDeploy {...this.state}
+
                 deployingAddress={deployingAddress}
                 deployedAddress={deployedAddress}
               />
             )
           }else{
             body = (
-              <Publisher {...this.state} deploySubscription={this.deploySubscription.bind(this)}/>
+              <Publisher
+                {...this.state}
+                deploySubscription={this.deploySubscription.bind(this)}
+                setMode={this.setMode.bind(this)}
+              />
             )
           }
         }
@@ -269,15 +277,10 @@ class App extends Component {
             <h3 style={{margin: '0 0 45px 0'}}>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
                 {this.state.contract}
 
-            <button onClick={()=>{
-                this.setState({mode:"subscriber"})
-              }}>
-              Create Subscription</button>
-            <span className="side-pad">or</span>
             <button size="2" onClick={()=>{
                 this.setState({mode:"publisher"})
               }}>
-              Accept Subscriptions</button>
+              Create Subscriptions Contract</button>
           </div>
         )
       }
@@ -292,15 +295,11 @@ class App extends Component {
           <h1 style={{margin: '30px 0 0 0'}}><i>Welcome to Token Subscription</i></h1>
           <h3 style={{margin: '0 0 45px 0'}}>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
 
-          <button onClick={()=>{
-              alert("Please connect and unlock web3 to send tokens.")
-            }}>
-            Create Subscription</button>
-          <span className="side-pad">or</span>
           <button size="2" onClick={()=>{
-              alert("Please connect and unlock web3 to accept tokens.")
+              alert("Install and unlock web3. MetaMask, Trust, etc. ")
             }}>
-            Accept Subscription</button>
+            Create Subscriptions Contract
+          </button>
         </div>
       )
     }
