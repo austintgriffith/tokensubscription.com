@@ -20,7 +20,7 @@ var button = '<button id="coinsubscriptionbtn" onclick="openCoinSubscription()">
 var html = '<div id="coinsubscriptionpopup">';
 html += '<button class="" id="coinsubscriptionclosebtn" onclick="closeCoinSubscription()">x</button>';
 html += '<a href="#"'+COINSUBSCRIPTION.getId(0)+' id="subscribenowbtn">Subscribe Now</a>';
-html += '<p>Automatic recurring token payments with TokenSubscription</p>';
+html += '<p id="coinsubscriptionpopupp">Automatic recurring token payments with TokenSubscription</p>';
 html += '</div>';
 
 // create container

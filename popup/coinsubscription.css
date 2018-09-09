@@ -30,6 +30,10 @@
   border-radius: 20px 20px 0 0;
   text-align:center;
 }
+#coinsubscriptionpopupp {
+  font-size: 11px;
+  margin-top: 20px;
+}
 #coinsubscriptioncont .btn:hover, #coinsubscriptionbtn:hover {
   opacity: 1;
 }
