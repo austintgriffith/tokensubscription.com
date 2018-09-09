@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Loader from '../loader.gif';
+import Particles from '../particles.png';
 var QRCode = require('qrcode.react');
 
 class PublisherDeploy extends Component {
@@ -9,6 +10,12 @@ class PublisherDeploy extends Component {
     };
   }
   render() {
+
+    let particleRender = (
+      <img style={{zIndex:-1,position:"absolute",left:-1500,top:400,opacity:0.4}} src={Particles} />
+    )
+
+
     let {deployingAddress,deployedAddress} = this.props
 
     let contractAddress = deployingAddress
@@ -23,6 +30,7 @@ class PublisherDeploy extends Component {
       url = window.location.origin+"/"+contractAddress
       return (
         <div>
+          {particleRender}
           <h1 style={{marginTop: '100px'}}>Congratulations, your contract is ready.</h1>
           <h3>You can now accept subscriptions!</h3>
           <p style={{textAlign: 'center'}}>{contractAddress} {deployed}</p>
@@ -42,6 +50,7 @@ class PublisherDeploy extends Component {
     }else{
       return (
         <div>
+          {particleRender}
           <h1 style={{marginTop: '100px'}}>Your contract is being deployed</h1>
           <h3>Once your contract deploys you can start accepting subscriptions</h3>
           <p style={{textAlign: 'center'}}>{contractAddress} <img src={Loader} style={{width: '30px', height: '30px', verticalAlign: 'middle', margin:'0 0 0 10px'}}/></p>
@@ -54,7 +63,7 @@ class PublisherDeploy extends Component {
             <p>QR Code:</p>
             <QRCode value={url} />
             <p>Embed a script on your website:</p>
-            <pre>{"<script type='text/javascript' src='https://tokensubscription.com/coinsubscription.js' id='coinsubscription'></script>\n<script type='text/javascript'>COINSUBSCRIPTION.init(['"+contractAddress+"']);</script>"}</pre>
+            <pre>{"<script type='text/javascript' src='https://tokensubscription.com/coinsubscription.js?contract="+contractAddress+"' id='coinsubscription'></script>\n"}</pre>
           </div>
         </div>
       );

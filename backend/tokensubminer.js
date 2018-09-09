@@ -20,7 +20,7 @@ var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider('http://0.0.0.0:8545'));
 
 const DESKTOPMINERACCOUNT = 4 //index in geth
-
+const APIKEY = fs.readFileSync("../api.key").toString().trim()
 const APPPORT = 10003
 
 let accounts
@@ -51,7 +51,7 @@ let redis = new Redis({
 })
 
 console.log("LOADING CONTRACTS")
-contracts = ContractLoader(["TokenExampleSubscriptionToken","Subscription"],web3);
+contracts = ContractLoader(["WasteCoin","Subscription"],web3);
 
 //my local geth node takes a while to spin up so I don't want to start parsing until I'm getting real data
 function checkForGeth() {
@@ -114,12 +114,17 @@ function removeSubscription(sig){
   });
 }
 
-app.get('/clear', (req, res) => {
+app.get('/clear/:key', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  console.log("/clear")
-  res.set('Content-Type', 'application/json');
-  res.end(JSON.stringify({hello:"world"}));
-  redis.set(subscriptionListKey,JSON.stringify([]),'EX', 60 * 60 * 24 * 7);
+  if(req.params.key == APIKEY){
+    console.log("/clear")
+    res.set('Content-Type', 'application/json');
+    res.end(JSON.stringify({hello:"world"}));
+    redis.set(subscriptionListKey,JSON.stringify([]),'EX', 60 * 60 * 24 * 7);
+  }else{
+    res.end(JSON.stringify({hello:"world"}));
+  }
+
 });
 
 app.get('/', (req, res) => {
@@ -256,18 +261,6 @@ app.post('/deploysub', (req, res) => {
     res.end(JSON.stringify({contract:contractAddress}));
   });
 })
-
-
-
-
-
-
-
-
-
-
-
-
 
 app.get('/abi/:address', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
