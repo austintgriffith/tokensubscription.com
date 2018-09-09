@@ -260,8 +260,8 @@ class App extends Component {
             <img src={Logo} />
             </div>
 
-            <h1><i>Welcome to Token Subscription</i></h1>
-            <h3>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
+            <h1 style={{margin: '30px 0 0 0'}}><i>Welcome to Token Subscription</i></h1>
+            <h3 style={{margin: '0 0 65px 0'}}>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
                 {this.state.contract}
 
             <button onClick={()=>{
@@ -282,8 +282,8 @@ class App extends Component {
 
           <img src={Logo} />
 
-          <h1><i>Welcome to Token Subscription</i></h1>
-          <h3>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
+          <h1 style={{margin: '30px 0 0 0'}}><i>Welcome to Token Subscription</i></h1>
+          <h3 style={{margin: '0 0 65px 0'}}>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
 
           <button onClick={()=>{
               alert("Please connect and unlock web3 to send tokens.")
