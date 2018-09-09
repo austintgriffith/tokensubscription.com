@@ -86,16 +86,17 @@ class Publisher extends Component {
 
     return (
       <div className="container">
-        <div>
-          To Address:<Blockie
+        <div className="form-field">
+          <label>To Address:</label>
+          <Blockie
             address={toAddress.toLowerCase()}
             config={{size:3}}
           /> <input
-            type="text" name="toAddress" value={toAddress} onChange={this.handleInput.bind(this)}
+            type="text" style={{width: '415px'}} name="toAddress" value={toAddress} onChange={this.handleInput.bind(this)}
           />
         </div>
-        <div>
-          Token:
+        <div className="form-field">
+          <label>Token:</label>
             <Dropdown
               selectOnNavigation={false}
               selection
@@ -106,22 +107,25 @@ class Publisher extends Component {
               onChange={this.handleInput.bind(this)}
             />
 
-           Amount: <input
+           <label>Amount:</label>
+           <input
              type="text" name="tokenAmount" value={tokenAmount} onChange={this.handleInput.bind(this)}
            />
         </div>
-        <div>
-          Recurring Every:   <input
+        <div className="form-field">
+          <label>Recurring Every:</label>
+          <input
             type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)}
-          /><select value={timeType} name="timeType" onChange={this.handleInput.bind(this)}>
+          /><select value={timeType} name="timeType" onChange={this.handleInput.bind(this)} style={{width: '90px', padding: '0 0 0 10px'}}>
             <option value="months">Month(s)</option>
             <option value="days">Day(s)</option>
             <option value="hours">Hour(s)</option>
             <option value="minutes">Minute(s)</option>
           </select>
         </div>
-        <div>
-          Gas Price:   <input
+        <div className="form-field">
+          <label>Gas Price:</label>
+          <input
             type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)}
           />
         </div>
