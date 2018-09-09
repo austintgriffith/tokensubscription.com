@@ -19,7 +19,7 @@ var Web3 = require('web3');
 var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider('http://0.0.0.0:8545'));
 
-const DESKTOPMINERACCOUNT = 3 //index in geth
+const DESKTOPMINERACCOUNT = 4 //index in geth
 
 const APPPORT = 10003
 
@@ -82,13 +82,7 @@ function startParsers(){
           let contract = new web3.eth.Contract(contracts.Subscription._jsonInterface,subscriptions[t].subscriptionContract)
           console.log("loading hash...")
           let doubleCheckHash = await contract.methods.getSubscriptionHash(subscriptions[t].parts[0],subscriptions[t].parts[1],subscriptions[t].parts[2],subscriptions[t].parts[3],subscriptions[t].parts[4],subscriptions[t].parts[5]).call()
-          console.log("check status of subscription...")
-          let status = await contract.methods.getSubscriptionStatus(doubleCheckHash).call()
-          let prettyStatus = SubscriptionStatusEnum[status];
-          console.log("STATUS: ["+prettyStatus+"]")
-          if(prettyStatus=="PAUSED"){
-            console.log("do nothing... paused...")
-          }else if(prettyStatus=="ACTIVE"){
+          console.log("doubleCheckHash:",doubleCheckHash)
             console.log("checking if ready...")
             let ready = await contract.methods.isSubscriptionReady(subscriptions[t].parts[0],subscriptions[t].parts[1],subscriptions[t].parts[2],subscriptions[t].parts[3],subscriptions[t].parts[4],subscriptions[t].parts[5],subscriptions[t].signature).call()
             console.log("READY:",ready)
@@ -96,10 +90,7 @@ function startParsers(){
               console.log("subscription says it's ready...........")
               doSubscription(contract,subscriptions[t])
             }
-          }else{
-            console.log("Remove Subscription.")
-            removeSubscription(subscriptions[t].signature)
-          }
+
         }
       });
     },10000)
@@ -194,6 +185,27 @@ app.get('/subscriptions', (req, res) => {
   redis.get(subscriptionListKey, function (err, result) {
     res.set('Content-Type', 'application/json');
     res.end(result);
+  })
+});
+
+app.get('/subscription/:subscriptionHash', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  console.log("/subscription/"+req.params.subscriptionHash)
+  let sigsKey = req.params.contract+"sigs"
+  redis.get(subscriptionListKey, function (err, result) {
+    res.set('Content-Type', 'application/json');
+
+    let subscriptions
+    try{
+      subscriptions = JSON.parse(result)
+    }catch(e){subscriptions = []}
+    for(let t in subscriptions){
+      if(subscriptions[t].subscriptionHash==req.params.subscriptionHash){
+        res.end(JSON.stringify(subscriptions[t]));
+      }
+    }
+
+    res.end(JSON.stringify(false));
   })
 });
 
@@ -352,6 +364,7 @@ function doSubscription(contract,subscriptionObject){
   console.log("subscriptionObject",subscriptionObject.parts[0],subscriptionObject.parts[1],subscriptionObject.parts[2],subscriptionObject.parts[3],subscriptionObject.parts[4],subscriptionObject.parts[5],subscriptionObject.signature)
   console.log("PARAMS",txparams)
   console.log("---========= EXEC ===========-----")
+  console.log(subscriptionObject)
   contract.methods.executeSubscription(subscriptionObject.parts[0],subscriptionObject.parts[1],subscriptionObject.parts[2],subscriptionObject.parts[3],subscriptionObject.parts[4],subscriptionObject.parts[5],subscriptionObject.signature).send(
   txparams ,(error, Hash)=>{
     console.log("TX CALLBACK",error,Hash)
