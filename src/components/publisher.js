@@ -92,6 +92,13 @@ class Publisher extends Component {
        })
     }
 
+    let monthOptions = [
+        {key: 'months', value: 'months', text: 'Month(s)'},
+        {key: 'days', value: 'days', text: 'Day(s)'},
+        {key: 'hours', value: 'hours', text: 'Hour(s)'},
+        {key: 'minutes', value: 'minutes', text: 'Minutes(s)'},
+    ]
+
     return (
         <div>
           {particleRender}
@@ -123,12 +130,15 @@ class Publisher extends Component {
           <div className="form-field">
             <label>Recurring Every:</label>
             <input type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)} />
-            <select value={timeType} name="timeType" onChange={this.handleInput.bind(this)} style={{width: '90px', padding: '0 0 0 10px'}}>
-              <option value="months">Month(s)</option>
-              <option value="days">Day(s)</option>
-              <option value="hours">Hour(s)</option>
-              <option value="minutes">Minute(s)</option>
-            </select>
+            <Dropdown
+              selectOnNavigation={false}
+              selection
+              value={timeType}
+              name="timeType"
+              onChange={this.handleInput.bind(this)}
+              options={monthOptions}
+              placeholder='Choose Term'
+            />
           </div>
           <div className="form-field">
             <label>Gas Price:</label>
