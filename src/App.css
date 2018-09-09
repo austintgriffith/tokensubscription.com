@@ -51,11 +51,14 @@ label {
 .ui.selection.dropdown {
   background: none;
   color:#fff;
-  border-bottom: 2px solid #5396fd;
   border-radius: 0px;
   -webkit-appearance: none;
   -webkit-border-radius: 0px;
   margin: 0 50px;
+  padding: 2px 0px;
+  min-height:auto;
+  border:none;
+  border-bottom: 2px solid #5396fd;
 }
 .ui.selection.dropdown .menu>.item, .ui.selection.active.dropdown, .ui.selection.active.dropdown .menu {
   border: none !important;
@@ -69,4 +72,10 @@ label {
 }
 .ui.selection.visible.dropdown>.text:not(.default) {
   color:#fff;
+}
+.ui.selection.dropdown>.dropdown.icon {
+  top: 0px;
+}
+.ui.dropdown>.text {
+    padding: 0 0 0 10px;
 }

@@ -116,7 +116,7 @@ class Publisher extends Component {
           <label>Recurring Every:</label>
           <input
             type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)}
-          /><select value={timeType} name="timeType" onChange={this.handleInput.bind(this)} style={{width: '80px'}}>
+          /><select value={timeType} name="timeType" onChange={this.handleInput.bind(this)} style={{width: '90px', padding: '0 0 0 10px'}}>
             <option value="months">Month(s)</option>
             <option value="days">Day(s)</option>
             <option value="hours">Hour(s)</option>
