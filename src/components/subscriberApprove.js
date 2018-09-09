@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Address, Button, Blockie } from "dapparatus"
 import axios from 'axios'
 
+import Loader from "../loader.gif"
+
 let pollInterval
 let pollTime = 1777
 
@@ -10,7 +12,8 @@ class SubscriberApprove extends Component {
     super(props);
     this.state = {
       approved:0,
-      approve:12
+      approve:12,
+      loading:false
     };
   }
   componentDidMount(){
@@ -71,8 +74,16 @@ class SubscriberApprove extends Component {
 
     console.log("TOKEN",this.state.token)
 
+    let loading = ""
+    if(this.state.loading){
+      loading = (
+        <img src={Loader} style={{maxWidth:30}} />
+      )
+    }
+
     return (
       <div style={{paddingLeft:40,marginTop:100}}>
+        <h1>Approve Max Subscription Limit</h1>
         <div>Subscription: {this.state.subscription.subscriptionHash}</div>
         <div>
           {tokenAmount} <img style={{maxHeight:25}} src={this.state.token.imageUrl}/>{this.state.token.name}
@@ -96,7 +107,7 @@ class SubscriberApprove extends Component {
           Approved Tokens: <span style={{color:"#5396fd"}}>{this.state.approved/(10**this.state.decimals)}</span>
         </div>
         <div style={{marginTop:40}} className="form-field">
-        <input
+        {loading}<input
           type="text" name="approve" value={this.state.approve} onChange={this.handleInput.bind(this)}
         />
           <Button size="2" onClick={async  ()=>{
@@ -105,9 +116,12 @@ class SubscriberApprove extends Component {
               console.log("APPROVE",address,amount)
               console.log("CONTRACT:",this.state.tokenContract)
               console.log("NAME",await this.state.tokenContract.name().call())
+              this.setState({loading:true})
               tx(
                 this.state.tokenContract.approve(address,amount),
-                console.log("DONE APPRLOVE")
+                ()=>{
+                  this.setState({loading:false})
+                }
               )
             }}>
             Approve Tokens
