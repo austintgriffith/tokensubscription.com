@@ -63,6 +63,13 @@ label {
   margin-right: 20px;
   font-weight:normal;
 }
+pre {
+  white-space: pre-wrap;
+  font-size: 13px;
+  background-color: #162129;
+  padding: 10px;
+  border: 1px solid #666;
+}
 .container {
   margin: auto;
   width: 50%;
