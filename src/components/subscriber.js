@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Address, Blockie } from "dapparatus"
 import axios from 'axios'
+import Loader from '../loader.gif';
+import Particles from '../particles.png';
 
 class Subscriber extends Component {
   constructor(props) {
@@ -112,10 +114,10 @@ class Subscriber extends Component {
     this.setState({
       isLoaded: true,
       items: [ {
-        address: this.props.contracts.TokenExampleSubscriptionToken._address,
+        address: this.props.contracts.WasteCoin._address,
         decimals: 18,
-        name: "TokenExampleSubscriptionToken",
-        symbol: "TEST"
+        name: "WasteCoin",
+        symbol: "WC"
       } ]
     })
     if(this.props.contract){
@@ -184,6 +186,12 @@ class Subscriber extends Component {
     }
   }
   render() {
+
+    let particleRender = (
+      <img style={{zIndex:-1,position:"absolute",left:-2000,top:400,opacity:0.6}} src={Particles} />
+    )
+
+
     let {contract} = this.props
     let {items,toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice,prefilledParams} = this.state
     let coinOptions = []
@@ -196,7 +204,7 @@ class Subscriber extends Component {
     if(contract){
       if(!prefilledParams){
         return (
-            <div className="center">loading...</div>
+            <div className="center"><img src={Loader} style={{marginTop:100}}/></div>
         );
       }else{
         if(timeAmount==1){
@@ -204,6 +212,7 @@ class Subscriber extends Component {
         }
         return (
           <div>
+            {particleRender}
             <div style={{marginTop:110}} className="form-field">
               <label>To Address:</label>
               <Blockie
@@ -231,7 +240,7 @@ class Subscriber extends Component {
     }else{
       return (
         <div>
-          TODO 
+          TODO
         </div>
       );
     }

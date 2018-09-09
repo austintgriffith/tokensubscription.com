@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Address, Button, Blockie } from "dapparatus"
 import axios from 'axios'
-
+import Particles from '../particles.png';
 import Loader from "../loader.gif"
 
 let pollInterval
@@ -81,8 +81,18 @@ class SubscriberApprove extends Component {
       )
     }
 
+    let approvedColor = "#fd9653"
+    if(this.state.approved>0){
+      approvedColor = "#5396fd"
+    }
+
+    let particleRender = (
+      <img style={{zIndex:-1,position:"absolute",left:-2500,top:400,opacity:0.4}} src={Particles} />
+    )
+
     return (
       <div style={{paddingLeft:40,marginTop:100}}>
+        {particleRender}
         <h1>Approve Max Subscription Limit</h1>
         <div>Subscription: {this.state.subscription.subscriptionHash}</div>
         <div>
@@ -103,8 +113,8 @@ class SubscriberApprove extends Component {
         <div style={{marginTop:20}}>
           Token Balance: <span>{this.state.balance/(10**this.state.decimals)}</span>
         </div>
-        <div style={{marginTop:20}}>
-          Approved Tokens: <span style={{color:"#5396fd"}}>{this.state.approved/(10**this.state.decimals)}</span>
+        <div style={{marginTop:20,fontSize:28}}>
+          Approved Tokens: <span style={{color:approvedColor}}>{this.state.approved/(10**this.state.decimals)}</span>
         </div>
         <div style={{marginTop:40}} className="form-field">
         {loading}<input
