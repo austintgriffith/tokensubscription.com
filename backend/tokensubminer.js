@@ -313,7 +313,7 @@ app.post('/saveSubscription', (req, res) => {
     });
   }
   res.set('Content-Type', 'application/json');
-  res.end(JSON.stringify({hello:"world"}));
+  res.end(JSON.stringify({subscriptionHash:req.body.subscriptionHash}));
 });
 app.listen(APPPORT);
 console.log(`http listening on `,APPPORT);

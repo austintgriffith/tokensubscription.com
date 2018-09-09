@@ -72,7 +72,7 @@ class SubscriberApprove extends Component {
     console.log("TOKEN",this.state.token)
 
     return (
-      <div style={{paddingLeft:40}}>
+      <div style={{paddingLeft:40,marginTop:100}}>
         <div>Subscription: {this.state.subscription.subscriptionHash}</div>
         <div>
           {tokenAmount} <img style={{maxHeight:25}} src={this.state.token.imageUrl}/>{this.state.token.name}

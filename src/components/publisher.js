@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Address, Blockie } from "dapparatus"
 import { Dropdown } from 'semantic-ui-react'
 
+import Backarrow from '../back-arrow.png'
+
 class Publisher extends Component {
   constructor(props) {
     super(props);
@@ -86,8 +88,8 @@ class Publisher extends Component {
 
     return (
         <div>
-          <h1>Create a new subscription</h1>
-          <h3>Setup the parameters of your subscription model</h3>
+          <h1 style={{marginTop:100}}>Accept subscriptions</h1>
+          <h3>Parameters of your subscription model</h3>
           <div className="form-field">
             <label>To Address:</label>
             <Blockie
@@ -127,11 +129,15 @@ class Publisher extends Component {
               type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)}
             />
           </div>
-          <button size="2" onClick={()=>{
+          <button size="2" style={{marginTop:50}} onClick={()=>{
               this.props.deploySubscription(toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice)
             }}>
-            Create a new Subscription
+            Start Accepting Subscriptions
           </button>
+
+          <div style={{marginTop:90,cursor:"pointer"}} onClick={()=>{this.props.setMode("")}}>
+            <img style={{verticalAlign:'middle'}} src={Backarrow}/> <span style={{fontSize:14}}>Previous</span>
+          </div>
         </div>
     );
   }
