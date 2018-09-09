@@ -11,6 +11,11 @@
   width: 280px;
   border-radius: 20px 20px 0 0;
   border: 2px solid #5396fd;
+  font-size: 20px;
+}
+#coinsubscriptionbtn #coinsubscriptionlogo {
+  width: 35px;
+  height: 35px;
 }
 #coinsubscriptioncont {
   max-width: 300px;
@@ -39,6 +44,9 @@
 }
 #coinsubscriptionclosebtn {
   float:right;
+  color: #fff;
+  background: none;
+  border-radius: 25px;
 }
 #subscribenowbtn {
   border: 1px solid #fff;
@@ -47,4 +55,9 @@
   padding:5px;
   padding: 6px 26px;
   border-radius: 20px;
+}
+#coinsubscriptionlogo {
+  width: 40px;
+  height: 40px;
+  vertical-align: middle;
 }

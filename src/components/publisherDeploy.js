@@ -23,40 +23,38 @@ class PublisherDeploy extends Component {
       url = window.location.origin+"/"+contractAddress
       return (
         <div>
-          <h1>Congratulations, your contract is ready.</h1>
+          <h1 style={{marginTop: '100px'}}>Congratulations, your contract is ready.</h1>
           <h3>You can now accept subscriptions!</h3>
-          <p>Follow the instructions below to share your 'Subscribe' link:</p>
+          <p style={{textAlign: 'center'}}>{contractAddress} {deployed}</p>
+          <p>Follow the instructions below to share your subscription</p>
           <div>
-            {contractAddress} {deployed}
-          </div>
-          <div>
-            <p>You can put a simple button on your website by copying the html code below.</p>
+            <p>Add a link to your website:</p>
             <pre>{"<a href='"+url+"' target='_blank'>Subscribe Now</a>"}</pre>
-            <div>Share Url:</div>
+            <p>Share Url:</p>
             <pre>{url}</pre>
+            <p>QR Code:</p>
             <QRCode value={url} />
-            <div>Embed Script:</div>
-            <pre>{"<script type='text/javascript' src='https://tokensubscription.com/coinsubscription.js' id='coinsubscription'></script>\n<script type='text/javascript'>COINSUBSCRIPTION.init(['we2334asdf34asdfasdr32']);</script>"}</pre>
+            <p>Embed a script on your website:</p>
+            <pre>{"<script type='text/javascript' src='https://tokensubscription.com/coinsubscription.js' id='coinsubscription'></script>\n<script type='text/javascript'>COINSUBSCRIPTION.init(['"+contractAddress+"']);</script>"}</pre>
           </div>
         </div>
       );
     }else{
       return (
         <div>
-          <img src={Loader}/>
-          <h3>Once your contract deploys you can accept subscriptions:</h3>
-          <p>Follow the instructions below to share your 'Subscribe' link:</p>
+          <h1 style={{marginTop: '100px'}}>Your contract is being deployed</h1>
+          <h3>Once your contract deploys you can start accepting subscriptions</h3>
+          <p style={{textAlign: 'center'}}>{contractAddress} <img src={Loader} style={{width: '30px', height: '30px', verticalAlign: 'middle', margin:'0 0 0 10px'}}/></p>
+          <p>Follow the instructions below to share your subscription</p>
           <div>
-            {contractAddress}
-          </div>
-          <div>
-            <p>You can put a simple button on your website by copying the html code below.</p>
+          <p>Add a link to your website:</p>
             <pre>{"<a href='"+url+"' target='_blank'>Subscribe Now</a>"}</pre>
-            <div>Share Url:</div>
+            <p>Share Url:</p>
             <pre>{url}</pre>
+            <p>QR Code:</p>
             <QRCode value={url} />
-            <div>Embed Script:</div>
-            <pre>{"<script type='text/javascript' src='https://tokensubscription.com/coinsubscription.js' id='coinsubscription'></script>\n<script type='text/javascript'>COINSUBSCRIPTION.init(['we2334asdf34asdfasdr32']);</script>"}</pre>
+            <p>Embed a script on your website:</p>
+            <pre>{"<script type='text/javascript' src='https://tokensubscription.com/coinsubscription.js' id='coinsubscription'></script>\n<script type='text/javascript'>COINSUBSCRIPTION.init(['"+contractAddress+"']);</script>"}</pre>
           </div>
         </div>
       );
