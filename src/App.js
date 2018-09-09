@@ -256,16 +256,16 @@ class App extends Component {
             <h1>tokensubscription.com</h1>
                 {this.state.contract}
 
-            <Button size="2" onClick={()=>{
+            <button onClick={()=>{
                 this.setState({mode:"subscriber"})
               }}>
               Send Tokens on Subscription
-            </Button>
-            <Button size="2" onClick={()=>{
+            </button>
+            <button onClick={()=>{
                 this.setState({mode:"publisher"})
               }}>
               Accept Tokens on Subscription
-            </Button>
+            </button>
 
           </div>
         )
@@ -276,16 +276,16 @@ class App extends Component {
 
           <h1>tokensubscription.com</h1>
 
-          <Button size="2" onClick={()=>{
+          <button onClick={()=>{
               alert("Please connect and unlock web3 to send tokens.")
             }}>
             Send Tokens on Subscription
-          </Button>
-          <Button size="2" onClick={()=>{
+          </button>
+          <button onClick={()=>{
               alert("Please connect and unlock web3 to accept tokens.")
             }}>
             Accept Tokens on Subscription
-          </Button>
+          </button>
 
         </div>
       )
