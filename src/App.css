@@ -98,13 +98,17 @@ pre {
 }
 .ui.selection.dropdown .menu>.item, .ui.selection.active.dropdown, .ui.selection.active.dropdown .menu {
   border: none !important;
+  background: #0f171c !important;
 }
 .ui.selection.dropdown:hover {
   border-bottom: 2px solid #5396fd;
 }
 .ui.selection.dropdown .menu>.item {
   background: none;
-  color:#000000;
+  color:#fff;
+}
+.ui.selection.dropdown .menu>.item:hover {
+  background-color:#5396fd !important;
 }
 .ui.selection.visible.dropdown>.text:not(.default) {
   color:#fff;
