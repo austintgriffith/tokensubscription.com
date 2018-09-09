@@ -19,7 +19,7 @@ pragma solidity ^0.4.24;
   Earlier Meta Transaction Demo:
     https://github.com/austintgriffith/bouncer-proxy
 
-  Huge thanks to, as always, to OpenZeppelin for the rad contracts:
+  Huge thanks, as always, to OpenZeppelin for the rad contracts:
  */
 
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
@@ -33,7 +33,7 @@ contract Subscription is Ownable {
     using SafeMath for uint256;
 
     string public author = "Austin Thomas Griffith - https://austingriffith.com";
-    string public purpose = "Wyoming Hackathon - https://wyominghackathon.devpost.com/";
+    string public purpose = "Wyoming Hackathon - https://wyominghackathon.devpost.com";
 
     // the publisher may optionally deploy requirements for the subscription
     // so only meta transactions that match the requirements can be relayed
@@ -84,7 +84,7 @@ contract Subscription is Ownable {
         returns (bool)
     {
         return (block.timestamp >=
-                    nextValidTimestamp[subscriptionHash].sub(gracePeriodSeconds)
+                nextValidTimestamp[subscriptionHash].sub(gracePeriodSeconds)
         );
     }
 
