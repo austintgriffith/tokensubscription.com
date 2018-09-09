@@ -43,7 +43,7 @@ class PublisherDeploy extends Component {
             <p>QR Code:</p>
             <QRCode value={url} />
             <p>Embed a script on your website:</p>
-            <pre>{"<script type='text/javascript' src='https://tokensubscription.com/coinsubscription.js' id='coinsubscription'></script>\n<script type='text/javascript'>COINSUBSCRIPTION.init(['"+contractAddress+"']);</script>"}</pre>
+            <pre>{"<script type='text/javascript' src='https://tokensubscription.com/coinsubscription.js?contract="+contractAddress+"' id='coinsubscription'></script>"}</pre>
           </div>
         </div>
       );
@@ -52,8 +52,8 @@ class PublisherDeploy extends Component {
         <div>
           {particleRender}
           <h1 style={{marginTop: '100px'}}>Your contract is being deployed</h1>
-          <h3>Once your contract deploys you can start accepting subscriptions</h3>
-          <p style={{textAlign: 'center'}}>{contractAddress} <img src={Loader} style={{width: '30px', height: '30px', verticalAlign: 'middle', margin:'0 0 0 10px'}}/></p>
+          <h3>(Make sure you <b>confirm</b> the metamask dialog to deploy your contract!)</h3>
+          <p style={{textAlign: 'center'}}>  <img src={Loader} style={{width: '50px', height: '50px', verticalAlign: 'middle', margin:'0 0 0 10px'}}/> {contractAddress}</p>
           <p>Follow the instructions below to share your subscription</p>
           <div>
           <p>Add a link to your website:</p>

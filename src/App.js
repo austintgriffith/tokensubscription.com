@@ -287,7 +287,7 @@ class App extends Component {
               Start Accepting Token Subscriptions</button>
 
               <div style={{marginTop:200,opacity:0.7,fontSize:15}}>
-              Disclaimer: We built this in a weekend! <a style={{color:"#dddddd"}} href="https://github.com/austintgriffith/tokensubscription.com/blob/master/Subscription/Subscription.sol">inspect our smart contract</a>.
+              Disclaimer: We built this in a weekend! <a style={{color:"#dddddd"}} href="https://github.com/austintgriffith/tokensubscription.com/blob/master/Subscription/Subscription.sol">Inspect our smart contract</a>.
               </div>
           </div>
 
@@ -311,7 +311,7 @@ class App extends Component {
           </button>
 
           <div style={{marginTop:200,opacity:0.7,fontSize:15}}>
-          Disclaimer: We built this in a weekend! <a style={{color:"#dddddd"}} href="https://github.com/austintgriffith/tokensubscription.com/blob/master/Subscription/Subscription.sol">inspect our smart contract</a>.
+          Disclaimer: We built this in a weekend! <a style={{color:"#dddddd"}} href="https://github.com/austintgriffith/tokensubscription.com/blob/master/Subscription/Subscription.sol">Inspect our smart contract</a>.
           </div>
 
         </div>
