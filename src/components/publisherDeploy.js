@@ -20,7 +20,7 @@ class PublisherDeploy extends Component {
 
     let url = window.location.origin+"/"+contractAddress
     return (
-      <div style={{paddingLeft:40}}>
+      <div className="container">
         Publisher Deploy Page
         <div>
           {contractAddress} {deployed}
