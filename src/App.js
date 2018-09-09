@@ -13,6 +13,10 @@ import Particles from './particles.png';
 var RLP = require('rlp');
 
 let backendUrl = "http://localhost:10003/"
+if(window.location.href.indexOf("tokensubscription.com")>=0)
+{
+  backendUrl = "https://relay.tokensubscription.com"
+}
 
 class App extends Component {
   constructor(props) {
