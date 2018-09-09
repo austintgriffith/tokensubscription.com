@@ -7,7 +7,6 @@ import Publisher from './components/publisher.js'
 import PublisherDeploy from './components/publisherDeploy.js'
 import SubscriberApprove from './components/subscriberApprove.js'
 import Coins from './coins.js'
-import queryString from 'query-string';
 import Logo from './logo-icon.png';
 import Particles from './particles.png';
 var RLP = require('rlp');
@@ -131,6 +130,11 @@ class App extends Component {
     this.setState(update)
   }
   render() {
+
+    let particleRender = (
+      <img style={{zIndex:-1,position:"absolute",left:-500,top:400}} src={Particles} />
+    )
+
     const { error, isLoaded, items } = this.state;
     let {web3,account,contracts,tx,gwei,block,avgBlockTime,etherscan,mode,deployingAddress,deployedAddress} = this.state
     let connectedDisplay = []
@@ -254,9 +258,9 @@ class App extends Component {
         connectedDisplay.push(
           <div key="mainUI" className="center">
 
-            <img style={{position:"absolute",left:-500,top:400}} src={Particles} />
 
-            <div style={{marginTop:120}}>
+
+            <div style={{marginTop:160}}>
             <img src={Logo} />
             </div>
 
@@ -272,7 +276,7 @@ class App extends Component {
             <button size="2" onClick={()=>{
                 this.setState({mode:"publisher"})
               }}>
-              Accept Subscription</button>
+              Accept Subscriptions</button>
           </div>
         )
       }
@@ -280,7 +284,9 @@ class App extends Component {
       noWeb3Display = (
         <div className="center">
 
+          <div style={{marginTop:160}}>
           <img src={Logo} />
+          </div>
 
           <h1><i>Welcome to Token Subscription</i></h1>
           <h3>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
