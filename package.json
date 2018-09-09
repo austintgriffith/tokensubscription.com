@@ -14,7 +14,9 @@
     "qrcode.react": "^0.8.0",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
+    "react-motion": "^0.5.2",
     "react-scripts": "1.1.5",
+    "react-transition-group": "^2.4.0",
     "rlp": "^2.1.0",
     "s3": "^4.4.0",
     "semantic-ui-react": "^0.82.3"

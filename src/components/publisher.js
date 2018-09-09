@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Address, Blockie } from "dapparatus"
 import { Dropdown } from 'semantic-ui-react'
+import Particles from '../particles.png';
 
 import Backarrow from '../back-arrow.png'
 
@@ -60,15 +61,20 @@ class Publisher extends Component {
     this.setState({
       isLoaded: true,
       items: [ {
-        address: this.props.contracts.TokenExampleSubscriptionToken._address,
+        address: this.props.contracts.WasteCoin._address,
         decimals: 18,
-        name: "TokenExampleSubscriptionToken",
-        symbol: "TEST"
+        name: "WasteCoin",
+        symbol: "WC"
       } ]
     })
   }
 
   render() {
+
+    let particleRender = (
+      <img style={{zIndex:-1,position:"absolute",left:-1000,top:400,opacity:0.6}} src={Particles} />
+    )
+
     let {contracts,coins} = this.props
     let {items,toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice} = this.state
 
@@ -82,12 +88,13 @@ class Publisher extends Component {
            avatar : true,
            src    : coins[i].imageUrl,
          },
-         text: coins[i].name + ' (' + coins[i].symbol + ')'
+         text: coins[i].symbol
        })
     }
 
     return (
         <div>
+          {particleRender}
           <h1 style={{marginTop:100}}>Accept subscriptions</h1>
           <h3>Parameters of your subscription model</h3>
           <div className="form-field">

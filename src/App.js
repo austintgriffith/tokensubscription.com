@@ -168,16 +168,16 @@ class App extends Component {
              console.log("Contracts Are Ready:",this.state.contracts)
              Coins.unshift(
                {
-                   address:this.state.contracts.TokenExampleSubscriptionToken._address,
-                   name:"TEST",
-                   symbol:"TEST",
+                   address:this.state.contracts.WasteCoin._address,
+                   name:"WasteCoin",
+                   symbol:"WC",
                    decimals:18,
-                   imageUrl:"https://tokensubscription.com/logo.png"
+                   imageUrl:"https://s3.amazonaws.com/wyowaste.com/wastecoin.png"
                },
                {
                    address:"0x0000000000000000000000000000000000000000",
                    name:"ANY",
-                   symbol:"*",
+                   symbol:"ANY",
                    decimals:18,
                    imageUrl:"https://tokensubscription.com/logo.png"
                }
@@ -273,15 +273,20 @@ class App extends Component {
             <img src={Logo} />
             </div>
 
-            <h1 style={{margin: '30px 0 0 0'}}><i>Welcome to Token Subscription</i></h1>
+            <h1 style={{margin: '30px 0 0 0'}}><i>Token Subscriptions</i></h1>
             <h3 style={{margin: '0 0 45px 0'}}>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
                 {this.state.contract}
 
             <button size="2" onClick={()=>{
                 this.setState({mode:"publisher"})
               }}>
-              Create Subscriptions Contract</button>
+              Start Accepting Token Subscriptions</button>
+
+              <div style={{marginTop:200,opacity:0.7,fontSize:15}}>
+              Disclaimer: We built this in a weekend! <a style={{color:"#dddddd"}} href="https://github.com/austintgriffith/tokensubscription.com/blob/master/Subscription/Subscription.sol">inspect our smart contract</a>.
+              </div>
           </div>
+
         )
       }
     }else{
@@ -292,14 +297,19 @@ class App extends Component {
           <img src={Logo} />
           </div>
 
-          <h1 style={{margin: '30px 0 0 0'}}><i>Welcome to Token Subscription</i></h1>
+          <h1 style={{margin: '30px 0 0 0'}}><i>Token Subscriptions</i></h1>
           <h3 style={{margin: '0 0 45px 0'}}>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
 
           <button size="2" onClick={()=>{
               alert("Install and unlock web3. MetaMask, Trust, etc. ")
             }}>
-            Create Subscriptions Contract
+            Start Accepting Token Subscriptions
           </button>
+
+          <div style={{marginTop:200,opacity:0.7,fontSize:15}}>
+          Disclaimer: We built this in a weekend! <a style={{color:"#dddddd"}} href="https://github.com/austintgriffith/tokensubscription.com/blob/master/Subscription/Subscription.sol">inspect our smart contract</a>.
+          </div>
+
         </div>
       )
     }
