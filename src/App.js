@@ -274,7 +274,7 @@ class App extends Component {
             </div>
 
             <h1 style={{margin: '30px 0 0 0'}}><i>Welcome to Token Subscription</i></h1>
-            <h3 style={{margin: '0 0 65px 0'}}>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
+            <h3 style={{margin: '0 0 45px 0'}}>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
                 {this.state.contract}
 
             <button size="2" onClick={()=>{
@@ -293,7 +293,7 @@ class App extends Component {
           </div>
 
           <h1 style={{margin: '30px 0 0 0'}}><i>Welcome to Token Subscription</i></h1>
-          <h3 style={{margin: '0 0 65px 0'}}>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
+          <h3 style={{margin: '0 0 45px 0'}}>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
 
           <button size="2" onClick={()=>{
               alert("Install and unlock web3. MetaMask, Trust, etc. ")

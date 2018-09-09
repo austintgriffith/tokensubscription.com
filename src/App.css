@@ -8,7 +8,7 @@ body {
   background-image: -webkit-linear-gradient(120deg, #162129 50%, #0f171c 25%);
   min-height: 500px;
   background-image: url(bkg.jpg) ;
-  background-position: center center;
+  background-position: top center;
   background-repeat:  no-repeat;
   background-attachment: fixed;
   background-size:  cover;
@@ -36,6 +36,7 @@ button {
   background:none;
   color:#fff;
   padding:10px 20px;
+  margin-top:25px;
 }
 button:hover {
   background-color:#5396fd;
