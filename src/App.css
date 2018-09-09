@@ -7,6 +7,12 @@ body {
   background-color: #162129;
   background-image: -webkit-linear-gradient(120deg, #162129 50%, #0f171c 25%);
   min-height: 500px;
+  background-image: url(bkg.jpg) ;
+  background-position: center center;
+  background-repeat:  no-repeat;
+  background-attachment: fixed;
+  background-size:  cover;
+  background-color: #999;
 }
 h1 {
   font-size:40px;

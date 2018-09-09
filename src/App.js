@@ -9,6 +9,7 @@ import SubscriberApprove from './components/subscriberApprove.js'
 import Coins from './coins.js'
 import Logo from './logo-icon.png';
 import Particles from './particles.png';
+
 var RLP = require('rlp');
 
 let backendUrl = "http://localhost:10003/"
@@ -257,7 +258,7 @@ class App extends Component {
       }else{
         connectedDisplay.push(
           <div key="mainUI" className="center">
-
+            {particleRender}
 
 
             <div style={{marginTop:160}}>
@@ -283,7 +284,7 @@ class App extends Component {
     }else{
       noWeb3Display = (
         <div className="center">
-
+          {particleRender}
           <div style={{marginTop:160}}>
           <img src={Logo} />
           </div>
