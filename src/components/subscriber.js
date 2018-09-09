@@ -187,7 +187,7 @@ class Subscriber extends Component {
     let {items,toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice,prefilledParams} = this.state
     let coinOptions = []
     for(let i in items){
-      console.log(items[i].name)
+      //console.log(items[i].name)
       coinOptions.push(
           <option key={items[i].name} value={items[i].name}>{items[i].name}</option>
       )
@@ -195,24 +195,23 @@ class Subscriber extends Component {
     if(contract){
       if(!prefilledParams){
         return (
-          <div style={{paddingLeft:40}}>
-            loading...
-          </div>
+            <div className="center">loading...</div>
         );
       }else{
         return (
-          <div style={{paddingLeft:40}}>
-            <div>
-              To Address:<Blockie
+          <div>
+            <div className="form-field">
+              <label>To Address:</label>
+              <Blockie
                 address={toAddress.toLowerCase()}
                 config={{size:3}}
               /> {toAddress.toLowerCase()}
             </div>
-            <div>
-              Token: {tokenName}
-              Amount: {parseFloat(tokenAmount) + parseFloat(gasPrice)}
+            <div className="form-field">
+              <label>Token:</label> {tokenName}
+              <label>Amount:</label> {parseFloat(tokenAmount) + parseFloat(gasPrice)}
             </div>
-            <div>
+            <div className="form-field">
               Recurring Every: {timeAmount} {timeType}
             </div>
             <Button size="2" onClick={()=>{
@@ -225,42 +224,39 @@ class Subscriber extends Component {
       }
     }else{
       return (
-        <div style={{paddingLeft:40}}>
-          <div>
-            To Address:<Blockie
+        <div>
+          <h1>Create a new subscription</h1>
+          <h3>Setup the parameters of your subscription model</h3>
+          <div className="form-field">
+            <label>To Address:</label>
+            <Blockie
               address={toAddress.toLowerCase()}
               config={{size:3}}
-            /> <input
-              style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-              type="text" name="toAddress" value={toAddress} onChange={this.handleInput.bind(this)}
             />
+            <input type="text" style={{width: '415px'}} name="toAddress" value={toAddress} onChange={this.handleInput.bind(this)} />
           </div>
-          <div>
-            Token: <select value={tokenName} name="tokenName" onChange={this.handleInput}>
+          <div className="form-field">
+            <label>Token:</label>
+            <select value={tokenName} name="tokenName" onChange={this.handleInput}>
               {coinOptions}
             </select>
-
-             Amount: <input
-               style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-               type="text" name="tokenAmount" value={tokenAmount} onChange={this.handleInput.bind(this)}
-             />
+             <label>Amount:</label>
+             <input type="text" name="tokenAmount" value={tokenAmount} onChange={this.handleInput.bind(this)} />
           </div>
-          <div>
-            Recurring Every: <input
-              style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-              type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)}
-            /><select value={timeType} name="timeType" onChange={this.handleInput}>
+          <div className="form-field">
+            <label>Recurring Every:</label>
+            <input type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)} />
+            <select value={timeType} name="timeType" onChange={this.handleInput} style={{width:"90px",padding:"0 0 0 10px"}}>
               <option value="months">Month(s)</option>
               <option value="days">Day(s)</option>
               <option value="hours">Hour(s)</option>
               <option value="minutes">Minute(s)</option>
             </select>
           </div>
-          <div>
-            Gas Price:   <input
-              style={{verticalAlign:"middle",width:400,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-              type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)}
-            /> {tokenName}
+          <div className="form-field">
+            <label>Gas Price:</label>
+            <input type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)} />
+            {tokenName}
           </div>
           <Button size="2" onClick={()=>{
               this.props.deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice)

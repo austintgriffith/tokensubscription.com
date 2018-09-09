@@ -226,7 +226,6 @@ class App extends Component {
 
         contractsDisplay.push(
           <div key="UI" style={{padding:30}}>
-            <a href="/"><h4>tokensubscription.com</h4></a>
             <div>
               {body}
             </div>
@@ -234,20 +233,22 @@ class App extends Component {
         )
       }else{
         connectedDisplay.push(
-          <div key="mainUI">
+          <div key="mainUI" className="center">
 
-            <h1>tokensubscription.com</h1>
+            <h1><i>Welcome to Token Subscription</i></h1>
+            <h3>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
                 {this.state.contract}
 
             <Button size="2" onClick={()=>{
                 this.setState({mode:"subscriber"})
               }}>
-              Send Tokens on Subscription
+              Create Subscription
             </Button>
+            or
             <Button size="2" onClick={()=>{
                 this.setState({mode:"publisher"})
               }}>
-              Accept Tokens on Subscription
+              Accept Subscription
             </Button>
 
           </div>
@@ -255,19 +256,21 @@ class App extends Component {
       }
     }else{
       noWeb3Display = (
-        <div key="mainUI">
+        <div className="center">
 
-          <h1>tokensubscription.com</h1>
+          <h1><i>Welcome to Token Subscription</i></h1>
+          <h3>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
 
           <Button size="2" onClick={()=>{
               alert("Please connect and unlock web3 to send tokens.")
             }}>
-            Send Tokens on Subscription
+            Create Subscription
           </Button>
+          or
           <Button size="2" onClick={()=>{
               alert("Please connect and unlock web3 to accept tokens.")
             }}>
-            Accept Tokens on Subscription
+            Accept Subscription
           </Button>
 
         </div>
@@ -285,9 +288,11 @@ class App extends Component {
            }
           }}
         />
-        {connectedDisplay}
-        {contractsDisplay}
-        {noWeb3Display}
+        <div className="container">
+          {connectedDisplay}
+          {contractsDisplay}
+          {noWeb3Display}
+        </div>
       </div>
     );
   }

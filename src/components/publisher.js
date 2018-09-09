@@ -85,56 +85,54 @@ class Publisher extends Component {
     }
 
     return (
-      <div className="container">
-        <div className="form-field">
-          <label>To Address:</label>
-          <Blockie
-            address={toAddress.toLowerCase()}
-            config={{size:3}}
-          /> <input
-            type="text" style={{width: '415px'}} name="toAddress" value={toAddress} onChange={this.handleInput.bind(this)}
-          />
-        </div>
-        <div className="form-field">
-          <label>Token:</label>
-            <Dropdown
-              selectOnNavigation={false}
-              selection
-              value={tokenAddress}
-              name='tokenAddress'
-              options={coinOptions}
-              placeholder='Choose Token'
-              onChange={this.handleInput.bind(this)}
+        <div>
+          <h1>Create a new subscription</h1>
+          <h3>Setup the parameters of your subscription model</h3>
+          <div className="form-field">
+            <label>To Address:</label>
+            <Blockie
+              address={toAddress.toLowerCase()}
+              config={{size:3}}
             />
+            <input type="text" style={{width: '415px'}} name="toAddress" value={toAddress} onChange={this.handleInput.bind(this)} />
+          </div>
+          <div className="form-field">
+            <label>Token:</label>
+              <Dropdown
+                selectOnNavigation={false}
+                selection
+                value={tokenAddress}
+                name='tokenAddress'
+                options={coinOptions}
+                placeholder='Choose Token'
+                onChange={this.handleInput.bind(this)}
+              />
 
-           <label>Amount:</label>
-           <input
-             type="text" name="tokenAmount" value={tokenAmount} onChange={this.handleInput.bind(this)}
-           />
+             <label>Amount:</label>
+             <input type="text" name="tokenAmount" value={tokenAmount} onChange={this.handleInput.bind(this)} />
+          </div>
+          <div className="form-field">
+            <label>Recurring Every:</label>
+            <input type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)} />
+            <select value={timeType} name="timeType" onChange={this.handleInput.bind(this)} style={{width: '90px', padding: '0 0 0 10px'}}>
+              <option value="months">Month(s)</option>
+              <option value="days">Day(s)</option>
+              <option value="hours">Hour(s)</option>
+              <option value="minutes">Minute(s)</option>
+            </select>
+          </div>
+          <div className="form-field">
+            <label>Gas Price:</label>
+            <input
+              type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)}
+            />
+          </div>
+          <Button size="2" onClick={()=>{
+              this.props.deploySubscription(toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice)
+            }}>
+            Create a new Subscription
+          </Button>
         </div>
-        <div className="form-field">
-          <label>Recurring Every:</label>
-          <input
-            type="text" name="timeAmount" value={timeAmount} onChange={this.handleInput.bind(this)}
-          /><select value={timeType} name="timeType" onChange={this.handleInput.bind(this)} style={{width: '90px', padding: '0 0 0 10px'}}>
-            <option value="months">Month(s)</option>
-            <option value="days">Day(s)</option>
-            <option value="hours">Hour(s)</option>
-            <option value="minutes">Minute(s)</option>
-          </select>
-        </div>
-        <div className="form-field">
-          <label>Gas Price:</label>
-          <input
-            type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)}
-          />
-        </div>
-        <Button size="2" onClick={()=>{
-            this.props.deploySubscription(toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice)
-          }}>
-          Deploy Contract
-        </Button>
-      </div>
     );
   }
 }
