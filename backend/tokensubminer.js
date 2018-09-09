@@ -19,7 +19,7 @@ var Web3 = require('web3');
 var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider('http://0.0.0.0:8545'));
 
-const DESKTOPMINERACCOUNT = 3 //index in geth
+const DESKTOPMINERACCOUNT = 4 //index in geth
 
 const APPPORT = 10003
 
@@ -364,6 +364,7 @@ function doSubscription(contract,subscriptionObject){
   console.log("subscriptionObject",subscriptionObject.parts[0],subscriptionObject.parts[1],subscriptionObject.parts[2],subscriptionObject.parts[3],subscriptionObject.parts[4],subscriptionObject.parts[5],subscriptionObject.signature)
   console.log("PARAMS",txparams)
   console.log("---========= EXEC ===========-----")
+  console.log(subscriptionObject)
   contract.methods.executeSubscription(subscriptionObject.parts[0],subscriptionObject.parts[1],subscriptionObject.parts[2],subscriptionObject.parts[3],subscriptionObject.parts[4],subscriptionObject.parts[5],subscriptionObject.signature).send(
   txparams ,(error, Hash)=>{
     console.log("TX CALLBACK",error,Hash)

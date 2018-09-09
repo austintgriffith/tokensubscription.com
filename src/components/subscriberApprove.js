@@ -9,6 +9,8 @@ class SubscriberApprove extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      approved:0,
+      approve:12
     };
   }
   componentDidMount(){
@@ -37,7 +39,10 @@ class SubscriberApprove extends Component {
   }
   async load(){
     if(this.state.tokenContract){
-      this.setState({approved:await this.state.tokenContract.allowance(this.state.subscription.parts[0],this.state.subscription.subscriptionContract).call()})
+      this.setState({
+        balance:await this.state.tokenContract.balanceOf(this.props.account).call(),
+        approved:await this.state.tokenContract.allowance(this.state.subscription.parts[0],this.state.subscription.subscriptionContract).call()
+      })
     }
   }
   handleInput(e){
@@ -46,7 +51,7 @@ class SubscriberApprove extends Component {
     this.setState(update)
   }
   render() {
-    let {web3} = this.props
+    let {web3,tx} = this.props
     if(!this.state.subscription){
       return (
         <div>loading...</div>
@@ -85,18 +90,24 @@ class SubscriberApprove extends Component {
           Recurring every {periodSeconds}s
         </div>
         <div style={{marginTop:20}}>
-          Approved Tokens: <span style={{color:"#5396fd"}}>{this.state.approved}</span>
+          Token Balance: <span>{this.state.balance/(10**this.state.decimals)}</span>
+        </div>
+        <div style={{marginTop:20}}>
+          Approved Tokens: <span style={{color:"#5396fd"}}>{this.state.approved/(10**this.state.decimals)}</span>
         </div>
         <div style={{marginTop:40}} className="form-field">
         <input
           type="text" name="approve" value={this.state.approve} onChange={this.handleInput.bind(this)}
         />
-          <Button size="2" onClick={()=>{
-              let amount = parseInt(this.state.approve)*(10**(this.state.decimals))
+          <Button size="2" onClick={async  ()=>{
+              let amount = this.state.approve*(10**(this.state.decimals))
               let address = this.state.subscription.subscriptionContract
               console.log("APPROVE",address,amount)
-              this.props.tx(
-                this.state.tokenContract.approve(address,amount)
+              console.log("CONTRACT:",this.state.tokenContract)
+              console.log("NAME",await this.state.tokenContract.name().call())
+              tx(
+                this.state.tokenContract.approve(address,amount),
+                console.log("DONE APPRLOVE")
               )
             }}>
             Approve Tokens
