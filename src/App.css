@@ -27,7 +27,12 @@ a:visited {
 }
 button {
   border-radius: 25px;
-  background-color: #5396FD;
+  background:none;
+  color:#fff;
+  padding:10px 20px;
+}
+button :hover {
+  background-color:#5396fd;
   opacity: 75%;
 }
 input[type="text"], select {
@@ -60,6 +65,9 @@ label {
 }
 .form-field {
   padding: 20px 0px;
+}
+.side-pad {
+  padding: 0px 10px;
 }
 .ui.selection.dropdown {
   background: none;
