@@ -188,6 +188,27 @@ app.get('/subscriptions', (req, res) => {
   })
 });
 
+app.get('/subscription/:subscriptionHash', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  console.log("/subscription/"+req.params.subscriptionHash)
+  let sigsKey = req.params.contract+"sigs"
+  redis.get(subscriptionListKey, function (err, result) {
+    res.set('Content-Type', 'application/json');
+
+    let subscriptions
+    try{
+      subscriptions = JSON.parse(result)
+    }catch(e){subscriptions = []}
+    for(let t in subscriptions){
+      if(subscriptions[t].subscriptionHash==req.params.subscriptionHash){
+        res.end(JSON.stringify(subscriptions[t]));
+      }
+    }
+
+    res.end(JSON.stringify(false));
+  })
+});
+
 app.post('/sign', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   console.log("/sign",req.body)

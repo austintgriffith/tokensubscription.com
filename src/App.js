@@ -5,6 +5,7 @@ import Web3 from 'web3';
 import Subscriber from './components/subscriber.js'
 import Publisher from './components/publisher.js'
 import PublisherDeploy from './components/publisherDeploy.js'
+import SubscriberApprove from './components/subscriberApprove.js'
 import Coins from './coins.js'
 import queryString from 'query-string';
 var RLP = require('rlp');
@@ -14,9 +15,18 @@ let backendUrl = "http://localhost:10003/"
 class App extends Component {
   constructor(props) {
     super(props);
-    let contract = window.location.pathname.replace("/","")
+    let contract
+    let subscription
+    let path = window.location.pathname.replace("/","")
+    if(path.length==42){
+      contract = path
+    }else if(path.length==66){
+      subscription = path
+    }else{
+      console.log("PATH LENGTH UNKNWON",path,path.length)
+    }
     let startMode = ""
-    if(contract){
+    if(contract||subscription){
       startMode = "subscriber"
     }
 
@@ -26,6 +36,7 @@ class App extends Component {
       gwei: 4,
       doingTransaction: false,
       contract: contract,
+      subscription: subscription,
       mode: startMode,
       coins:false
     }
@@ -192,8 +203,14 @@ class App extends Component {
 
         let body
         if(mode=="subscriber"){
-
-          if(deployingAddress||deployedAddress){
+          if(this.state.subscription){
+            body = (
+              <SubscriberApprove
+                {...this.state}
+                backendUrl={backendUrl}
+              />
+            )
+          }else if(deployingAddress||deployedAddress){
             body = (
               <div>
                 subscriber deploy page {deployingAddress} => {deployedAddress}
