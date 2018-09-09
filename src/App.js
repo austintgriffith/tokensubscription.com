@@ -260,7 +260,7 @@ class App extends Component {
                 this.setState({mode:"subscriber"})
               }}>
               Create Subscription</button>
-            <span>or</span>
+            <span className="side-pad">or</span>
             <button size="2" onClick={()=>{
                 this.setState({mode:"publisher"})
               }}>
@@ -279,7 +279,7 @@ class App extends Component {
               alert("Please connect and unlock web3 to send tokens.")
             }}>
             Create Subscription</button>
-          <span>or</span>
+          <span className="side-pad">or</span>
           <button size="2" onClick={()=>{
               alert("Please connect and unlock web3 to accept tokens.")
             }}>
