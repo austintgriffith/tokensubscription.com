@@ -12,10 +12,12 @@
   border-radius: 20px 20px 0 0;
   border: 2px solid #5396fd;
   font-size: 20px;
+  z-index:998;
 }
 #coinsubscriptionbtn #coinsubscriptionlogo {
   width: 35px;
   height: 35px;
+  z-index:998;
 }
 #coinsubscriptioncont {
   max-width: 300px;
