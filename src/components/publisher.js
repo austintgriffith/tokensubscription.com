@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Address, Blockie } from "dapparatus"
+import { Address, Blockie, Scaler } from "dapparatus"
 import { Dropdown } from 'semantic-ui-react'
-import Particles from '../particles.png';
-
+import Particles from './particles.js';
 import Backarrow from '../back-arrow.png'
+
 
 class Publisher extends Component {
   constructor(props) {
@@ -71,12 +71,8 @@ class Publisher extends Component {
 
   render() {
 
-    let particleRender = (
-      <img style={{zIndex:-1,position:"absolute",left:-1000,top:400,opacity:0.6}} src={Particles} />
-    )
-
     let {contracts,coins} = this.props
-    let {items,toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice} = this.state
+    let {items,toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice,email} = this.state
 
     let coinOptions = []
 
@@ -100,10 +96,9 @@ class Publisher extends Component {
     ]
 
     return (
-        <div>
-          {particleRender}
-          <h1 style={{marginTop:100}}>Accept subscriptions</h1>
-          <h3>Parameters of your subscription model</h3>
+        <Scaler config={{startZoomAt:800,origin:"50px 50px"}}>
+          <Particles left={-1300} opacity={0.65} />
+          <h1 style={{marginTop:50}}>Subscriptions Parameters</h1>
           <div className="form-field">
             <label>To Address:</label>
             <Blockie
@@ -146,16 +141,22 @@ class Publisher extends Component {
               type="text" name="gasPrice" value={gasPrice} onChange={this.handleInput.bind(this)}
             />
           </div>
+          <div className="form-field">
+            <label>Email (optional):</label>
+            <input
+              type="text" name="email" style={{width:240}} value={email} onChange={this.handleInput.bind(this)}
+            />
+          </div>
           <button size="2" style={{marginTop:50}} onClick={()=>{
-              this.props.deploySubscription(toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice)
+              this.props.deploySubscription(toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice,email)
             }}>
-            Start Accepting Subscriptions
+            Deploy Subscription Contract
           </button>
 
           <div style={{marginTop:90,cursor:"pointer"}} onClick={()=>{this.props.setMode("")}}>
             <img style={{verticalAlign:'middle'}} src={Backarrow}/> <span style={{fontSize:14}}>Previous</span>
           </div>
-        </div>
+        </Scaler>
     );
   }
 }

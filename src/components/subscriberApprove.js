@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Address, Button, Blockie } from "dapparatus"
+import { Address, Blockie } from "dapparatus"
 import axios from 'axios'
 import Particles from '../particles.png';
 import Loader from "../loader.gif"
@@ -57,7 +57,7 @@ class SubscriberApprove extends Component {
     let {web3,tx} = this.props
     if(!this.state.subscription){
       return (
-        <div>loading...</div>
+        <img src={Loader} style={{maxWidth:30}} />
       )
     }
     console.log(this.state.subscription)
@@ -93,7 +93,7 @@ class SubscriberApprove extends Component {
     return (
       <div style={{paddingLeft:40,marginTop:100}}>
         {particleRender}
-        <h1>Approve Max Subscription Limit</h1>
+        <h1>Approve Max Subscription Limit:</h1>
         <div>Subscription: {this.state.subscription.subscriptionHash}</div>
         <div>
           {tokenAmount+gasPrice} <img style={{maxHeight:25}} src={this.state.token.imageUrl}/>{this.state.token.name}
@@ -125,7 +125,7 @@ class SubscriberApprove extends Component {
               let address = ""+(this.state.subscription.subscriptionContract)
               this.setState({loading:true})
               tx(
-                this.state.tokenContract.approve(address,amount),12000,
+                this.state.tokenContract.approve(address,amount),120000,
                 ()=>{
                   this.setState({loading:false})
                 }
