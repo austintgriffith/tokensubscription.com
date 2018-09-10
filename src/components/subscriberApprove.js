@@ -68,7 +68,7 @@ class SubscriberApprove extends Component {
     let token = this.state.subscription.parts[2]
     let tokenAmount = parseInt(web3.utils.toBN(this.state.subscription.parts[3]).toString())/(10**this.state.decimals)
     let periodSeconds = web3.utils.toBN(this.state.subscription.parts[4]).toString()
-    let gasPrice = web3.utils.toBN(this.state.subscription.parts[5]).toString()
+    let gasPrice = parseInt(web3.utils.toBN(this.state.subscription.parts[5]).toString())/(10**this.state.decimals)
 
     //let from = this.state.subscription.parts[0]
 
@@ -96,7 +96,7 @@ class SubscriberApprove extends Component {
         <h1>Approve Max Subscription Limit</h1>
         <div>Subscription: {this.state.subscription.subscriptionHash}</div>
         <div>
-          {tokenAmount} <img style={{maxHeight:25}} src={this.state.token.imageUrl}/>{this.state.token.name}
+          {tokenAmount+gasPrice} <img style={{maxHeight:25}} src={this.state.token.imageUrl}/>{this.state.token.name}
         </div>
         <div>
           From <Address
@@ -120,22 +120,19 @@ class SubscriberApprove extends Component {
         {loading}<input
           type="text" name="approve" value={this.state.approve} onChange={this.handleInput.bind(this)}
         />
-          <Button size="2" onClick={async  ()=>{
-              let amount = this.state.approve*(10**(this.state.decimals))
-              let address = this.state.subscription.subscriptionContract
-              console.log("APPROVE",address,amount)
-              console.log("CONTRACT:",this.state.tokenContract)
-              console.log("NAME",await this.state.tokenContract.name().call())
+          <button size="2" onClick={async  ()=>{
+              let amount = ""+(this.state.approve*(10**(this.state.decimals)))
+              let address = ""+(this.state.subscription.subscriptionContract)
               this.setState({loading:true})
               tx(
-                this.state.tokenContract.approve(address,amount),
+                this.state.tokenContract.approve(address,amount),12000,
                 ()=>{
                   this.setState({loading:false})
                 }
               )
             }}>
             Approve Tokens
-          </Button>
+          </button>
         </div>
       </div>
     );
