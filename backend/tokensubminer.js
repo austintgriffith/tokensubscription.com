@@ -7,6 +7,10 @@ const app = express();
 const fs = require('fs');
 const Redis = require('ioredis');
 const ContractLoader = require('./modules/contractLoader.js');
+
+var twilio = require('twilio');
+var twilioClient = new twilio(fs.readFileSync("twilio.sid").toString().trim(), fs.readFileSync("twilio.token").toString().trim());
+
 var bodyParser = require('body-parser')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -41,9 +45,13 @@ let subscriptionListKey = "subscriptionListTokenSubDotCom"+NETWORK
 
 let redisHost = 'localhost'
 let redisPort = 57300
+
+let LOOPTIME = 15000
+
 if(NETWORK>0&&NETWORK<9){
  redisHost = 'cryptogsnew.048tmy.0001.use2.cache.amazonaws.com'
  redisPort = 6379
+ LOOPTIME = 300000
 }
 let redis = new Redis({
   port: redisPort,
@@ -78,11 +86,12 @@ function startParsers(){
         if(!subscriptions) subscriptions = []
         console.log("current subscriptions:",subscriptions.length)
         for(let t in subscriptions){
-          console.log("Check Sub Signature:",subscriptions[t].signature)
-          let contract = new web3.eth.Contract(contracts.Subscription._jsonInterface,subscriptions[t].subscriptionContract)
-          console.log("loading hash...")
-          let doubleCheckHash = await contract.methods.getSubscriptionHash(subscriptions[t].parts[0],subscriptions[t].parts[1],subscriptions[t].parts[2],subscriptions[t].parts[3],subscriptions[t].parts[4],subscriptions[t].parts[5]).call()
-          console.log("doubleCheckHash:",doubleCheckHash)
+          try{
+            console.log("Check Sub Signature:",subscriptions[t].signature)
+            let contract = new web3.eth.Contract(contracts.Subscription._jsonInterface,subscriptions[t].subscriptionContract)
+            console.log("loading hash...")
+            let doubleCheckHash = await contract.methods.getSubscriptionHash(subscriptions[t].parts[0],subscriptions[t].parts[1],subscriptions[t].parts[2],subscriptions[t].parts[3],subscriptions[t].parts[4],subscriptions[t].parts[5]).call()
+            console.log("doubleCheckHash:",doubleCheckHash)
             console.log("checking if ready...")
             let ready = await contract.methods.isSubscriptionReady(subscriptions[t].parts[0],subscriptions[t].parts[1],subscriptions[t].parts[2],subscriptions[t].parts[3],subscriptions[t].parts[4],subscriptions[t].parts[5],subscriptions[t].signature).call()
             console.log("READY:",ready)
@@ -90,10 +99,10 @@ function startParsers(){
               console.log("subscription says it's ready...........")
               doSubscription(contract,subscriptions[t])
             }
-
+          }catch(e){console.log(e)}
         }
       });
-    },10000)
+    },LOOPTIME)
   })
 }
 
@@ -216,6 +225,23 @@ app.post('/deploysub', (req, res) => {
     redis.set(deployedContractsKey,JSON.stringify(contracts),'EX', 60 * 60 * 24 * 7);
     res.set('Content-Type', 'application/json');
     res.end(JSON.stringify({contract:deployingAddress}));
+    if(NETWORK==1){
+      twilioClient.messages.create({
+          to:'+13038345151',
+          from:'+17206059912',
+          body:'TokenSubscription Deployed '+deployingAddress
+      }, function(error, message) {
+          if (!error) {
+              console.log('Success! The SID for this SMS message is:');
+              console.log(message.sid);
+              console.log('Message sent on:');
+              console.log(message.dateCreated);
+          } else {
+              console.log('Oops! There was an error.');
+          }
+      });
+    }
+
   });
 })
 
@@ -270,14 +296,32 @@ app.post('/saveSubscription', (req, res) => {
         subscriptions = JSON.parse(result)
       }catch(e){contracts = []}
       if(!subscriptions) subscriptions = []
-      console.log("current subscriptions:",subscriptions)
+    //  console.log("current subscriptions:",subscriptions)
       subscriptions.push(req.body)
-      console.log("saving subscriptions:",subscriptions)
+    //  console.log("saving subscriptions:",subscriptions)
       redis.set(subscriptionListKey,JSON.stringify(subscriptions),'EX', 60 * 60 * 24 * 7);
     });
   }
   res.set('Content-Type', 'application/json');
   res.end(JSON.stringify({subscriptionHash:req.body.subscriptionHash}));
+
+  if(NETWORK==1){
+    twilioClient.messages.create({
+        to:'+13038345151',
+        from:'+17206059912',
+        body:'TokenSubscription Subscribe '+req.body.subscriptionHash
+    }, function(error, message) {
+        if (!error) {
+            console.log('Success! The SID for this SMS message is:');
+            console.log(message.sid);
+            console.log('Message sent on:');
+            console.log(message.dateCreated);
+        } else {
+            console.log('Oops! There was an error.');
+        }
+    });
+  }
+
 });
 app.listen(APPPORT);
 console.log(`http listening on `,APPPORT);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Address, Blockie } from "dapparatus"
+import { Address, Blockie, Scaler } from "dapparatus"
 import axios from 'axios'
 import Particles from '../particles.png';
 import Loader from "../loader.gif"
@@ -23,6 +23,7 @@ class SubscriberApprove extends Component {
     })
     .then(async (response)=>{
       console.log("subscription:",response.data)
+      this.setState({subscription:response.data})
       //let subscriptionContract = this.props.customContractLoader("Subscription",this.props.contract)
       let tokenContract = this.props.customContractLoader("TokenExampleSubscriptionToken",response.data.parts[2])
       let decimals = await tokenContract.decimals().call()
@@ -32,7 +33,7 @@ class SubscriberApprove extends Component {
           foundToken = this.props.coins[i]
         }
       }
-      this.setState({subscription:response.data,token:foundToken,decimals:decimals,/*,subscriptionContract:subscriptionContract*/tokenContract:tokenContract})
+      this.setState({token:foundToken,decimals:decimals,tokenContract:tokenContract})
     })
     pollInterval = setInterval(this.load.bind(this),pollTime)
     this.load()
@@ -57,7 +58,7 @@ class SubscriberApprove extends Component {
     let {web3,tx} = this.props
     if(!this.state.subscription){
       return (
-        <img src={Loader} style={{maxWidth:30}} />
+        <div><img src={Loader} style={{maxWidth:80,verticalAlign:'middle'}} /> Loading Subscription...</div>
       )
     }
     console.log(this.state.subscription)
@@ -66,6 +67,14 @@ class SubscriberApprove extends Component {
     let from = this.state.subscription.parts[0]
     let to = this.state.subscription.parts[1]
     let token = this.state.subscription.parts[2]
+
+    if(!this.state.tokenContract){
+      return (
+        <div><img src={Loader} style={{maxWidth:80,verticalAlign:'middle'}} /> Connecting to Subscription Contract...</div>
+      )
+    }
+
+
     let tokenAmount = parseInt(web3.utils.toBN(this.state.subscription.parts[3]).toString())/(10**this.state.decimals)
     let periodSeconds = web3.utils.toBN(this.state.subscription.parts[4]).toString()
     let gasPrice = parseInt(web3.utils.toBN(this.state.subscription.parts[5]).toString())/(10**this.state.decimals)
@@ -77,7 +86,7 @@ class SubscriberApprove extends Component {
     let loading = ""
     if(this.state.loading){
       loading = (
-        <img src={Loader} style={{maxWidth:30}} />
+        <img src={Loader} style={{maxWidth:50,verticalAlign:"middle"}} />
       )
     }
 
@@ -90,8 +99,10 @@ class SubscriberApprove extends Component {
       <img style={{zIndex:-1,position:"absolute",left:-2500,top:400,opacity:0.4}} src={Particles} />
     )
 
+
+
     return (
-      <div style={{paddingLeft:40,marginTop:100}}>
+      <Scaler config={{startZoomAt:800,origin:"50px 50px"}}>
         {particleRender}
         <h1>Approve Max Subscription Limit:</h1>
         <div>Subscription: {this.state.subscription.subscriptionHash}</div>
@@ -135,7 +146,7 @@ class SubscriberApprove extends Component {
             Approve Tokens
           </button>
         </div>
-      </div>
+      </Scaler>
     );
   }
 }
