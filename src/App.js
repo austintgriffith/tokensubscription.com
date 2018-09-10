@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Metamask, Gas, ContractLoader, Transactions, Button } from "dapparatus"
+import { Metamask, Gas, ContractLoader, Transactions, Button, Scaler } from "dapparatus"
 import Web3 from 'web3';
+import MainUI from './components/mainui.js'
 import Subscriber from './components/subscriber.js'
 import Publisher from './components/publisher.js'
 import PublisherDeploy from './components/publisherDeploy.js'
 import SubscriberApprove from './components/subscriberApprove.js'
 import Coins from './coins.js'
 import Logo from './logo-icon.png';
-import Particles from './particles.png';
+import axios from 'axios'
 
 var RLP = require('rlp');
 
 let backendUrl = "http://localhost:10003/"
 if(window.location.href.indexOf("tokensubscription.com")>=0)
 {
-  backendUrl = "https://relay.tokensubscription.com"
+  backendUrl = "https://relay.tokensubscription.com/"
 }
 
 class App extends Component {
@@ -44,11 +45,12 @@ class App extends Component {
       contract: contract,
       subscription: subscription,
       mode: startMode,
-      coins:false
+      coins:false,
+      contractLink:""
     }
   }
 
-  async deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice) {
+  async deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice,email) {
     let {web3,tx,contracts} = this.state
 
 
@@ -127,6 +129,17 @@ class App extends Component {
       }
     })
 
+    axios.post(backendUrl+'deploysub',{arguments:args,email:email,deployingAddress:deployingAddress}, {
+      headers: {
+          'Content-Type': 'application/json',
+      }
+    }).then((response)=>{
+      console.log("SAVED INFO",response.data)
+    })
+    .catch((error)=>{
+      console.log(error);
+    });
+
 
   }
   setMode(mode){
@@ -139,9 +152,6 @@ class App extends Component {
   }
   render() {
 
-    let particleRender = (
-      <img style={{zIndex:-1,position:"absolute",left:-500,top:400}} src={Particles} />
-    )
 
     const { error, isLoaded, items } = this.state;
     let {web3,account,contracts,tx,gwei,block,avgBlockTime,etherscan,mode,deployingAddress,deployedAddress} = this.state
@@ -168,16 +178,17 @@ class App extends Component {
          require={path => {return require(`${__dirname}/${path}`)}}
          onReady={(contracts,customLoader)=>{
            console.log("contracts loaded",contracts)
-           this.setState({contracts:contracts,customContractLoader:customLoader},async ()=>{
+
+           this.setState({contractLink:contracts.Subscription._address,contracts:contracts,customContractLoader:customLoader},async ()=>{
              console.log("Contracts Are Ready:",this.state.contracts)
              Coins.unshift(
-               {
+               /*{
                    address:this.state.contracts.WasteCoin._address,
                    name:"WasteCoin",
                    symbol:"WC",
                    decimals:18,
                    imageUrl:"https://s3.amazonaws.com/wyowaste.com/wastecoin.png"
-               },
+               },*/
                {
                    address:"0x0000000000000000000000000000000000000000",
                    name:"ANY",
@@ -194,7 +205,7 @@ class App extends Component {
       connectedDisplay.push(
         <Transactions
           key="Transactions"
-          config={{DEBUG:false}}
+          config={{DEBUG:true}}
           account={account}
           gwei={gwei}
           web3={web3}
@@ -244,7 +255,7 @@ class App extends Component {
           if(deployingAddress||deployedAddress){
             body = (
               <PublisherDeploy {...this.state}
-
+                setMode={this.setMode.bind(this)}
                 deployingAddress={deployingAddress}
                 deployedAddress={deployedAddress}
               />
@@ -269,58 +280,36 @@ class App extends Component {
         )
       }else{
         connectedDisplay.push(
-          <div key="mainUI" className="center">
-            {particleRender}
-
-
-            <div style={{marginTop:160}}>
-            <img src={Logo} />
-            </div>
-
-            <h1 style={{margin: '30px 0 0 0'}}><i>Token Subscriptions</i></h1>
-            <h3 style={{margin: '0 0 45px 0'}}>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
-                {this.state.contract}
-
-            <button size="2" onClick={()=>{
+          <MainUI buttonPress={
+            ()=>{
                 this.setState({mode:"publisher"})
-              }}>
-              Start Accepting Token Subscriptions</button>
-
-              <div style={{marginTop:200,opacity:0.7,fontSize:15}}>
-              Disclaimer: We built this in a weekend! <a style={{color:"#dddddd"}} href="https://github.com/austintgriffith/tokensubscription.com/blob/master/Subscription/Subscription.sol">Inspect our smart contract</a>.
-              </div>
-          </div>
-
+            }
+          }/>
         )
       }
     }else{
       noWeb3Display = (
-        <div className="center">
-          {particleRender}
-          <div style={{marginTop:160}}>
-          <img src={Logo} />
-          </div>
-
-          <h1 style={{margin: '30px 0 0 0'}}><i>Token Subscriptions</i></h1>
-          <h3 style={{margin: '0 0 45px 0'}}>Recurring subscriptions on the Ethereum Blockchain, set it and forget it token transfers</h3>
-
-          <button size="2" onClick={()=>{
-              alert("Install and unlock web3. MetaMask, Trust, etc. ")
-            }}>
-            Start Accepting Token Subscriptions
-          </button>
-
-          <div style={{marginTop:200,opacity:0.7,fontSize:15}}>
-          Disclaimer: We built this in a weekend! <a style={{color:"#dddddd"}} href="https://github.com/austintgriffith/tokensubscription.com/blob/master/Subscription/Subscription.sol">Inspect our smart contract</a>.
-          </div>
-
-        </div>
+        <MainUI buttonPress={
+          ()=>{
+            alert("Install and unlock web3. MetaMask, Trust, etc. ")
+          }
+        }/>
       )
     }
     return (
       <div className="App">
         <Metamask
-          config={{requiredNetwork:['Unknown','Rinkeby','Mainnet']}}
+          config={{
+            requiredNetwork:['Unknown','Rinkeby','Mainnet'],
+            boxStyle: {
+              paddingRight:75,
+              marginTop:0,
+              paddingTop:10,
+              zIndex:10,
+              textAlign:"right",
+              width:300,
+            }
+          }}
           onUpdate={(state)=>{
            console.log("metamask state update:",state)
            if(state.web3Provider) {
@@ -338,5 +327,7 @@ class App extends Component {
     );
   }
 }
+
+
 
 export default App;
