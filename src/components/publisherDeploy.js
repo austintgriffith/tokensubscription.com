@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Address, Blockie, Scaler } from "dapparatus"
 import Loader from '../loader.gif';
 import Particles from './particles.js';
 import Backarrow from '../back-arrow.png'
@@ -29,7 +30,7 @@ class PublisherDeploy extends Component {
       contractAddress=deployedAddress
       url = window.location.origin+"/"+contractAddress
       return (
-        <div>
+        <Scaler config={{startZoomAt:800,origin:"50px 50px"}}>
           <Particles left={-1800} opacity={0.45} />
           <h1 style={{marginTop: '30px'}}>Congratulations, your contract is ready.</h1>
           <h3>You can now accept subscriptions!</h3>
@@ -45,11 +46,11 @@ class PublisherDeploy extends Component {
             <p>Embed a script on your website:</p>
             <pre>{"<script type='text/javascript' src='https://tokensubscription.com/coinsubscription.js?contract="+contractAddress+"' id='coinsubscription'></script>"}</pre>
           </div>
-        </div>
+        </Scaler>
       );
     }else{
       return (
-        <div>
+        <Scaler config={{startZoomAt:800,origin:"50px 50px"}}>
           <Particles left={-1800} opacity={0.45} />
           <h1 style={{marginTop: '30px'}}>Your contract is being deployed</h1>
           <h3>(Make sure you <b>confirm</b> the metamask dialog to deploy your contract!)</h3>
@@ -68,7 +69,7 @@ class PublisherDeploy extends Component {
           <div style={{marginTop:90,cursor:"pointer"}} onClick={()=>{this.props.setMode("")}}>
             <img style={{verticalAlign:'middle'}} src={Backarrow}/> <span style={{fontSize:14}}>Previous</span>
           </div>
-        </div>
+        </Scaler>
       );
     }
   }

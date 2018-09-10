@@ -141,6 +141,10 @@ module.exports = {
 
         printTxResult(result)
         result = await clevis("contract","mint","WasteCoin","3","0x2a906694D15Df38F59e76ED3a5735f8AAbccE9cb","100000000000000000000")
+
+        printTxResult(result)
+        result = await clevis("contract","mint","WasteCoin","3","0x5f19cefc9c9d1bc63f9e4d4780493ff5577d238b","100000000000000000000")
+
       });
     });
   },

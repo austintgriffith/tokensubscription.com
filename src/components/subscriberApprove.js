@@ -125,7 +125,8 @@ class SubscriberApprove extends Component {
               let address = ""+(this.state.subscription.subscriptionContract)
               this.setState({loading:true})
               tx(
-                this.state.tokenContract.approve(address,amount),120000,
+                this.state.tokenContract.approve(address,amount),
+                75000,
                 ()=>{
                   this.setState({loading:false})
                 }

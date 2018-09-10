@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 /*
-  TEST token for tokensubscription.com & wyowaste.com
+  TEST token for tokensubscription.com
  */
 
 
@@ -458,3 +458,9 @@ contract WasteCoin is ERC20Mintable {
   constructor() public { }
 
 }
+
+
+
+
+
+
