@@ -182,19 +182,21 @@ class App extends Component {
            this.setState({contractLink:contracts.Subscription._address,contracts:contracts,customContractLoader:customLoader},async ()=>{
              console.log("Contracts Are Ready:",this.state.contracts)
              Coins.unshift(
-               /*{
+               {
+                   address:"0x0000000000000000000000000000000000000000",
+                   name:"*ANY*",
+                   symbol:"*ANY*",
+                   decimals:18,
+                   imageUrl:"https://tokensubscription.com/logo.png"
+               }
+             )
+             Coins.push(
+               {
                    address:this.state.contracts.WasteCoin._address,
                    name:"WasteCoin",
                    symbol:"WC",
                    decimals:18,
                    imageUrl:"https://s3.amazonaws.com/wyowaste.com/wastecoin.png"
-               },*/
-               {
-                   address:"0x0000000000000000000000000000000000000000",
-                   name:"ANY",
-                   symbol:"ANY",
-                   decimals:18,
-                   imageUrl:"https://tokensubscription.com/logo.png"
                }
              )
              this.setState({coins:Coins})

@@ -1,3 +1,4 @@
+backend/twilio.*
 api.key
 cloudfront.id
 src/contracts/*

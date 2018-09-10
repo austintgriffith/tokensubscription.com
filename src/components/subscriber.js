@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Address, Blockie } from "dapparatus"
+import { Address, Blockie, Scaler } from "dapparatus"
 import axios from 'axios'
 import Loader from '../loader.gif';
-import Particles from '../particles.png';
+import Particles from './particles.js';
 
 class Subscriber extends Component {
   constructor(props) {
@@ -187,11 +187,6 @@ class Subscriber extends Component {
   }
   render() {
 
-    let particleRender = (
-      <img style={{zIndex:-1,position:"absolute",left:-2000,top:400,opacity:0.6}} src={Particles} />
-    )
-
-
     let {contract} = this.props
     let {items,toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice,prefilledParams} = this.state
     let coinOptions = []
@@ -211,8 +206,8 @@ class Subscriber extends Component {
           timeType = timeType.substring(0, timeType.length - 1)
         }
         return (
-          <div>
-            {particleRender}
+          <Scaler config={{startZoomAt:800,origin:"50px 50px"}}>
+            <Particles left={-2200} opacity={0.45} />
             <div style={{marginTop:110}} className="form-field">
               <label>To Address:</label>
               <Blockie
@@ -234,7 +229,7 @@ class Subscriber extends Component {
               }}>
               Sign
             </button>
-          </div>
+          </Scaler>
         );
       }
     }else{
