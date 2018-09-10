@@ -141,49 +141,6 @@ app.get('/miner', (req, res) => {
   res.end(JSON.stringify({address:accounts[DESKTOPMINERACCOUNT]}));
 });
 
-app.get('/sigs/:contract', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  console.log("/sigs/"+req.params.contract)
-  let sigsKey = req.params.contract+"sigs"
-  redis.get(sigsKey, function (err, result) {
-    res.set('Content-Type', 'application/json');
-    res.end(result);
-  })
-});
-
-app.get('/contracts', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  console.log("/contracts")
-  let deployedContractsKey = "deployedbyoccontracts"+NETWORK
-  redis.get(deployedContractsKey, function (err, result) {
-    res.set('Content-Type', 'application/json');
-    res.end(result);
-  })
-});
-
-app.get('/subcontracts', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  console.log("/subcontracts")
-  let deployedSubContractsKey = "deployedsubcontracts"+NETWORK
-  redis.get(deployedSubContractsKey, function (err, result) {
-    res.set('Content-Type', 'application/json');
-    res.end(result);
-  })
-});
-
-
-app.get('/byoccontracts', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  console.log("/byoccontracts")
-  let deployedSubContractsKey = "deployedbyoccontracts"+NETWORK
-  redis.get(deployedSubContractsKey, function (err, result) {
-    res.set('Content-Type', 'application/json');
-    res.end(result);
-  })
-});
-
-
-
 app.get('/subscriptions', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   console.log("/subscriptions")
@@ -242,9 +199,9 @@ app.post('/sign', (req, res) => {
 
 app.post('/deploysub', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  console.log("/deploysub deployed byoc contract ",req.body)
-  let contractAddress = req.body.contractAddress
-  let deployedContractsKey = "deployedbyoccontracts"+NETWORK
+  console.log("/deploysub ",req.body)
+  let deployingAddress = req.body.deployingAddress
+  let deployedContractsKey = "deployedtokensubscriptioncontracts"+NETWORK
   redis.get(deployedContractsKey, function (err, result) {
     let contracts
     try{
@@ -252,15 +209,29 @@ app.post('/deploysub', (req, res) => {
     }catch(e){contracts = []}
     if(!contracts) contracts = []
     console.log("current contracts:",contracts)
-    if(contracts.indexOf(contractAddress)<0){
-      contracts.push(contractAddress)
+    if(contracts.indexOf(deployingAddress)<0){
+      contracts.push(deployingAddress)
     }
     console.log("saving contracts:",contracts)
     redis.set(deployedContractsKey,JSON.stringify(contracts),'EX', 60 * 60 * 24 * 7);
     res.set('Content-Type', 'application/json');
-    res.end(JSON.stringify({contract:contractAddress}));
+    res.end(JSON.stringify({contract:deployingAddress}));
   });
 })
+
+app.get('/contracts/:key', (req, res) => {
+  if(req.params.key == APIKEY){
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    console.log("/contracts")
+    let deployedContractsKey = "deployedtokensubscriptioncontracts"+NETWORK
+    redis.get(deployedContractsKey, function (err, result) {
+      res.set('Content-Type', 'application/json');
+      res.end(result);
+    })
+  }else{
+    res.end("no");
+  }
+});
 
 app.get('/abi/:address', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

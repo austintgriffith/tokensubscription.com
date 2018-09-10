@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Address, Button, Blockie } from "dapparatus"
+import { Address, Blockie } from "dapparatus"
 import axios from 'axios'
 import Particles from '../particles.png';
 import Loader from "../loader.gif"
@@ -57,7 +57,7 @@ class SubscriberApprove extends Component {
     let {web3,tx} = this.props
     if(!this.state.subscription){
       return (
-        <div>loading...</div>
+        <img src={Loader} style={{maxWidth:30}} />
       )
     }
     console.log(this.state.subscription)
@@ -68,7 +68,7 @@ class SubscriberApprove extends Component {
     let token = this.state.subscription.parts[2]
     let tokenAmount = parseInt(web3.utils.toBN(this.state.subscription.parts[3]).toString())/(10**this.state.decimals)
     let periodSeconds = web3.utils.toBN(this.state.subscription.parts[4]).toString()
-    let gasPrice = web3.utils.toBN(this.state.subscription.parts[5]).toString()
+    let gasPrice = parseInt(web3.utils.toBN(this.state.subscription.parts[5]).toString())/(10**this.state.decimals)
 
     //let from = this.state.subscription.parts[0]
 
@@ -93,10 +93,10 @@ class SubscriberApprove extends Component {
     return (
       <div style={{paddingLeft:40,marginTop:100}}>
         {particleRender}
-        <h1>Approve Max Subscription Limit</h1>
+        <h1>Approve Max Subscription Limit:</h1>
         <div>Subscription: {this.state.subscription.subscriptionHash}</div>
         <div>
-          {tokenAmount} <img style={{maxHeight:25}} src={this.state.token.imageUrl}/>{this.state.token.name}
+          {tokenAmount+gasPrice} <img style={{maxHeight:25}} src={this.state.token.imageUrl}/>{this.state.token.name}
         </div>
         <div>
           From <Address
@@ -120,22 +120,19 @@ class SubscriberApprove extends Component {
         {loading}<input
           type="text" name="approve" value={this.state.approve} onChange={this.handleInput.bind(this)}
         />
-          <Button size="2" onClick={async  ()=>{
-              let amount = this.state.approve*(10**(this.state.decimals))
-              let address = this.state.subscription.subscriptionContract
-              console.log("APPROVE",address,amount)
-              console.log("CONTRACT:",this.state.tokenContract)
-              console.log("NAME",await this.state.tokenContract.name().call())
+          <button size="2" onClick={async  ()=>{
+              let amount = ""+(this.state.approve*(10**(this.state.decimals)))
+              let address = ""+(this.state.subscription.subscriptionContract)
               this.setState({loading:true})
               tx(
-                this.state.tokenContract.approve(address,amount),
+                this.state.tokenContract.approve(address,amount),120000,
                 ()=>{
                   this.setState({loading:false})
                 }
               )
             }}>
             Approve Tokens
-          </Button>
+          </button>
         </div>
       </div>
     );
