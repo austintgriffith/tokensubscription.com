@@ -68,6 +68,8 @@ class SubscriberApprove extends Component {
     let to = this.state.subscription.parts[1]
     let token = this.state.subscription.parts[2]
 
+    console.log("token",token)
+
     if(!this.state.tokenContract){
       return (
         <div><img src={Loader} style={{maxWidth:80,verticalAlign:'middle'}} /> Connecting to Subscription Contract...</div>

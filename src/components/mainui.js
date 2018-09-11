@@ -9,7 +9,7 @@ class MainUI extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      contractLink: "0x49748b0380d9370795CbD6809E52C927072107dC"
     };
   }
 
@@ -28,7 +28,7 @@ class MainUI extends Component {
 
             <h1 style={{margin: '30px 0 0 0'}}><i>Token Subscriptions</i></h1>
             <h3 style={{margin: '0 0 45px 0'}}>
-              <div>Recurring subscriptions on the Ethereum Blockchain</div>
+              <div>Recurring subscriptions on the Ethereum blockchain</div>
               <div style={{opacity:0.75}}><i>set it and forget it token transfers</i></div>
             </h3>
 
@@ -36,7 +36,9 @@ class MainUI extends Component {
               Start Accepting Token Subscriptions</button>
 
               <div style={{marginTop:200,opacity:0.7,fontSize:15}}>
-              Disclaimer: We built this in a weekend! Please inspect <a style={{color:"#dddddd"}} href="https://github.com/austintgriffith/tokensubscription.com">our code</a> and <a style={{color:"#dddddd"}} href={"https://etherscan.io/address/"+this.state.contractLink}>our smart contract</a>!
+              <div>Disclaimer: We built this in a weekend!</div>
+              <div>You should inspect <a style={{color:"#dddddd"}} href={"https://etherscan.io/address/"+this.state.contractLink}>our smart contract</a> before using.</div>
+              <div>100% free and open source! Please <a style={{color:"#dddddd"}} href="https://github.com/austintgriffith/tokensubscription.com">contrubte</a>!</div>
               </div>
           </div>
         </Scaler>

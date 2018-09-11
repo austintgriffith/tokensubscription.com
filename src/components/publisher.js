@@ -10,7 +10,7 @@ class Publisher extends Component {
     super(props);
     this.state = {
       toAddress: props.account,
-      tokenAmount: 1,
+      tokenAmount: 10,
       timeAmount: 1,
       timeType:"months",
       tokenAddress:"0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",

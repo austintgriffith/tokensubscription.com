@@ -298,8 +298,21 @@ class App extends Component {
         }/>
       )
     }
+
+    let forkBanner = ""
+    if(!this.state.mode){
+      forkBanner = (
+        <a href="https://github.com/austintgriffith/tokensubscription.com">
+        <img style={{position:"absolute",top:0,left:0,border:0}} src="https://s3.amazonaws.com/github/ribbons/forkme_left_gray_6d6d6d.png" alt="Fork me on GitHub" />
+        </a>
+      )
+    }
+
     return (
       <div className="App">
+
+        {forkBanner}
+
         <Metamask
           config={{
             requiredNetwork:['Unknown','Rinkeby','Mainnet'],
