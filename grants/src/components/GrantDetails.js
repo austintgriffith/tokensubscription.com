@@ -22,7 +22,14 @@ export default class GrantDetails extends Component {
       this.setState(() => ({
         isLoaded: true,
         grantData: response.data
-      }));
+      }),()=>{
+        console.log("At this point we have the grant contract address... dynamically load it...")
+
+        //let contractAddress = this.state.grantData[0].contractAddress
+        //hardcode one for now
+        console.log(this.props)
+
+      });
     } catch (error) {
       this.setState(() => ({ error }))
     }

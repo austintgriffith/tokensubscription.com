@@ -369,6 +369,10 @@ app.get('/grants/:id', (req, res) => {
  */
 app.post('/grants/create', (req, res) => {
   console.log('/grants/create', req.body)
+
+  // TODO will need to recover a sig from the hash of the details to make sure the signer matches the deployed contract's author
+  // let signer = web3.eth.accounts.recover(req.body.message,req.body.sig)
+
   mysqlPool.query('INSERT INTO EthGrants SET ?', req.body, function (error, results, fields) {
     if (error) throw error
     res.setHeader('Content-Type', 'application/json')
@@ -380,7 +384,11 @@ app.post('/grants/create', (req, res) => {
  * Update a Grant
  */
 app.put('/grants/update/:id', (req, res) => {
-  console.log('/grants/create', req.body)
+  console.log('/grants/update', req.body)
+
+  // TODO will need to recover a sig from the hash of the details to make sure the signer matches the deployed contract's author
+  // let signer = web3.eth.accounts.recover(req.body.message,req.body.sig)
+
   // @TODO need to figure out what fields are updateable
   /*
   mysqlPool.query('UPDATE EthGrants SET ', req.body, function (error, results, fields) {
