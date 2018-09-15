@@ -1,3 +1,4 @@
+backend/db.creds
 grants/src/contracts/*
 api/db.creds
 backend/twilio.*

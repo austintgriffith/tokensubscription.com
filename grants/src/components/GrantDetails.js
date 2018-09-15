@@ -18,7 +18,7 @@ export default class GrantDetails extends Component {
 
   getDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/grants/${this.props.match.params.id}`);
+      const response = await axios.get(this.props.backendUrl+`grants/${this.props.match.params.id}`);
       this.setState(() => ({
         isLoaded: true,
         grantData: response.data
