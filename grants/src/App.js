@@ -20,12 +20,20 @@ if(window.location.href.indexOf("tokensubscription.com")>=0)
 
 class App extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       web3: false,
       account: false,
       gwei: 4,
+      title: '',
+      pitch: '',
+      desc: '# This is a preview',
+      deploying: false,
+      contractAddress: false,
     }
+
+    this.handleInput = this.handleInput.bind(this)
+    this.deploySubscription = this.deploySubscription.bind(this)
   }
   async deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice,email) {
     let {web3,tx,contracts} = this.state
@@ -116,9 +124,19 @@ class App extends Component {
       console.log(error);
     });
 
-
   }
+
+  handleInput(e){
+    let update = {}
+    let value = e.target.value
+    if(e.target.name=="title") value = value.substring(0,82) //limit title characters
+    if(e.target.name=="pitch") value = value.substring(0,230) //limit pitch characters
+    update[e.target.name] = value
+    this.setState(() => (update));
+  }
+
   render() {
+    console.log(this.state.title)
     let {web3,account,contracts,tx,gwei,block,avgBlockTime,etherscan} = this.state
     console.log(this.state)
     let connectedDisplay = []
@@ -204,8 +222,10 @@ class App extends Component {
 
           <Route exact path="/" component={Home} />
           <Route path="/list" render={(props) => <GrantsList {...props} backendUrl={backendUrl} />} />
-          <Route path="/create" component={(props) => <CreateGrants {...props} {...this.state} deploySubscription={this.deploySubscription.bind(this)} />} />
-          <Route path="/view/:id" component={(props) => <GrantDetails {...props} backendUrl={backendUrl} />} />
+          <Route path="/create" render={(props) => {
+            return <CreateGrants {...props} {...this.state} handleInput={this.handleInput} deploySubscription={this.deploySubscription} />
+          }} />
+          <Route path="/view/:id" render={(props) => <GrantDetails {...props} backendUrl={backendUrl} />} />
         </div>
       </Router>
     )
