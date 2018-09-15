@@ -14,7 +14,10 @@ class CreateGrants extends Component {
   }
   handleInput(e){
     let update = {}
-    update[e.target.name] = e.target.value
+    let value = e.target.value
+    if(e.target.name=="title") value = value.substring(0,82) //limit title characters
+    if(e.target.name=="pitch") value = value.substring(0,230) //limit pitch characters
+    update[e.target.name] = value
     this.setState(update)
   }
   componentDidMount() {
@@ -47,28 +50,6 @@ class CreateGrants extends Component {
             </div>
           </div>
 
-          <div className="">
-          </div>
-
-          <div class="field is-horizontal">
-            <div class="field-label">
-              <label class="label">Description:</label>
-              <p><small>(Markdown)</small></p>
-            </div>
-            <div class="field-body">
-              <textarea className="form-control" rows="6" name="desc" value={this.state.desc} onChange={this.handleInput}></textarea>
-            </div>
-          </div>
-
-          <div class="field is-horizontal">
-            <div class="field-label">
-              <label class="label">Preview:</label>
-            </div>
-            <div class="field-body">
-              <ReactMarkdown source={this.state.desc} />
-            </div>
-          </div>
-
           <div class="field is-horizontal">
             <div class="field-label">
               <label class="label">Contract:</label>
@@ -81,6 +62,27 @@ class CreateGrants extends Component {
               </button>
             </div>
           </div>
+
+
+          <div class="field is-horizontal">
+            <div class="field-label">
+              <label class="label">Description:</label>
+              <p><small>(Markdown)</small></p>
+            </div>
+            <div class="field-body">
+              <textarea className="form-control" rows="20" name="desc" value={this.state.desc} onChange={this.handleInput}></textarea>
+            </div>
+          </div>
+
+          <div class="field is-horizontal">
+            <div class="field-label">
+              <label class="label">Preview:</label>
+            </div>
+            <div class="field-body">
+              <ReactMarkdown source={this.state.desc} />
+            </div>
+          </div>
+
 
           <div class="field is-horizontal">
             <div class="field-label">

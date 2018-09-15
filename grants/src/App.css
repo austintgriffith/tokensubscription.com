@@ -39,7 +39,7 @@ a:focus {
   padding: 20px;
   margin: 0;
   list-style: none;
-  text-align: right;
+  text-align: left;
 }
 .nav li {
   display: inline-block;

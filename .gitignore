@@ -1,3 +1,4 @@
+grants/src/contracts/*
 api/db.creds
 backend/twilio.*
 api.key

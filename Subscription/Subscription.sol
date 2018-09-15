@@ -32,8 +32,8 @@ contract Subscription is Ownable {
     using ECDSA for bytes32;
     using SafeMath for uint256;
 
-    string public author = "Austin Thomas Griffith - https://austingriffith.com";
-    string public purpose = "Wyoming Hackathon - https://wyominghackathon.devpost.com";
+    //who deploys the contract
+    address public author;
 
     // the publisher may optionally deploy requirements for the subscription
     // so only meta transactions that match the requirements can be relayed
@@ -55,6 +55,7 @@ contract Subscription is Ownable {
         requiredTokenAmount=_tokenAmount;
         requiredPeriodSeconds=_periodSeconds;
         requiredGasPrice=_gasPrice;
+        author=msg.sender;
     }
 
     event ExecuteSubscription(
@@ -222,6 +223,7 @@ contract Subscription is Ownable {
         require( requiredPeriodSeconds == 0 || periodSeconds == requiredPeriodSeconds );
         require( requiredGasPrice == 0 || gasPrice == requiredGasPrice );
 
+        //increment the timestamp by the period so it wont be valid until then
         nextValidTimestamp[subscriptionHash] = block.timestamp.add(periodSeconds);
 
         // now, let make the transfer from the subscriber to the publisher
