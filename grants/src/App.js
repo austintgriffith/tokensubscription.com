@@ -103,9 +103,9 @@ class App extends Component {
           </ul>
 
           <Route exact path="/" component={Home} />
-          <Route path="/list" component={GrantsList} />
-          <Route path="/create" component={CreateGrants} />
-          <Route path="/view/:id" component={GrantDetails} />
+          <Route path="/list" render={(props) => <GrantsList {...props} />} />
+          <Route path="/create" component={(props) => <CreateGrants {...props} />} />
+          <Route path="/view/:id" component={(props) => <GrantDetails {...props} />} />
         </div>
       </Router>
     )

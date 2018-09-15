@@ -17,7 +17,6 @@ margin-bottom: 2rem;
 `
 
 const GrantBox = (props) => {
-  console.log(props)
   return (
     <GrantBoxWrap>
       <div>
