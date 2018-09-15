@@ -1,0 +1,150 @@
+html, body, #root, .wrapper {
+  height: 100%;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  color:#fff;
+  font-size:18px;
+  font-weight:bold;
+  background-color: #162129;
+  background-image: -webkit-linear-gradient(120deg, #162129 50%, #0f171c 25%);
+  min-height: 500px;
+  background-image: url(assets/img/bkg.jpg);
+  background-position: top center;
+  background-repeat:  no-repeat;
+  background-attachment: fixed;
+  background-size:  cover;
+  background-color: #999;
+}
+h1 {
+  font-size:40px;
+  margin-bottom:5px;
+}
+h3 {
+  font-weight:normal;
+  margin-top:5px;
+  margin-bottom:30px;
+}
+a {
+  color:#444444;
+  text-decoration: none;
+}
+a:visited {
+  color:#555555;
+  text-decoration: none;
+}
+button {
+  border-radius: 25px;
+  background:none;
+  color:#fff;
+  padding:10px 20px;
+  margin-top:25px;
+}
+button:hover {
+  background-color:#5396fd;
+  opacity: 0.8;
+  cursor: pointer;
+}
+input[type="text"], select {
+  background: transparent;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid #5396fd;
+  color:#fff;
+  text-align: center;
+  width: 70px;
+  margin: 0px 40px;
+}
+select {
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+  padding: 1px 0;
+}
+label {
+  font-size: 18px;
+  margin-right: 20px;
+  font-weight:normal;
+}
+pre {
+  white-space: pre-wrap;
+  font-size: 13px;
+  background-color: #162129;
+  padding: 10px;
+  border: 1px solid #666;
+}
+.wrapper::after {
+  content: "";
+  background: url('assets/img/particles.png') center 80% no-repeat;
+  opacity: 0.9;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;
+}
+.center {
+  text-align:center;
+}
+.form-field {
+  padding: 20px 0px;
+}
+.side-pad {
+  padding: 0px 10px;
+}
+
+.nav {
+  padding: 20px;
+  margin: 0;
+  list-style: none;
+  text-align: right;
+}
+.nav li {
+  display: inline-block;
+}
+.nav a {
+  display: inline-block;
+  padding: 10px 20px;
+  color: #fff;
+}
+.nav a:hover, .nav a:focus {
+  color: #ccc;
+}
+
+/* Semantic UI */
+.ui.selection.dropdown {
+  background: none;
+  color:#fff;
+  border-radius: 0px;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+  margin: 0 50px;
+  padding: 2px 0px;
+  min-height:auto;
+  border:none;
+  border-bottom: 2px solid #5396fd;
+}
+.ui.selection.dropdown .menu>.item, .ui.selection.active.dropdown, .ui.selection.active.dropdown .menu {
+  border: none !important;
+  background: #0f171c !important;
+}
+.ui.selection.dropdown:hover {
+  border-bottom: 2px solid #5396fd;
+}
+.ui.selection.dropdown .menu>.item {
+  background: none;
+  color:#fff;
+}
+.ui.selection.dropdown .menu>.item:hover {
+  background-color:#5396fd !important;
+}
+.ui.selection.visible.dropdown>.text:not(.default) {
+  color:#fff;
+}
+.ui.selection.dropdown>.dropdown.icon {
+  top: 0px;
+}
+.ui.dropdown>.text {
+    padding: 0 0 0 10px;
+}

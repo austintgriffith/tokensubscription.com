@@ -1,38 +1,26 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import './App.css';
-var request = require("request")
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      message:"connecting to backend..."
-    }
-  }
-  componentDidMount() {
-    var options = { method: 'GET',
-      url: 'http://localhost:8000/'
-    };
-    request(options,(error, response, body) => {
-      if (error){
-        console.log("Error loading rules:",error)
-      } else {
-        this.setState({message:body})
-      }
-    });
-  }
-  render() {
-    return (
-      <div>
-        <div>
-          Grants - Powered by Token Subscriptions
-        </div>
-        <div>
-          {this.state.message}
-        </div>
-      </div>
-    );
-  }
-}
+import GrantsList from './components/GrantsList';
+import CreateGrants from './components/CreateGrants';
+import GrantDetails from './components/GrantDetails';
+
+const App = () => (
+  <Router>
+    <div className="wrapper">
+
+      <ul className="nav">
+        <li><Link to="/">Grants List</Link></li>
+        <li><Link to="/create">Create Grants</Link></li>
+        <li><Link to="/details">Grant Details</Link></li>
+      </ul>
+
+      <Route exact path="/" component={GrantsList} />
+      <Route exact path="/create" component={CreateGrants} />
+      <Route exact path="/details" component={GrantDetails} />
+    </div>
+  </Router>
+)
 
 export default App;
