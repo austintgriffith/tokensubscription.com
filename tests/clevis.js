@@ -106,6 +106,12 @@ module.exports = {
         if(!fs.existsSync("src/contracts")){
           fs.mkdirSync("src/contracts");
         }
+        if(!fs.existsSync("grants/src")){
+          fs.mkdirSync("grants/src");
+        }
+        if(!fs.existsSync("grants/src/contracts")){
+          fs.mkdirSync("grants/src/contracts");
+        }
         for(let c in module.exports.contracts){
           let thisContract = module.exports.contracts[c]
           console.log(tab,thisContract.magenta)
@@ -113,16 +119,21 @@ module.exports = {
           console.log(tab,"ADDRESS:",address.blue)
           assert(address,"No Address!?")
           fs.writeFileSync("src/contracts/"+thisContract+".address.js","module.exports = \""+address+"\"");
+          fs.writeFileSync("grants/src/contracts/"+thisContract+".address.js","module.exports = \""+address+"\"");
           let blockNumber = fs.readFileSync(thisContract+"/"+thisContract+".blockNumber").toString().trim()
           console.log(tab,"blockNumber:",blockNumber.blue)
           assert(blockNumber,"No blockNumber!?")
           fs.writeFileSync("src/contracts/"+thisContract+".blocknumber.js","module.exports = \""+blockNumber+"\"");
+          fs.writeFileSync("grants/src/contracts/"+thisContract+".blocknumber.js","module.exports = \""+blockNumber+"\"");
           let abi = fs.readFileSync(thisContract+"/"+thisContract+".abi").toString().trim()
           fs.writeFileSync("src/contracts/"+thisContract+".abi.js","module.exports = "+abi);
+          fs.writeFileSync("grants/src/contracts/"+thisContract+".abi.js","module.exports = "+abi);
           let bytecode = fs.readFileSync(thisContract+"/"+thisContract+".bytecode").toString().trim()
           fs.writeFileSync("src/contracts/"+thisContract+".bytecode.js","module.exports = \""+bytecode+"\"");
+          fs.writeFileSync("grants/src/contracts/"+thisContract+".bytecode.js","module.exports = \""+bytecode+"\"");
         }
         fs.writeFileSync("src/contracts/contracts.js","module.exports = "+JSON.stringify(module.exports.contracts));
+        fs.writeFileSync("grants/src/contracts/contracts.js","module.exports = "+JSON.stringify(module.exports.contracts));
         module.exports.reload()
       });
     });
@@ -151,7 +162,7 @@ module.exports = {
         printTxResult(result)
         result = await clevis("contract","mint","WasteCoin","3","0x34aa3f359a9d614239015126635ce7732c18fdf3","100000000000000000000")
 
-        
+
 
       });
     });
