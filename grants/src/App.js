@@ -14,16 +14,16 @@ class App extends Component {
       url: 'http://localhost:8000/'
     };
     request(options,(error, response, body) => {
-    if (error){
-      console.log("Error loading rules:",error)
-    }else{
-      this.setState({message:body})
-    }
-  });
+      if (error){
+        console.log("Error loading rules:",error)
+      } else {
+        this.setState({message:body})
+      }
+    });
   }
   render() {
     return (
-      <div className="App">
+      <div>
         <div>
           Grants - Powered by Token Subscriptions
         </div>
