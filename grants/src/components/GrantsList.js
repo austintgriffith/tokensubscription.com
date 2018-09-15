@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import GrantBox from './GrantBox';
 
 const request = require("request");
 
@@ -27,10 +28,14 @@ export default class GrantsList extends Component {
   render() {
     return (
       <div className="container">
-        <h2>Grants - Powered by Token Subscriptions</h2>
-        <div>
+        <h2 className="text-center">Grants - Powered by Token Subscriptions</h2>
+
+        <GrantBox />
+
+        <div className="text-center">
           {this.state.message}
         </div>
+
       </div>
     )
   }
