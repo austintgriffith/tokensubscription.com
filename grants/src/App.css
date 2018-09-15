@@ -1,12 +1,10 @@
 html, body, #root, .wrapper {
   height: 100%;
 }
-
 body {
   font-family: 'Roboto', sans-serif;
   color:#fff;
   font-size:18px;
-  font-weight:bold;
   background-color: #162129;
   background-image: -webkit-linear-gradient(120deg, #162129 50%, #0f171c 25%);
   min-height: 500px;
@@ -17,34 +15,13 @@ body {
   background-size:  cover;
   background-color: #999;
 }
-h1 {
-  font-size:40px;
-  margin-bottom:5px;
-}
-h3 {
-  font-weight:normal;
-  margin-top:5px;
-  margin-bottom:30px;
-}
 a {
-  color:#444444;
+  color: #5396fd;
+}
+a:hover,
+a:focus {
+  color: #6255d8;
   text-decoration: none;
-}
-a:visited {
-  color:#555555;
-  text-decoration: none;
-}
-button {
-  border-radius: 25px;
-  background:none;
-  color:#fff;
-  padding:10px 20px;
-  margin-top:25px;
-}
-button:hover {
-  background-color:#5396fd;
-  opacity: 0.8;
-  cursor: pointer;
 }
 input[type="text"], select {
   background: transparent;
@@ -110,6 +87,25 @@ pre {
 }
 .nav a:hover, .nav a:focus {
   color: #ccc;
+}
+
+.btn {
+  border-radius: 30px;
+}
+.btn-lg {
+  padding: .5rem 1.5rem;
+}
+.btn-outline-primary {
+  color: #5396fd;
+  background-color: transparent;
+  background-image: none;
+  border-color: #5396fd;
+}
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  color: #fff;
+  background-color: #5396fd;
+  border-color: #5396fd;
 }
 
 /* Semantic UI */
