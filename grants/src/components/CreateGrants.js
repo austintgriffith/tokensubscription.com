@@ -5,16 +5,9 @@ import ReactMarkdown from 'react-markdown';
 class CreateGrants extends Component {
   constructor(props) {
     super(props);
-    this.changeInput = this.changeInput.bind(this);
-  }
-
-  changeInput(e) {
-    this.props.handleInput(e);
   }
 
   render() {
-
-    console.log(this.props)
 
     const input = '# This is a header\n\nAnd this is a paragraph'
 
@@ -28,7 +21,7 @@ class CreateGrants extends Component {
               <label className="label">Title:</label>
             </div>
             <div className="field-body">
-              <input className="form-control" type="text" name="title" value={this.props.title} onChange={this.changeInput} />
+              <input className="form-control" type="text" name="title" value={this.props.title} onChange={this.props.handleInput} />
             </div>
           </div>
 
@@ -37,7 +30,7 @@ class CreateGrants extends Component {
               <label className="label">Pitch:</label>
             </div>
             <div className="field-body">
-              <textarea className="form-control" rows="3" name="pitch" value={this.props.pitch} onChange={this.changeInput}></textarea>
+              <textarea className="form-control" rows="3" name="pitch" value={this.props.pitch} onChange={this.props.handleInput}></textarea>
             </div>
           </div>
 
@@ -61,7 +54,7 @@ class CreateGrants extends Component {
               <p><small>(Markdown)</small></p>
             </div>
             <div className="field-body">
-              <textarea className="form-control" rows="20" name="desc" value={this.props.desc} onChange={this.changeInput}></textarea>
+              <textarea className="form-control" rows="20" name="desc" value={this.props.desc} onChange={this.props.handleInput}></textarea>
             </div>
           </div>
 
