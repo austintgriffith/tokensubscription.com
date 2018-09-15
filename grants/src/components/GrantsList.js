@@ -1,38 +1,48 @@
 import React, { Component } from 'react';
 import GrantBox from './GrantBox';
-
-const request = require("request");
+import axios from 'axios';
 
 export default class GrantsList extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      message:"connecting to backend..."
+      error: null,
+      isLoaded: false,
+      grants: []
     }
   }
 
   componentDidMount() {
-    const options = { method: 'GET',
-      url: 'http://localhost:8000/'
-    };
-    request(options,(error, response, body) => {
-      if (error){
-        console.log("Error loading rules:",error)
-      } else {
-        this.setState({message:body})
-      }
-    });
+    this.getGrants();
+  }
+
+  getGrants = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/grants');
+      this.setState(() => ({
+        isLoaded: true,
+        grants: response.data
+      }));
+    } catch (error) {
+      this.setState(() => ({ error }))
+    }
   }
 
   render() {
-    return (
-      <div className="container">
-        <GrantBox />
-        <div className="text-center">
-          {this.state.message}
+    const { error, isLoaded, grants } = this.state;
+    if (error) {
+      return <div className="container">{error.message}</div>;
+    } else if (!isLoaded) {
+      return <div className="container">Loading Grants...</div>;
+    } else {
+      return (
+        <div className="container">
+          {grants.map((grant) => {
+            return <GrantBox key={grant.id} {...grant} />
+          })}
         </div>
-      </div>
-    )
+      )
+    }
   }
 }
