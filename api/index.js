@@ -19,9 +19,9 @@ app.get('/', (req, res) => {
   res.end('Hello from the backend');
 });
 
-app.get('/example/:thing', (req, res) => {
+app.get('/grants/', (req, res) => {
   console.log('/example',req.params)
-  mysqlPool.query('SELECT 1', function (error, results, fields) {
+  mysqlPool.query('SELECT * FROM EthGrants', function (error, results, fields) {
     if (error) throw error;
     res.end(JSON.stringify(results));
   });
