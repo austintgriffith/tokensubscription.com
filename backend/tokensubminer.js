@@ -23,6 +23,11 @@ var Web3 = require('web3');
 var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider('http://0.0.0.0:8545'));
 
+var mysql = require('mysql')
+let DBCONFIG = JSON.parse(fs.readFileSync("db.creds"))
+DBCONFIG.connectionLimit = 10
+var mysqlPool  = mysql.createPool(DBCONFIG)
+
 const DESKTOPMINERACCOUNT = 4 //index in geth
 const APIKEY = fs.readFileSync("../api.key").toString().trim()
 const APPPORT = 10003
@@ -323,6 +328,68 @@ app.post('/saveSubscription', (req, res) => {
   }
 
 });
+
+
+
+
+
+///////////////////------------------------------------------------------------------------------------ JER's API
+
+/**
+ * Get all Grants
+ */
+app.get('/grants', (req, res) => {
+  console.log('/grants',req.params)
+  // @TODO need to implement pagination
+  mysqlPool.query('SELECT * FROM EthGrants', function (error, results, fields) {
+    if (error) throw error
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify(results))
+  })
+})
+
+/**
+ * Find a grant by ID
+ */
+app.get('/grants/:id', (req, res) => {
+  console.log('/grands/:id',req.params.id)
+  mysqlPool.query('SELECT * FROM EthGrants WHERE id = ?', req.params.id, function (error, results, fields) {
+    if (error) throw error
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify(results))
+  })
+})
+
+/**
+ * Create a new Grant
+ */
+app.post('/grants/create', (req, res) => {
+  console.log('/grants/create', req.body)
+  mysqlPool.query('INSERT INTO EthGrants SET ?', req.body, function (error, results, fields) {
+    if (error) throw error
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify(results))
+  })
+})
+
+/**
+ * Update a Grant
+ */
+app.put('/grants/update/:id', (req, res) => {
+  console.log('/grants/create', req.body)
+  // @TODO need to figure out what fields are updateable
+  /*
+  mysqlPool.query('UPDATE EthGrants SET ', req.body, function (error, results, fields) {
+    if (error) throw error
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify(results))
+  })
+  */
+  res.end(JSON.stringify('endpoint not implemented'))
+})
+///////////////////------------------------------------------------------------------------------------ END JER's API
+
+
 app.listen(APPPORT);
 console.log(`http listening on `,APPPORT);
 
