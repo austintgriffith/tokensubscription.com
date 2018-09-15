@@ -15,13 +15,13 @@ const App = () => (
         <li><Link to="/">Home</Link></li>
         <li><Link to="/list">Fund A Grant</Link></li>
         <li><Link to="/create">Create A Grant</Link></li>
-        <li><Link to="/details">Grant Details</Link></li>
+        <li><Link to="/view/1">Grant Details</Link></li>
       </ul>
 
       <Route exact path="/" component={Home} />
-      <Route exact path="/list" component={GrantsList} />
-      <Route exact path="/create" component={CreateGrants} />
-      <Route exact path="/details" component={GrantDetails} />
+      <Route path="/list" component={GrantsList} />
+      <Route path="/create" component={CreateGrants} />
+      <Route path="/view/:id" component={GrantDetails} />
     </div>
   </Router>
 )
