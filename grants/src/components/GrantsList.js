@@ -28,14 +28,10 @@ export default class GrantsList extends Component {
   render() {
     return (
       <div className="container">
-        <h2 className="text-center">Grants - Powered by Token Subscriptions</h2>
-
         <GrantBox />
-
         <div className="text-center">
           {this.state.message}
         </div>
-
       </div>
     )
   }
