@@ -23,52 +23,16 @@ a:focus {
   color: #6255d8;
   text-decoration: none;
 }
-input[type="text"], select {
-  background: transparent;
-  border: none;
-  outline: none;
-  border-bottom: 2px solid #5396fd;
-  color:#fff;
-  text-align: center;
-  width: 70px;
-  margin: 0px 40px;
-}
-select {
-  -webkit-appearance: none;
-  -webkit-border-radius: 0px;
-  padding: 1px 0;
-}
-label {
-  font-size: 18px;
-  margin-right: 20px;
-  font-weight:normal;
-}
-pre {
-  white-space: pre-wrap;
-  font-size: 13px;
-  background-color: #162129;
-  padding: 10px;
-  border: 1px solid #666;
-}
 .wrapper::after {
   content: "";
   background: url('assets/img/particles.png') center 80% no-repeat;
-  opacity: 0.9;
+  opacity: 0.6;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
   position: absolute;
   z-index: -1;
-}
-.center {
-  text-align:center;
-}
-.form-field {
-  padding: 20px 0px;
-}
-.side-pad {
-  padding: 0px 10px;
 }
 
 .nav {
@@ -108,6 +72,32 @@ pre {
   border-color: #5396fd;
 }
 
+/* Forms */
+
+label {
+  margin-bottom: 5px;
+}
+
+.field {
+  margin-bottom: 40px;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0 0 1px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid #5396fd;
+  outline: none;
+  color: #fff;
+}
+textarea.form-control {
+  padding: 5px 10px;
+  background: rgba(0,0,0,0.2);
+  border: 2px solid #5396fd;
+}
+
 /* Semantic UI */
 .ui.selection.dropdown {
   background: none;
@@ -143,4 +133,23 @@ pre {
 }
 .ui.dropdown>.text {
     padding: 0 0 0 10px;
+}
+
+@media (min-width: 768px) {
+  .field.is-horizontal {
+    display: flex;
+  }
+  .field-label {
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 0;
+    margin-right: 2rem;
+    text-align: right;
+  }
+  .field-body {
+    display: flex;
+    flex-basis: 0;
+    flex-grow: 6;
+    flex-shrink: 1;
+  }
 }

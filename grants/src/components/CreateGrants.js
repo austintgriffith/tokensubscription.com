@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
-import { Address, Blockie, Scaler } from "dapparatus"
+import { Address, Blockie, Scaler } from "dapparatus";
+import ReactMarkdown from 'react-markdown';
 
 class CreateGrants extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      title: '',
+      pitch: '',
+      desc: '# This is a preview'
     };
+    this.handleInput = this.handleInput.bind(this);
   }
-  handleInput(e,data){
-    console.log("INPUT",e,data)
+  handleInput(e){
     let update = {}
     update[e.target.name] = e.target.value
     this.setState(update)
@@ -17,46 +21,87 @@ class CreateGrants extends Component {
 
   }
   render() {
+
+    const input = '# This is a header\n\nAnd this is a paragraph'
+
     return (
       <div className="container">
-        <h1>Create Grant</h1>
+        <h1 className="mb-5 text-center">Create A Grant</h1>
 
-        <div className="form-field">
-          Title:
-          <input type="text" style={{width:650,fontWeight:'bold'}} name="title" value={this.state.title} onChange={this.handleInput.bind(this)} />
-        </div>
+        <div>
+          <div class="field is-horizontal">
+            <div class="field-label">
+              <label class="label">Title:</label>
+            </div>
+            <div class="field-body">
+              <input className="form-control" type="text" name="title" value={this.state.title} onChange={this.handleInput} />
+            </div>
+          </div>
 
-        <div className="form-field">
-        Pitch:
-        <textarea style={{width:650,height:180}}  name="pitch" value={this.state.pitch} onChange={this.handleInput.bind(this)}></textarea>
-        </div>
+          <div class="field is-horizontal">
+            <div class="field-label">
+              <label class="label">Pitch:</label>
+            </div>
+            <div class="field-body">
+              <textarea className="form-control" rows="3" name="pitch" value={this.state.pitch} onChange={this.handleInput}></textarea>
+            </div>
+          </div>
 
-        <div className="form-field">
-        Contract:
-        <button size="2" style={{marginTop:50}} onClick={()=>{
-            //this.props.deployGrant(toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice,email)
+          <div className="">
+          </div>
+
+          <div class="field is-horizontal">
+            <div class="field-label">
+              <label class="label">Description:</label>
+              <p><small>(Markdown)</small></p>
+            </div>
+            <div class="field-body">
+              <textarea className="form-control" rows="6" name="desc" value={this.state.desc} onChange={this.handleInput}></textarea>
+            </div>
+          </div>
+
+          <div class="field is-horizontal">
+            <div class="field-label">
+              <label class="label">Preview:</label>
+            </div>
+            <div class="field-body">
+              <ReactMarkdown source={this.state.desc} />
+            </div>
+          </div>
+
+          <div class="field is-horizontal">
+            <div class="field-label">
+              <label class="label">Contract:</label>
+            </div>
+            <div class="field-body">
+              <button className="btn btn-outline-primary" onClick={()=>{
+                  //this.props.deployGrant(toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice,email)
+              }}>
+                Deploy Grant Contract
+              </button>
+            </div>
+          </div>
+
+          <div class="field is-horizontal">
+            <div class="field-label">
+            </div>
+            <div class="field-body">
+              <button className="btn btn-outline-primary" onClick={()=>{
+                //this.props.deployGrant(toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice,email)
+              }}>
+                Save
+              </button>
+            </div>
+          </div>
+
+          <button className="btn btn-outline-primary" onClick={()=>{
+          //  let hash = soliditySha3
+          //  let signature = await web3.eth.personal.sign(""+subscriptionHash,account)
           }}>
-          Deploy Grant Contract
-        </button>
+            Some Action
+          </button>
         </div>
 
-        <div className="form-field">
-        Description:
-        <textarea style={{width:650,height:580}}  name="desc" value={this.state.desc} onChange={this.handleInput.bind(this)}></textarea>
-        </div>
-
-        <button size="2" style={{marginTop:50}} onClick={()=>{
-            //this.props.deployGrant(toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice,email)
-          }}>
-          Save
-        </button>
-
-
-        <div style={{marginTop:90,cursor:"pointer"}} onClick={()=>{
-        //  let hash = soliditySha3
-        //  let signature = await web3.eth.personal.sign(""+subscriptionHash,account)
-        }}>
-        </div>
       </div>
     );
   }
