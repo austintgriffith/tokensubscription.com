@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Address, Blockie, Scaler } from "dapparatus";
 import ReactMarkdown from 'react-markdown';
+import Loader from '../loader.gif';
 
 class CreateGrants extends Component {
   constructor(props) {
@@ -9,8 +10,6 @@ class CreateGrants extends Component {
       title: '',
       pitch: '',
       desc: '# This is a preview',
-      deploying: false,
-      contractAddress: false,
     };
     this.handleInput = this.handleInput.bind(this);
   }
@@ -28,6 +27,34 @@ class CreateGrants extends Component {
   render() {
 
     const input = '# This is a header\n\nAnd this is a paragraph'
+
+    let deployedContract
+    if(this.props.deployedAddress){
+      deployedContract = (
+        <Address
+          {...this.props}
+          address={this.props.deployedAddress.toLowerCase()}
+        />
+      )
+    }else{
+
+      let loader = ""
+      //if(this.state.deployingGrantContract){
+      //  loader = (
+      //    <img src={Loader} style={{width: '50px', height: '50px', verticalAlign: 'middle', margin:'0 0 0 10px'}}/>
+      //  )
+      //}
+
+      deployedContract = (
+        <div>
+          <button className="btn btn-outline-primary" onClick={()=>{
+              this.props.deploySubscription()
+          }}>
+            Deploy Grant Contract
+          </button> {loader}
+        </div>
+      )
+    }
 
     return (
       <div className="container">
@@ -57,11 +84,7 @@ class CreateGrants extends Component {
               <label class="label">Contract:</label>
             </div>
             <div class="field-body">
-              <button className="btn btn-outline-primary" onClick={()=>{
-                  this.props.deploySubscription()
-              }}>
-                Deploy Grant Contract
-              </button>
+              {deployedContract}
             </div>
           </div>
 
