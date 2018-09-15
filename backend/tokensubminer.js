@@ -9,7 +9,11 @@ const Redis = require('ioredis');
 const ContractLoader = require('./modules/contractLoader.js');
 
 var twilio = require('twilio');
-var twilioClient = new twilio(fs.readFileSync("twilio.sid").toString().trim(), fs.readFileSync("twilio.token").toString().trim());
+
+var twilioClient
+try{
+  twilioClient = new twilio(fs.readFileSync("twilio.sid").toString().trim(), fs.readFileSync("twilio.token").toString().trim());
+}catch(e){}
 
 var bodyParser = require('body-parser')
 app.use(bodyParser.json());

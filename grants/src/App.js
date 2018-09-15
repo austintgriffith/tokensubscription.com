@@ -204,8 +204,8 @@ class App extends Component {
 
           <Route exact path="/" component={Home} />
           <Route path="/list" render={(props) => <GrantsList {...props} backendUrl={backendUrl} />} />
-          <Route path="/create" component={(props) => <CreateGrants {...props} />} />
-          <Route path="/view/:id" component={(props) => <GrantDetails {...props} />} />
+          <Route path="/create" component={(props) => <CreateGrants {...props} {...this.state} deploySubscription={this.deploySubscription.bind(this)} />} />
+          <Route path="/view/:id" component={(props) => <GrantDetails {...props} backendUrl={backendUrl} />} />
         </div>
       </Router>
     )

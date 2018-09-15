@@ -8,7 +8,9 @@ class CreateGrants extends Component {
     this.state = {
       title: '',
       pitch: '',
-      desc: '# This is a preview'
+      desc: '# This is a preview',
+      deploying: false,
+      contractAddress: false,
     };
     this.handleInput = this.handleInput.bind(this);
   }
@@ -56,7 +58,7 @@ class CreateGrants extends Component {
             </div>
             <div class="field-body">
               <button className="btn btn-outline-primary" onClick={()=>{
-                  //this.props.deployGrant(toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice,email)
+                  this.props.deploySubscription()
               }}>
                 Deploy Grant Contract
               </button>
