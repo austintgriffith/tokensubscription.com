@@ -367,17 +367,36 @@ app.get('/grants/:id', (req, res) => {
 /**
  * Create a new Grant
  */
-app.post('/grants/create', (req, res) => {
+app.post('/grants/create', async (req, res) => {
   console.log('/grants/create', req.body)
 
-  // TODO will need to recover a sig from the hash of the details to make sure the signer matches the deployed contract's author
-  // let signer = web3.eth.accounts.recover(req.body.message,req.body.sig)
+  let myHash = web3.utils.soliditySha3(
+    req.body.title,
+    req.body.pitch,
+    req.body.deployedAddress,
+    req.body.desc
+  )
+  
+  console.log("hash compare",myHash,req.body.hash)
+  let signer = web3.eth.accounts.recover(myHash,req.body.sig)
+  console.log("Recovered address:",signer)
+  //console.log(contracts.Subscription)
+  let contract = new web3.eth.Contract(contracts.Subscription._jsonInterface,req.body.deployedAddress)
+  let author = await contract.methods.author().call()
+  console.log("Loaded author:",author)
+  if(author.toLowerCase()!=signer.toLowerCase())
+  {
+    console.log("ERROR, AUTHOR IS NOT SIGNER")
+  }else{
+    delete req.body.hash
+    delete req.body.sig
+    mysqlPool.query('INSERT INTO EthGrants SET ?', req.body, function (error, results, fields) {
+       if (error) throw error
+       res.setHeader('Content-Type', 'application/json')
+       res.end(JSON.stringify(results))
+    })
+  }
 
-  mysqlPool.query('INSERT INTO EthGrants SET ?', req.body, function (error, results, fields) {
-    if (error) throw error
-    res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify(results))
-  })
 })
 
 /**

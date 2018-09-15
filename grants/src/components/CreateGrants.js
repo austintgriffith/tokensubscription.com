@@ -7,7 +7,6 @@ class CreateGrants extends Component {
   constructor(props) {
     super(props);
   }
-
   render() {
 
     const input = '# This is a header\n\nAnd this is a paragraph'
@@ -15,20 +14,20 @@ class CreateGrants extends Component {
     let deployedContract
     if(this.props.deployedAddress){
       deployedContract = (
-        <Address
-          {...this.props}
-          address={this.props.deployedAddress.toLowerCase()}
-        />
+        <div style={{padding:10}}>
+          <Address
+            {...this.props}
+            address={this.props.deployedAddress.toLowerCase()}
+          />
+        </div>
       )
     }else{
-
       let loader = ""
-      //if(this.state.deployingGrantContract){
-      //  loader = (
-      //    <img src={Loader} style={{width: '50px', height: '50px', verticalAlign: 'middle', margin:'0 0 0 10px'}}/>
-      //  )
-      //}
-
+      if(this.props.deployingGrantContract){
+       loader = (
+         <img src={Loader} style={{width: '50px', height: '50px', verticalAlign: 'middle', margin:'0 0 0 10px'}}/>
+       )
+      }
       deployedContract = (
         <div>
           <button className="btn btn-outline-primary" onClick={()=>{
@@ -68,11 +67,7 @@ class CreateGrants extends Component {
               <label className="label">Contract:</label>
             </div>
             <div className="field-body">
-              <button className="btn btn-outline-primary" onClick={()=>{
-                  this.props.deploySubscription()
-              }}>
-                Deploy Grant Contract
-              </button>
+              {deployedContract}
             </div>
           </div>
 
@@ -100,21 +95,41 @@ class CreateGrants extends Component {
           <div className="field is-horizontal">
             <div className="field-label">
             </div>
-            <div className="field-body">
-              <button className="btn btn-outline-primary" onClick={()=>{
-                //this.props.deployGrant(toAddress,tokenAddress,tokenAmount,timeType,timeAmount,gasPrice,email)
+            <div className="field-body"  style={{paddingBottom:150}}>
+              <button className="btn btn-outline-primary" onClick={async ()=>{
+                if(!this.props.title){
+                  alert("Please provide a title for your grant.")
+                  return;
+                }
+                if(!this.props.pitch){
+                  alert("Please provide a pitch for your grant.")
+                  return;
+                }
+                if(!this.props.deployedAddress){
+                  alert("Please deploy a contract for your grant.")
+                  return;
+                }
+                if(!this.props.desc){
+                  alert("Please provide a description for your grant.")
+                  return;
+                }
+
+                let hash = this.props.web3.utils.soliditySha3(
+                  this.props.title,
+                  this.props.pitch,
+                  this.props.deployedAddress,
+                  this.props.desc
+                )
+                console.log("Hash:",hash)
+                let sig = await this.props.web3.eth.personal.sign(""+hash,this.props.account)
+                console.log("Sig:",sig)
+                this.props.submitGrant(hash,sig)
               }}>
                 Save
               </button>
             </div>
           </div>
 
-          <button className="btn btn-outline-primary" onClick={()=>{
-          //  let hash = soliditySha3
-          //  let signature = await web3.eth.personal.sign(""+subscriptionHash,account)
-          }}>
-            Some Action
-          </button>
         </div>
 
       </div>

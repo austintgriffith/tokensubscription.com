@@ -30,10 +30,12 @@ class App extends Component {
       desc: '# This is a preview',
       deploying: false,
       contractAddress: false,
+      deployingGrantContract: false,
     }
 
     this.handleInput = this.handleInput.bind(this)
     this.deploySubscription = this.deploySubscription.bind(this)
+    this.submitGrant = this.submitGrant.bind(this)
   }
   async deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice,email) {
     let {web3,tx,contracts} = this.state
@@ -41,6 +43,8 @@ class App extends Component {
     if(!web3){
       alert("Please install and unlock web3. (MetaMask, Trust, etc)")
     }else{
+
+
 
       //requiredToAddress,requiredTokenAddress,requiredTokenAmount,requiredPeriodSeconds,requiredGasPrice
       let requiredToAddress = "0x0000000000000000000000000000000000000000"
@@ -109,11 +113,13 @@ class App extends Component {
 
       console.log("ARGS",args)
 
+      this.setState({deployingGrantContract:true})
+
       tx(contracts.Subscription._contract.deploy({data:code,arguments:args}),1000000,(receipt)=>{
         console.log("~~~~~~ DEPLOY FROM DAPPARATUS:",receipt)
         if(receipt.contractAddress){
           console.log("CONTRACT DEPLOYED:",receipt.contractAddress)
-          this.setState({deployedAddress:receipt.contractAddress})
+          this.setState({deployedAddress:receipt.contractAddress,deployingGrantContract:false})
         }
       })
 
@@ -128,6 +134,20 @@ class App extends Component {
         console.log(error);
       });
     }
+  }
+
+  submitGrant(hash,sig){
+    let {title,pitch,deployedAddress,desc} = this.state
+    axios.post(backendUrl+'grants/create',{hash,sig,title,pitch,deployedAddress,desc}, {
+      headers: {
+          'Content-Type': 'application/json',
+      }
+    }).then((response)=>{
+      console.log("SAVED INFO",response.data)
+    })
+    .catch((error)=>{
+      console.log(error);
+    });
   }
 
   handleInput(e){
@@ -159,7 +179,7 @@ class App extends Component {
       connectedDisplay.push(
         <ContractLoader
          key="ContractLoader"
-         config={{DEBUG:true}}
+         config={{DEBUG:false}}
          web3={web3}
          require={path => {return require(`${__dirname}/${path}`)}}
          onReady={(contracts,customLoader)=>{
@@ -173,7 +193,7 @@ class App extends Component {
       connectedDisplay.push(
         <Transactions
           key="Transactions"
-          config={{DEBUG:true}}
+          config={{DEBUG:false}}
           account={account}
           gwei={gwei}
           web3={web3}
@@ -227,7 +247,13 @@ class App extends Component {
           <Route exact path="/" component={Home} />
           <Route path="/list" render={(props) => <GrantsList {...props} backendUrl={backendUrl} />} />
           <Route path="/create" render={(props) => {
-            return <CreateGrants {...props} {...this.state} handleInput={this.handleInput} deploySubscription={this.deploySubscription} />
+            return <CreateGrants
+              {...props}
+              {...this.state}
+              handleInput={this.handleInput}
+              deploySubscription={this.deploySubscription}
+              submitGrant={this.submitGrant}
+            />
           }} />
           <Route path="/view/:id" render={(props) => <GrantDetails {...props} backendUrl={backendUrl} />} />
         </div>
