@@ -20,105 +20,127 @@ if(window.location.href.indexOf("tokensubscription.com")>=0)
 
 class App extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       web3: false,
       account: false,
       gwei: 4,
+      title: '',
+      pitch: '',
+      desc: '# This is a preview',
+      deploying: false,
+      contractAddress: false,
     }
+
+    this.handleInput = this.handleInput.bind(this)
+    this.deploySubscription = this.deploySubscription.bind(this)
   }
   async deploySubscription(toAddress,tokenName,tokenAmount,timeType,timeAmount,gasPrice,email) {
     let {web3,tx,contracts} = this.state
 
-    //requiredToAddress,requiredTokenAddress,requiredTokenAmount,requiredPeriodSeconds,requiredGasPrice
-    let requiredToAddress = "0x0000000000000000000000000000000000000000"
-    if(toAddress){
-      requiredToAddress = toAddress
-    }
+    if(!web3){
+      alert("Please install and unlock web3. (MetaMask, Trust, etc)")
+    }else{
 
-    let foundToken
-    let requiredTokenAddress = "0x0000000000000000000000000000000000000000"
-    if(tokenName){
-      //translate tokenName to tokenAddress
-      for(let i = 0; i < this.state.coins.length; i++){
-        if(tokenName == this.state.coins[i].address){
-          requiredTokenAddress = this.state.coins[i].address
-          foundToken = this.state.coins[i]
+      //requiredToAddress,requiredTokenAddress,requiredTokenAmount,requiredPeriodSeconds,requiredGasPrice
+      let requiredToAddress = "0x0000000000000000000000000000000000000000"
+      if(toAddress){
+        requiredToAddress = toAddress
+      }
+
+      let foundToken
+      let requiredTokenAddress = "0x0000000000000000000000000000000000000000"
+      if(tokenName){
+        //translate tokenName to tokenAddress
+        for(let i = 0; i < this.state.coins.length; i++){
+          if(tokenName == this.state.coins[i].address){
+            requiredTokenAddress = this.state.coins[i].address
+            foundToken = this.state.coins[i]
+          }
         }
       }
-    }
 
-    let requiredPeriodSeconds=0
-    if(timeAmount){
-      //translate timeAmount&timeType to requiredPeriodSeconds
-      let periodSeconds = timeAmount;
-      if(timeType=="minutes"){
-        periodSeconds*=60
-      }else if(timeType=="hours"){
-        periodSeconds*=3600
-      }else if(timeType=="days"){
-        periodSeconds*=86400
-      }else if(timeType=="months"){
-        periodSeconds*=2592000
+      let requiredPeriodSeconds=0
+      if(timeAmount){
+        //translate timeAmount&timeType to requiredPeriodSeconds
+        let periodSeconds = timeAmount;
+        if(timeType=="minutes"){
+          periodSeconds*=60
+        }else if(timeType=="hours"){
+          periodSeconds*=3600
+        }else if(timeType=="days"){
+          periodSeconds*=86400
+        }else if(timeType=="months"){
+          periodSeconds*=2592000
+        }
+        if(periodSeconds){
+          requiredPeriodSeconds=periodSeconds
+        }
       }
-      if(periodSeconds){
-        requiredPeriodSeconds=periodSeconds
-      }
-    }
 
-    let requiredTokenAmount=0
-    let requiredGasPrice=0
-    if(tokenAmount && foundToken){
-      //don't forget decimals.. you do a number * (10**##DECIMALS##)
-      requiredTokenAmount = tokenAmount * (10**foundToken.decimals)
-      if(gasPrice && foundToken){
+      let requiredTokenAmount=0
+      let requiredGasPrice=0
+      if(tokenAmount && foundToken){
         //don't forget decimals.. you do a number * (10**##DECIMALS##)
-        requiredGasPrice = gasPrice * (10**foundToken.decimals)
-        requiredTokenAmount -= requiredGasPrice
+        requiredTokenAmount = tokenAmount * (10**foundToken.decimals)
+        if(gasPrice && foundToken){
+          //don't forget decimals.. you do a number * (10**##DECIMALS##)
+          requiredGasPrice = gasPrice * (10**foundToken.decimals)
+          requiredTokenAmount -= requiredGasPrice
+        }
       }
+
+
+      console.log("we can guess what the contract address is going to be, this let's us get the UI going without it being deployed yet...")
+      let txCount = await this.state.web3.eth.getTransactionCount(this.state.account,'pending')
+      let deployingAddress = "0x"+this.state.web3.utils.keccak256(RLP.encode([this.state.account,txCount])).substr(26)
+      this.setState({deployingAddress:deployingAddress})
+
+      console.log("Deploying Subscription Contract...")
+      let code = require("./contracts/Subscription.bytecode.js")
+
+      let args = [
+        requiredToAddress,
+        requiredTokenAddress,
+        web3.utils.toTwosComplement(requiredTokenAmount),
+        web3.utils.toTwosComplement(requiredPeriodSeconds),
+        web3.utils.toTwosComplement(requiredGasPrice)
+      ]
+
+      console.log("ARGS",args)
+
+      tx(contracts.Subscription._contract.deploy({data:code,arguments:args}),1000000,(receipt)=>{
+        console.log("~~~~~~ DEPLOY FROM DAPPARATUS:",receipt)
+        if(receipt.contractAddress){
+          console.log("CONTRACT DEPLOYED:",receipt.contractAddress)
+          this.setState({deployedAddress:receipt.contractAddress})
+        }
+      })
+
+      axios.post(backendUrl+'deploysub',{arguments:args,email:email,deployingAddress:deployingAddress}, {
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      }).then((response)=>{
+        console.log("SAVED INFO",response.data)
+      })
+      .catch((error)=>{
+        console.log(error);
+      });
     }
-
-
-    console.log("we can guess what the contract address is going to be, this let's us get the UI going without it being deployed yet...")
-    let txCount = await this.state.web3.eth.getTransactionCount(this.state.account,'pending')
-    let deployingAddress = "0x"+this.state.web3.utils.keccak256(RLP.encode([this.state.account,txCount])).substr(26)
-    this.setState({deployingAddress:deployingAddress})
-
-    console.log("Deploying Subscription Contract...")
-    let code = require("./contracts/Subscription.bytecode.js")
-
-    let args = [
-      requiredToAddress,
-      requiredTokenAddress,
-      web3.utils.toTwosComplement(requiredTokenAmount),
-      web3.utils.toTwosComplement(requiredPeriodSeconds),
-      web3.utils.toTwosComplement(requiredGasPrice)
-    ]
-
-    console.log("ARGS",args)
-
-    tx(contracts.Subscription._contract.deploy({data:code,arguments:args}),1000000,(receipt)=>{
-      console.log("~~~~~~ DEPLOY FROM DAPPARATUS:",receipt)
-      if(receipt.contractAddress){
-        console.log("CONTRACT DEPLOYED:",receipt.contractAddress)
-        this.setState({deployedAddress:receipt.contractAddress})
-      }
-    })
-
-    axios.post(backendUrl+'deploysub',{arguments:args,email:email,deployingAddress:deployingAddress}, {
-      headers: {
-          'Content-Type': 'application/json',
-      }
-    }).then((response)=>{
-      console.log("SAVED INFO",response.data)
-    })
-    .catch((error)=>{
-      console.log(error);
-    });
-
-
   }
+
+  handleInput(e){
+    let update = {}
+    let value = e.target.value
+    if(e.target.name=="title") value = value.substring(0,82) //limit title characters
+    if(e.target.name=="pitch") value = value.substring(0,230) //limit pitch characters
+    update[e.target.name] = value
+    this.setState(() => (update));
+  }
+
   render() {
+    console.log(this.state.title)
     let {web3,account,contracts,tx,gwei,block,avgBlockTime,etherscan} = this.state
     console.log(this.state)
     let connectedDisplay = []
@@ -204,8 +226,10 @@ class App extends Component {
 
           <Route exact path="/" component={Home} />
           <Route path="/list" render={(props) => <GrantsList {...props} backendUrl={backendUrl} />} />
-          <Route path="/create" component={(props) => <CreateGrants {...props} deploySubscription={this.deploySubscription.bind(this)} />} />
-          <Route path="/view/:id" component={(props) => <GrantDetails {...props} backendUrl={backendUrl} />} />
+          <Route path="/create" render={(props) => {
+            return <CreateGrants {...props} {...this.state} handleInput={this.handleInput} deploySubscription={this.deploySubscription} />
+          }} />
+          <Route path="/view/:id" render={(props) => <GrantDetails {...props} backendUrl={backendUrl} />} />
         </div>
       </Router>
     )
