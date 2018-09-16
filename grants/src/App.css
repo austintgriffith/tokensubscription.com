@@ -154,3 +154,7 @@ textarea.form-control {
     flex-shrink: 1;
   }
 }
+
+.form-field {
+  padding: 10px 0px;
+}

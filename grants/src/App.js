@@ -31,6 +31,15 @@ class App extends Component {
       deploying: false,
       contractAddress: false,
       deployingGrantContract: false,
+      ///SUBSCRIBE DEFUALTS:
+      toAddress: "",
+      prefilledParams:false,
+      tokenAmount: 10,
+      timeAmount: 1,
+      timeType:"months",
+      tokenAddress:"0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
+      gasPrice:0.25,
+      tokenName:"DAI",
     }
 
     this.handleInput = this.handleInput.bind(this)
@@ -167,8 +176,31 @@ class App extends Component {
     console.log(this.state.title)
     let {web3,account,contracts,tx,gwei,block,avgBlockTime,etherscan} = this.state
     console.log(this.state)
+    let extraRoutes = ""
     let connectedDisplay = []
     if(web3){
+      extraRoutes = (
+        <div>
+          <Route path="/create/:id?" render={(props) => {
+            return <CreateGrants
+              {...props}
+              {...this.state}
+              handleInput={this.handleInput}
+              deploySubscription={this.deploySubscription}
+              submitGrant={this.submitGrant}
+              backendUrl={backendUrl}
+              save={this.save.bind(this)}
+            />
+          }} />
+          <Route path="/view/:id" render={(props) => {
+            return <GrantDetails
+              {...props}
+              {...this.state}
+              backendUrl={backendUrl}
+            />
+          }} />
+        </div>
+      )
       connectedDisplay.push(
        <Gas
          key="Gas"
@@ -188,7 +220,7 @@ class App extends Component {
          require={path => {return require(`${__dirname}/${path}`)}}
          onReady={(contracts,customLoader)=>{
            console.log("contracts loaded",contracts)
-           this.setState({contractLink:contracts.Subscription._address,contracts:contracts,customContractLoader:customLoader},async ()=>{
+           this.setState({contractLink:contracts.Subscription._address,contracts:contracts,customContractLoader:customLoader,coins:Coins},async ()=>{
              console.log("Contracts Are Ready:",this.state.contracts)
            })
          }}
@@ -250,24 +282,7 @@ class App extends Component {
 
           <Route exact path="/" component={Home} />
           <Route path="/list" render={(props) => <GrantsList {...props} backendUrl={backendUrl} />} />
-          <Route path="/create/:id?" render={(props) => {
-            return <CreateGrants
-              {...props}
-              {...this.state}
-              handleInput={this.handleInput}
-              deploySubscription={this.deploySubscription}
-              submitGrant={this.submitGrant}
-              backendUrl={backendUrl}
-              save={this.save.bind(this)}
-            />
-          }} />
-          <Route path="/view/:id" render={(props) => {
-            return <GrantDetails
-              {...props}
-              {...this.state}
-              backendUrl={backendUrl}
-            />
-          }} />
+          {extraRoutes}
         </div>
       </Router>
     )
