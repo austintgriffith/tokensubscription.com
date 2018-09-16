@@ -40,6 +40,7 @@ class CreateGrants extends Component {
   }
   render() {
     const input = '# This is a header\n\nAnd this is a paragraph'
+    let recipient
     let deployedContract
     if(this.props.deployedAddress){
       deployedContract = (
@@ -47,6 +48,14 @@ class CreateGrants extends Component {
           <Address
             {...this.props}
             address={this.props.deployedAddress.toLowerCase()}
+          />
+        </div>
+      )
+      recipient = (
+        <div style={{padding:10}}>
+          <Address
+            {...this.props}
+            address={this.props.toAddress.toLowerCase()}
           />
         </div>
       )
@@ -64,6 +73,20 @@ class CreateGrants extends Component {
           }}>
             Deploy Grant Contract
           </button> {loader}
+        </div>
+      )
+      recipient = (
+        <div>
+          <div>
+            <Blockie
+              address={this.props.toAddress.toLowerCase()}
+              config={{size:3}}
+            />
+          </div>
+          <div className="ml-md-3 w-100">
+            <input type="text" name="toAddress" value={this.props.toAddress} onChange={this.props.handleInput} />
+            <p className="help">The address that will receive the funding tokens.</p>
+          </div>
         </div>
       )
     }
@@ -88,7 +111,7 @@ class CreateGrants extends Component {
             </div>
             <div className="field-body">
               <textarea className="form-control" rows="3" name="pitch" value={this.props.pitch} onChange={this.props.handleInput}></textarea>
-              <p className="help">A short description of your grant.</p>
+              <p className="help">Your short elevator pitch.</p>
             </div>
           </div>
 
@@ -97,16 +120,16 @@ class CreateGrants extends Component {
               <label className="label">Recipient:</label>
             </div>
             <div className="field-body flex-row">
-              <div>
-                <Blockie
-                  address={this.props.toAddress.toLowerCase()}
-                  config={{size:3}}
-                />
-              </div>
-              <div className="ml-md-3 w-100">
-                <input type="text" name="toAddress" value={this.props.toAddress} onChange={this.props.handleInput} />
-                <p className="help">The address of the grant recipient.</p>
-              </div>
+              {recipient}
+            </div>
+          </div>
+
+          <div className="field is-horizontal">
+            <div className="field-label">
+              <label className="label">Contract:</label>
+            </div>
+            <div className="field-body">
+              {deployedContract}
             </div>
           </div>
 
@@ -127,15 +150,6 @@ class CreateGrants extends Component {
             </div>
             <div className="field-body">
               <ReactMarkdown source={this.props.desc} />
-            </div>
-          </div>
-
-          <div className="field is-horizontal">
-            <div className="field-label">
-              <label className="label">Contract:</label>
-            </div>
-            <div className="field-body">
-              {deployedContract}
             </div>
           </div>
 
