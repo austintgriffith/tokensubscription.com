@@ -148,10 +148,12 @@ contract Subscription is Ownable {
         );
         address signer = getSubscriptionSigner(subscriptionHash, signature);
         uint256 allowance = ERC20(tokenAddress).allowance(from, address(this));
+        uint256 balance = ERC20(tokenAddress).balanceOf(from);
         return (
             signer == from &&
             block.timestamp >= nextValidTimestamp[subscriptionHash] &&
-            allowance >= tokenAmount.add(gasPrice)
+            allowance >= tokenAmount.add(gasPrice) &&
+            balance >= tokenAmount.add(gasPrice)
         );
     }
 

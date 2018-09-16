@@ -1,4 +1,5 @@
 "use strict";
+const axios = require('axios');
 const EventParser = require('./modules/eventParser.js');
 const LiveParser = require('./modules/liveParser.js');
 const express = require('express');
@@ -51,7 +52,7 @@ let LOOPTIME = 15000
 if(NETWORK>0&&NETWORK<9){
  redisHost = 'cryptogsnew.048tmy.0001.use2.cache.amazonaws.com'
  redisPort = 6379
- LOOPTIME = 300000
+ LOOPTIME = 15000
 }
 let redis = new Redis({
   port: redisPort,
@@ -68,43 +69,63 @@ function checkForGeth() {
       if(error){
         setTimeout(checkForGeth,15000);
       }else{
+        console.log("Starting parsers...")
         startParsers()
       }
   });
 }
 checkForGeth()
 
+const GASBOOSTPRICE = 0.4
 function startParsers(){
+  console.log("Parsers firing up, checking blocknumber...")
   web3.eth.getBlockNumber().then((blockNumber)=>{
+    console.log("waiting for interval...",blockNumber)
     setInterval(()=>{
-      console.log("::: SUBSCRIPTION CHECKER :::: loading subscriptions from cache...")
-      redis.get(subscriptionListKey, async (err, result) => {
-        let subscriptions
-        try{
-          subscriptions = JSON.parse(result)
-        }catch(e){contracts = []}
-        if(!subscriptions) subscriptions = []
-        console.log("current subscriptions:",subscriptions.length)
-        for(let t in subscriptions){
-          try{
-            console.log("Check Sub Signature:",subscriptions[t].signature)
-            let contract = new web3.eth.Contract(contracts.Subscription._jsonInterface,subscriptions[t].subscriptionContract)
-            console.log("loading hash...")
-            let doubleCheckHash = await contract.methods.getSubscriptionHash(subscriptions[t].parts[0],subscriptions[t].parts[1],subscriptions[t].parts[2],subscriptions[t].parts[3],subscriptions[t].parts[4],subscriptions[t].parts[5]).call()
-            console.log("doubleCheckHash:",doubleCheckHash)
-            console.log("checking if ready...")
-            let ready = await contract.methods.isSubscriptionReady(subscriptions[t].parts[0],subscriptions[t].parts[1],subscriptions[t].parts[2],subscriptions[t].parts[3],subscriptions[t].parts[4],subscriptions[t].parts[5],subscriptions[t].signature).call()
-            console.log("READY:",ready)
-            if(ready){
-              console.log("subscription says it's ready...........")
-              doSubscription(contract,subscriptions[t])
+      console.log("::: SUBSCRIPTION CHECKER :::: loading gas prices...")
+      axios.get("https://ethgasstation.info/json/ethgasAPI.json", { crossdomain: true })
+      .catch((err)=>{
+        console.log("Error getting gas price",err)
+      })
+      .then((response)=>{
+        //console.log(response)
+        if(response && response.data.average>0&&response.data.average<200){
+          response.data.average=response.data.average+(GASBOOSTPRICE*10)
+          let setMainGasTo = Math.round(response.data.average*100)/1000
+          console.log(" }}} GAS: ",setMainGasTo,"gwei")
+          console.log("::: SUBSCRIPTION CHECKER :::: loading subscriptions from cache...")
+
+          redis.get(subscriptionListKey, async (err, result) => {
+            let subscriptions
+            try{
+              subscriptions = JSON.parse(result)
+            }catch(e){contracts = []}
+            if(!subscriptions) subscriptions = []
+            console.log("current subscriptions:",subscriptions.length)
+            for(let t in subscriptions){
+              try{
+                console.log("Check Sub Signature:",subscriptions[t].signature)
+                let contract = new web3.eth.Contract(contracts.Subscription._jsonInterface,subscriptions[t].subscriptionContract)
+                console.log("loading hash...")
+                let doubleCheckHash = await contract.methods.getSubscriptionHash(subscriptions[t].parts[0],subscriptions[t].parts[1],subscriptions[t].parts[2],subscriptions[t].parts[3],subscriptions[t].parts[4],subscriptions[t].parts[5]).call()
+                console.log("doubleCheckHash:",doubleCheckHash)
+                console.log("checking if ready...")
+                let ready = await contract.methods.isSubscriptionReady(subscriptions[t].parts[0],subscriptions[t].parts[1],subscriptions[t].parts[2],subscriptions[t].parts[3],subscriptions[t].parts[4],subscriptions[t].parts[5],subscriptions[t].signature).call()
+                console.log("READY:",ready)
+                if(ready){
+                  console.log("subscription says it's ready...........")
+
+                  doSubscription(contract,subscriptions[t],setMainGasTo)
+                }
+              }catch(e){console.log(e)}
             }
-          }catch(e){console.log(e)}
+          });
         }
-      });
+      })
     },LOOPTIME)
   })
 }
+
 
 function removeSubscription(sig){
   redis.get(subscriptionListKey, function (err, result) {
@@ -122,6 +143,24 @@ function removeSubscription(sig){
     redis.set(subscriptionListKey,JSON.stringify(newSubscriptions),'EX', 60 * 60 * 24 * 7);
   });
 }
+
+app.get('/test', (req, res) => {
+  console.log("TEST")
+})
+
+app.get('/removesubscription/:sig/:key', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  if(req.params.key == APIKEY){
+    console.log("/removesubscription/"+req.params.sig)
+    removeSubscription(req.params.sig)
+    res.set('Content-Type', 'application/json');
+    res.end(JSON.stringify({hello:"world"}));
+    redis.set(subscriptionListKey,JSON.stringify([]),'EX', 60 * 60 * 24 * 7);
+  }else{
+    res.end(JSON.stringify({hello:"world"}));
+  }
+
+});
 
 app.get('/clear/:key', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -359,13 +398,13 @@ function doTransaction(contract,txObject){
   })
 }
 
-function doSubscription(contract,subscriptionObject){
+function doSubscription(contract,subscriptionObject,setMainGasTo){
   //console.log(contracts.BouncerProxy)
-  console.log("!!!!!!!!!!!!!!!!!!!        ------------ Running subscription on contract ",contract._address," with local account ",accounts[3])
+  console.log("!!!!!!!!!!!!!!!!!!!        ------------ Running subscription on contract ",contract._address," with local account ",accounts[3]," with gas set at ",setMainGasTo)
   let txparams = {
     from: accounts[DESKTOPMINERACCOUNT],
     gas: 1000000,
-    gasPrice:Math.round(4 * 1000000000)
+    gasPrice:Math.round(setMainGasTo * 1000000000)
   }
 
   //const result = await clevis("contract","forward","BouncerProxy",accountIndexSender,sig,accounts[accountIndexSigner],localContractAddress("Example"),"0",data,rewardAddress,reqardAmount)
