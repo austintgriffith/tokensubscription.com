@@ -81,6 +81,7 @@ class CreateGrants extends Component {
             </div>
             <div className="field-body">
               <textarea className="form-control" rows="3" name="pitch" value={this.props.pitch} onChange={this.props.handleInput}></textarea>
+              <p className="help">A short description of your grant.</p>
             </div>
           </div>
 
@@ -88,33 +89,28 @@ class CreateGrants extends Component {
             <div className="field-label">
               <label className="label">Recipient:</label>
             </div>
-            <div className="field-body">
-              <Blockie
-                address={this.props.toAddress.toLowerCase()}
-                config={{size:3}}
-              />
-              <input type="text" style={{marginLeft: 15}} name="toAddress" value={this.props.toAddress} onChange={this.props.handleInput} />
+            <div className="field-body flex-row">
+              <div>
+                <Blockie
+                  address={this.props.toAddress.toLowerCase()}
+                  config={{size:3}}
+                />
+              </div>
+              <div className="ml-md-3 w-100">
+                <input type="text" name="toAddress" value={this.props.toAddress} onChange={this.props.handleInput} />
+                <p className="help">The address of the grant recipient.</p>
+              </div>
             </div>
           </div>
 
-
           <div className="field is-horizontal">
             <div className="field-label">
-              <label className="label">Contract:</label>
-            </div>
-            <div className="field-body">
-              {deployedContract}
-            </div>
-          </div>
-
-
-          <div className="field is-horizontal">
-            <div className="field-label">
-              <label className="label">Description:</label>
+              <label className="label mb-0">Description:</label>
               <p><small>(Markdown)</small></p>
             </div>
             <div className="field-body">
               <textarea className="form-control" rows="20" name="desc" value={this.props.desc} onChange={this.props.handleInput}></textarea>
+              <p className="help">A longer, more detailed description. Can be written in Markdown.</p>
             </div>
           </div>
 
@@ -128,46 +124,54 @@ class CreateGrants extends Component {
           </div>
 
           <div className="field is-horizontal">
-
+            <div className="field-label">
+              <label className="label">Contract:</label>
+            </div>
+            <div className="field-body">
+              {deployedContract}
+            </div>
           </div>
-
 
           <div className="field is-horizontal">
             <div className="field-label">
+              <label className="label">Save Grant:</label>
             </div>
-            <div className="field-body"  style={{paddingBottom:150}}>
-              <button className="btn btn-outline-primary" onClick={async ()=>{
-                if(!this.props.title){
-                  alert("Please provide a title for your grant.")
-                  return;
-                }
-                if(!this.props.pitch){
-                  alert("Please provide a pitch for your grant.")
-                  return;
-                }
-                if(!this.props.deployedAddress){
-                  alert("Please deploy a contract for your grant.")
-                  return;
-                }
-                if(!this.props.desc){
-                  alert("Please provide a description for your grant.")
-                  return;
-                }
+            <div className="field-body" style={{paddingBottom:150}}>
+              <div className="mb-2">
+                <button className="btn btn-lg btn-outline-primary" onClick={async ()=>{
+                  if(!this.props.title){
+                    alert("Please provide a title for your grant.")
+                    return;
+                  }
+                  if(!this.props.pitch){
+                    alert("Please provide a pitch for your grant.")
+                    return;
+                  }
+                  if(!this.props.deployedAddress){
+                    alert("Please deploy a contract for your grant.")
+                    return;
+                  }
+                  if(!this.props.desc){
+                    alert("Please provide a description for your grant.")
+                    return;
+                  }
 
-                let hash = this.props.web3.utils.soliditySha3(
-                  this.props.title,
-                  this.props.pitch,
-                  this.props.deployedAddress,
-                  this.props.desc
-                )
-                console.log("Hash:",hash)
-                let sig = await this.props.web3.eth.personal.sign(""+hash,this.props.account)
-                console.log("Sig:",sig)
-                this.props.submitGrant(hash,sig)
+                  let hash = this.props.web3.utils.soliditySha3(
+                    this.props.title,
+                    this.props.pitch,
+                    this.props.deployedAddress,
+                    this.props.desc
+                  )
+                  console.log("Hash:",hash)
+                  let sig = await this.props.web3.eth.personal.sign(""+hash,this.props.account)
+                  console.log("Sig:",sig)
+                  this.props.submitGrant(hash,sig)
 
-              }}>
-                Save
-              </button>
+                }}>
+                  Save Grant
+                </button>
+              </div>
+              <p className="help">Saves the grant after the contract has been deployed.</p>
             </div>
           </div>
 

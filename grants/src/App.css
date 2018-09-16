@@ -165,8 +165,10 @@ textarea.form-control {
 }
 
 .help {
-  font-size: 14px;
-  margin-top: .25rem;
+  color: #bbb;
+  font-size: 13px;
+  margin-top: .3rem;
+  padding: 0 5px;
 }
 
 .form-field {
