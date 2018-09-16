@@ -36,12 +36,15 @@ export default class GrantDetails extends Component {
   }
 
   componentDidMount() {
+    console.log("MOUNT!!!!")
+    this.props.save({subscriptions:false,deployedAddress:""})
     this.getDetails();
     this.poll()
     pollInterval = setInterval(this.poll.bind(this),pollIntervalTime)
   }
 
-  compontentWillUnmount() {
+  componentWillUnmount() {
+    console.log("UNMOUNT")
     clearInterval(pollInterval)
   }
 
@@ -95,7 +98,7 @@ export default class GrantDetails extends Component {
       }
 
       let funding = ""
-      if(this.props.web3&&this.props.author){
+      if(this.props.web3&&this.props.author&&this.props.deployedAddress){
         let {handleInput,coins,contract,items,tokenName,tokenAmount,tokenAddress,timeType,timeAmount,gasPrice,prefilledParams,email,requiredTokenAddress} = this.props
         //console.log("timeType:",timeType)
 
@@ -124,7 +127,7 @@ export default class GrantDetails extends Component {
 
         let mySubscription = ""
 
-        if(this.props.subscriptions){
+        if(this.props.subscriptions&&this.props.subscriptions.length>0){
           console.log("this.props.subscriptions",this.props.subscriptions)
           allSubscriptions = this.props.subscriptions.map((sub)=>{
             let from = sub.parts[0]
@@ -142,7 +145,7 @@ export default class GrantDetails extends Component {
             }
 
             let thisSub = (
-              <div style={{margin:5,border:"1px solid #555555",padding:5}}>
+              <div key={"sub"+sub.subscriptionHash} style={{margin:5,border:"1px solid #555555",padding:5}}>
               <Blockie
                 address={from.toLowerCase()}
                 config={{size:3}}
@@ -172,7 +175,7 @@ export default class GrantDetails extends Component {
           fundBox = mySubscription
         }else{
           fundBox = (
-            <div>
+            <div style={{padding:20,background:"rgba(0,0,0,0.6)"}}>
               <h3 className="mb-4 text-center">Fund This Grant:</h3>
 
               <div className="field is-horizontal">
