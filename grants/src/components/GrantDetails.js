@@ -36,12 +36,15 @@ export default class GrantDetails extends Component {
   }
 
   componentDidMount() {
+    console.log("MOUNT!!!!")
+    this.props.save({subscriptions:false,deployedAddress:""})
     this.getDetails();
     this.poll()
     pollInterval = setInterval(this.poll.bind(this),pollIntervalTime)
   }
 
-  compontentWillUnmount() {
+  componentWillUnmount() {
+    console.log("UNMOUNT")
     clearInterval(pollInterval)
   }
 
@@ -95,7 +98,7 @@ export default class GrantDetails extends Component {
       }
 
       let funding = ""
-      if(this.props.web3&&this.props.author){
+      if(this.props.web3&&this.props.author&&this.props.deployedAddress){
         let {handleInput,coins,contract,items,tokenName,tokenAmount,tokenAddress,timeType,timeAmount,gasPrice,prefilledParams,email,requiredTokenAddress} = this.props
         //console.log("timeType:",timeType)
 
@@ -124,7 +127,7 @@ export default class GrantDetails extends Component {
 
         let mySubscription = ""
 
-        if(this.props.subscriptions){
+        if(this.props.subscriptions&&this.props.subscriptions.length>0){
           console.log("this.props.subscriptions",this.props.subscriptions)
           allSubscriptions = this.props.subscriptions.map((sub)=>{
             let from = sub.parts[0]
@@ -142,7 +145,7 @@ export default class GrantDetails extends Component {
             }
 
             let thisSub = (
-              <div style={{margin:5,border:"1px solid #555555",padding:5}}>
+              <div key={"sub"+sub.subscriptionHash} style={{margin:5,border:"1px solid #555555",padding:5}}>
               <Blockie
                 address={from.toLowerCase()}
                 config={{size:3}}
@@ -172,10 +175,14 @@ export default class GrantDetails extends Component {
           fundBox = mySubscription
         }else{
           fundBox = (
-            <div>
-              <h2>Fund Grant:</h2>
-              <div className="form-field">
-                <label>Token:</label>
+            <div style={{padding:20,background:"rgba(0,0,0,0.6)"}}>
+              <h3 className="mb-4 text-center">Fund This Grant:</h3>
+
+              <div className="field is-horizontal">
+                <div className="field-label">
+                  <label className="label">Token:</label>
+                </div>
+                <div className="field-body">
                   <Dropdown
                     selectOnNavigation={false}
                     selection
@@ -185,98 +192,56 @@ export default class GrantDetails extends Component {
                     placeholder='Choose Token'
                     onChange={handleInput}
                   />
+                </div>
               </div>
-              <div className="form-field">
-                <label>Amount:</label>
-                <input type="text" name="tokenAmount" value={tokenAmount} onChange={handleInput} />
+
+              <div className="field is-horizontal">
+                <div className="field-label">
+                  <label className="label">Amount:</label>
+                </div>
+                <div className="field-body">
+                  <input type="text" className="form-control"  name="tokenAmount" value={tokenAmount} onChange={handleInput} />
+                </div>
               </div>
-              <div className="form-field">
-                <label>Gas Price:</label>
-                <input
-                  type="text" name="gasPrice" value={gasPrice} onChange={handleInput}
-                />({currentTokenName})
+
+              <div className="field is-horizontal">
+                <div className="field-label">
+                  <label className="label">Gas Price:</label>
+                </div>
+                <div className="field-body">
+                  <input
+                    type="text" className="form-control"  name="gasPrice" value={gasPrice} onChange={handleInput}
+                  />
+                  <p className="help">({currentTokenName})</p>
+                </div>
               </div>
-              <div className="form-field">
-                <label>Email (optional):</label>
-                <input
-                  type="text" name="email" style={{width:240}} value={email} onChange={handleInput}
-                />
+
+              <div className="field is-horizontal mb-3">
+                <div className="field-label">
+                  <label className="label">Email:</label>
+                </div>
+                <div className="field-body">
+                  <input
+                    type="text" className="form-control"  name="email" value={email} onChange={handleInput}
+                  />
+                  <p className="help">(optional)</p>
+                </div>
               </div>
-              <button size="2" style={{marginTop:50}} onClick={()=>{
-                  this.props.sendSubscription()
-                }}>
-                Sign
-              </button>
+              <div className="text-right">
+                <button onClick={()=>{
+                    this.props.sendSubscription()
+                  }}>
+                  Sign
+                </button>
+              </div>
             </div>
           )
         }
 
         funding = (
-<<<<<<< HEAD
-          <div style={{padding:20,background:"rgba(0,0,0,0.6)"}}>
-            <h3 className="mb-4 text-center">Fund This Grant:</h3>
-
-            <div className="field is-horizontal">
-              <div className="field-label">
-                <label className="label">Token:</label>
-              </div>
-              <div className="field-body">
-                <Dropdown
-                  selectOnNavigation={false}
-                  selection
-                  value={tokenAddress}
-                  name='tokenAddress'
-                  options={coinOptions}
-                  placeholder='Choose Token'
-                  onChange={handleInput}
-                />
-              </div>
-            </div>
-
-            <div className="field is-horizontal">
-              <div className="field-label">
-                <label className="label">Amount:</label>
-              </div>
-              <div className="field-body">
-                <input type="text" className="form-control"  name="tokenAmount" value={tokenAmount} onChange={handleInput} />
-              </div>
-            </div>
-
-            <div className="field is-horizontal">
-              <div className="field-label">
-                <label className="label">Gas Price:</label>
-              </div>
-              <div className="field-body">
-                <input
-                  type="text" className="form-control"  name="gasPrice" value={gasPrice} onChange={handleInput}
-                />
-                <p className="help">({currentTokenName})</p>
-              </div>
-            </div>
-
-            <div className="field is-horizontal mb-3">
-              <div className="field-label">
-                <label className="label">Email:</label>
-              </div>
-              <div className="field-body">
-                <input
-                  type="text" className="form-control"  name="email" value={email} onChange={handleInput}
-                />
-                <p className="help">(optional)</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <button onClick={()=>{
-                  this.props.sendSubscription()
-                }}>
-                Sign
-              </button>
-            </div>
-=======
           <div style={{position:"fixed",right:-2,top:100,width:450,padding:20,border:"1px solid #666666",backgroundColor:"#222222"}}>
             {fundBox}
             {allSubscriptions}
->>>>>>> austin
           </div>
         )
       }
