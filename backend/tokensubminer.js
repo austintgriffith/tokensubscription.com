@@ -10,7 +10,11 @@ const Redis = require('ioredis');
 const ContractLoader = require('./modules/contractLoader.js');
 
 var twilio = require('twilio');
-var twilioClient = new twilio(fs.readFileSync("twilio.sid").toString().trim(), fs.readFileSync("twilio.token").toString().trim());
+
+var twilioClient
+try{
+  twilioClient = new twilio(fs.readFileSync("twilio.sid").toString().trim(), fs.readFileSync("twilio.token").toString().trim());
+}catch(e){}
 
 var bodyParser = require('body-parser')
 app.use(bodyParser.json());
@@ -23,6 +27,11 @@ let tokens = [];
 var Web3 = require('web3');
 var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider('http://0.0.0.0:8545'));
+
+var mysql = require('mysql')
+let DBCONFIG = JSON.parse(fs.readFileSync("db.creds"))
+DBCONFIG.connectionLimit = 10
+var mysqlPool  = mysql.createPool(DBCONFIG)
 
 const DESKTOPMINERACCOUNT = 4 //index in geth
 const APIKEY = fs.readFileSync("../api.key").toString().trim()
@@ -198,6 +207,25 @@ app.get('/subscriptions', (req, res) => {
   })
 });
 
+app.get('/subscriptionsByContract/:contractAddress', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  console.log("/subscriptionsByContract",req.params)
+  redis.get(subscriptionListKey, function (err, result) {
+    let mysubs = []
+    try{
+      let allsubs = JSON.parse(result)
+      //console.log("allsubs:",allsubs)
+      for(let s in allsubs){
+        if(allsubs[s].subscriptionContract.toLowerCase()==req.params.contractAddress.toLowerCase()){
+          mysubs.push(allsubs[s])
+        }
+      }
+    }catch(e){console.log(e)}
+    res.set('Content-Type', 'application/json');
+    res.end(JSON.stringify(mysubs));
+  })
+});
+
 app.get('/subscription/:subscriptionHash', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   console.log("/subscription/"+req.params.subscriptionHash)
@@ -362,6 +390,140 @@ app.post('/saveSubscription', (req, res) => {
   }
 
 });
+
+
+
+
+
+///////////////////------------------------------------------------------------------------------------ JER's API
+
+/**
+ * Get all Grants
+ */
+app.get('/grants', (req, res) => {
+  console.log('/grants',req.query)
+
+  let query = 'SELECT * FROM EthGrants'
+  let limitstring = ''
+  let queryParams = []
+
+  if(req.query){
+    // Search
+    let search = req.query.s
+    if(search){
+      query += ' WHERE title LIKE ? OR pitch LIKE ?'
+      queryParams.push('%'+req.query.s+'%')
+      queryParams.push('%'+req.query.s+'%')
+    }
+
+    // Pagination
+    let page = parseInt(req.query.page)
+    let limit = parseInt(req.query.limit)
+    let offset = (limit * page) - limit;
+    if(Number.isInteger(offset) && offset >= 0){
+      limitstring += ' LIMIT ?, ?'
+      queryParams.push(offset)
+      queryParams.push(limit)
+    }
+  }
+
+  query += ' ORDER BY created DESC'
+  query += limitstring
+
+  mysqlPool.query(query, queryParams, function (error, results, fields) {
+    if (error) throw error
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify(results))
+  })
+})
+
+/**
+ * Find a grant by ID
+ */
+app.get('/grants/:id', (req, res) => {
+  console.log('/grands/:id',req.params.id)
+  mysqlPool.query('SELECT * FROM EthGrants WHERE id = ?', req.params.id, function (error, results, fields) {
+    if (error) throw error
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify(results))
+  })
+})
+
+/**
+ * Create a new Grant
+ */
+app.post('/grants/create', async (req, res) => {
+  console.log('/grants/create', req.body)
+
+  let myHash = web3.utils.soliditySha3(
+    req.body.title,
+    req.body.pitch,
+    req.body.deployedAddress,
+    req.body.desc,
+    req.body.monthlyGoal,
+    req.body.grantDuration,
+    req.body.contactName,
+    req.body.contactEmail,
+  )
+
+  console.log("hash compare",myHash,req.body.hash)
+  let signer = web3.eth.accounts.recover(myHash,req.body.sig)
+  console.log("Recovered address:",signer)
+  //console.log(contracts.Subscription)
+  let contract = new web3.eth.Contract(contracts.Subscription._jsonInterface,req.body.deployedAddress)
+  let author = await contract.methods.author().call()
+  console.log("Loaded author:",author)
+  if(author.toLowerCase()!=signer.toLowerCase())
+  {
+    console.log("ERROR, AUTHOR IS NOT SIGNER")
+  }else{
+    delete req.body.hash
+    delete req.body.sig
+
+    mysqlPool.query('SELECT * FROM EthGrants WHERE deployedAddress = ?', req.body.deployedAddress, function (existingerror, existingresults, existingfields) {
+       if (existingerror) throw existingerror
+
+       if(existingresults.length > 0) {
+
+         console.log('found, updating')
+         console.log(req.body)
+
+         // This was a fight, because desc is a reserved keyword in MySQL
+         let queryParams = [req.body.title, req.body.pitch, req.body.desc, req.body.monthlyGoal, req.body.grantDuration, req.body.contactName, req.body.contactEmail, req.body.deployedAddress]
+         let query = 'UPDATE EthGrants SET `title` = ?, `pitch` = ?, `desc` = ?, `monthlyGoal` = ?, `grantDuration` = ?, `contactName` = ?, `contactEmail` = ? WHERE `deployedAddress` = ?'
+
+         console.log(query)
+         console.log(queryParams)
+
+         mysqlPool.query(query, queryParams, function (error, results, fields) {
+           if (error) throw error
+           res.setHeader('Content-Type', 'application/json')
+           let endresult = results
+           endresult.updateId = existingresults[0].id
+           console.log("endresult:",endresult)
+           res.end(JSON.stringify(endresult))
+         })
+       } else {
+         console.log('new record')
+         console.log(req.body)
+
+         mysqlPool.query('INSERT INTO EthGrants SET ?', req.body, function (newerror, newresults, newfields) {
+           if (newerror) throw newerror
+           res.setHeader('Content-Type', 'application/json')
+           res.end(JSON.stringify(newresults))
+         })
+
+       }
+
+       // res.setHeader('Content-Type', 'application/json')
+       // res.end(JSON.stringify(results))
+    })
+  }
+
+})
+///////////////////------------------------------------------------------------------------------------ END JER's API
+
+
 app.listen(APPPORT);
 console.log(`http listening on `,APPPORT);
 

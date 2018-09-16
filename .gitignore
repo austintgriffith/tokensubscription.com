@@ -1,3 +1,6 @@
+backend/db.creds
+grants/src/contracts/*
+api/db.creds
 backend/twilio.*
 api.key
 cloudfront.id
@@ -51,3 +54,4 @@ public/reload.txt
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+yarn-lock

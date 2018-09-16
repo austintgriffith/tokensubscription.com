@@ -1,0 +1,23 @@
+{
+  "name": "grants",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "dapparatus": "^1.0.21",
+    "react": "^16.5.1",
+    "react-dom": "^16.5.1",
+    "react-markdown": "^3.6.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "1.1.5",
+    "rlp": "^2.1.0",
+    "styled-components": "^3.4.6",
+    "web3": "^1.0.0-beta.36"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
