@@ -42,7 +42,6 @@ hr {
   z-index: -1;
 }
 
-
 .nav {
   clear: both;
   padding: 5px 15px;
@@ -62,6 +61,10 @@ hr {
 }
 .nav a:hover, .nav a:focus {
   color: #ccc;
+}
+
+.is-home .nav {
+  display: none;
 }
 
 button {
