@@ -106,14 +106,11 @@ class CreateGrants extends Component {
       )
       recipient = (
         <div>
-          <div>
-            <Blockie
-              address={this.props.toAddress.toLowerCase()}
-              config={{size:3}}
-            />
-          </div>
           <div className="ml-md-3 w-100">
-            <input type="text" name="toAddress" value={this.props.toAddress} onChange={this.props.handleInput} />
+          <Blockie
+            address={this.props.toAddress.toLowerCase()}
+            config={{size:3}}
+          /> <input type="text" style={{width:420}} name="toAddress" value={this.props.toAddress} onChange={this.props.handleInput} />
             <p className="help">The address that will receive the funding tokens.</p>
           </div>
         </div>
@@ -200,6 +197,46 @@ class CreateGrants extends Component {
 
           <div className="field is-horizontal">
             <div className="field-label">
+              <label className="label">Monthly Goal:</label>
+            </div>
+            <div className="field-body">
+              <input className="form-control" style={{width:400}} type="text" name="monthlyGoal" value={this.props.monthlyGoal} onChange={this.props.handleInput} />
+              <p className="help">Amount in (USD) you would like to receive each month.</p>
+            </div>
+          </div>
+
+          <div className="field is-horizontal">
+            <div className="field-label">
+              <label className="label">Grant Duration:</label>
+            </div>
+            <div className="field-body">
+              <input className="form-control" style={{width:400}} type="text" name="grantDuration" value={this.props.grantDuration} onChange={this.props.handleInput} />
+              <p className="help">Expected duration you would like to receive funding.</p>
+            </div>
+          </div>
+
+          <div className="field is-horizontal">
+            <div className="field-label">
+              <label className="label">Contact Name:</label>
+            </div>
+            <div className="field-body">
+              <input className="form-control" type="text" style={{width:400}} name="contactName" value={this.props.contactName} onChange={this.props.handleInput} />
+              <p className="help">Your full name.</p>
+            </div>
+          </div>
+
+          <div className="field is-horizontal">
+            <div className="field-label">
+              <label className="label">Contact Email:</label>
+            </div>
+            <div className="field-body">
+              <input className="form-control" type="text" style={{width:400}} name="contactEmail" value={this.props.contactEmail} onChange={this.props.handleInput} />
+              <p className="help">A valid email address.</p>
+            </div>
+          </div>
+
+          <div className="field is-horizontal">
+            <div className="field-label">
               <label className="label">Save Grant:</label>
             </div>
             <div className="field-body" style={{paddingBottom:150}}>
@@ -226,7 +263,11 @@ class CreateGrants extends Component {
                     this.props.title,
                     this.props.pitch,
                     this.props.deployedAddress,
-                    this.props.desc
+                    this.props.desc,
+                    this.props.monthlyGoal,
+                    this.props.grantDuration,
+                    this.props.contactName,
+                    this.props.contactEmail,
                   )
                   console.log("Hash:",hash)
                   let sig = await this.props.web3.eth.personal.sign(""+hash,this.props.account)
@@ -237,7 +278,6 @@ class CreateGrants extends Component {
                   Save Grant
                 </button>
               </div>
-              <p className="help">Saves the grant after the contract has been deployed.</p>
             </div>
           </div>
 
