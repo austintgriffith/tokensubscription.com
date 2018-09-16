@@ -49,30 +49,24 @@ class App extends Component {
   }
 
   async sendSubscription(){
-    let {backendUrl,web3,account,contract} = this.props
-    let {toAddress,timeType,tokenAmount,tokenAddress,gasPrice} = this.state
+    let {toAddress,timeType,tokenAmount,tokenAddress,gasPrice,account,web3} = this.state
 
-    let subscriptionContract = this.props.customContractLoader("Subscription",this.props.contract)
+    let tokenContract = this.state.customContractLoader("WasteCoin",tokenAddress)
+    let subscriptionContract = this.state.customContractLoader("Subscription",this.props.deployedAddress)
 
     let value = 0
     let txData = "0x02" //something like this to say, hardcoded VERSION 2, we're sending approved tokens
     let gasLimit = 120000
 
-    let periodSeconds = this.state.timeAmount;
-    if(timeType=="minutes"){
-      periodSeconds*=60
-    }else if(timeType=="hours"){
-      periodSeconds*=3600
-    }else if(timeType=="days"){
-      periodSeconds*=86400
-    }else if(timeType=="months"){
-      periodSeconds*=2592000
-    }
-
+    //hardcode period seconds to monthly
+    let periodSeconds=2592000
     if(!gasPrice) gasPrice = 0
 
+    console.log("TOKEN CONTRACT ",tokenContract)
+    let decimals = await tokenContract.decimals().call()
+    console.log("decimals",decimals)
+    return;
 
-    //TODO know decimals and convert here
     let realTokenAmount = tokenAmount*10**18
     let realGasPrice = gasPrice*10**18
     /*
@@ -213,7 +207,8 @@ class App extends Component {
             'Content-Type': 'application/json',
         }
       }).then((response)=>{
-        console.log("SAVED INFO",response.data)
+        console.log("SAVED INFO:",response.data)
+
       })
       .catch((error)=>{
         console.log(error);
@@ -231,7 +226,12 @@ class App extends Component {
           'Content-Type': 'application/json',
       }
     }).then((response)=>{
-      console.log("SAVED INFO",response.data)
+      console.log("SAVED INFO:: ",response.data)
+      if(response.data.updateId){
+        window.location = "/view/"+response.data.updateId
+      }else{
+        window.location = "/view/"+response.data.insertId
+      }
 
     })
     .catch((error)=>{
@@ -307,6 +307,15 @@ class App extends Component {
          require={path => {return require(`${__dirname}/${path}`)}}
          onReady={(contracts,customLoader)=>{
            console.log("contracts loaded",contracts)
+           Coins.push(
+             {
+                 address:contracts.WasteCoin._address,
+                 name:"WasteCoin",
+                 symbol:"WC",
+                 decimals:18,
+                 imageUrl:"https://s3.amazonaws.com/wyowaste.com/wastecoin.png"
+             }
+           )
            this.setState({contractLink:contracts.Subscription._address,contracts:contracts,customContractLoader:customLoader,coins:Coins},async ()=>{
              console.log("Contracts Are Ready:",this.state.contracts)
            })
