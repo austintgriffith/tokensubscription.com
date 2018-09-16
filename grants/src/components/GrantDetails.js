@@ -3,7 +3,18 @@ import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import { Address, Blockie, Scaler } from "dapparatus";
 import { Dropdown } from 'semantic-ui-react'
+import styled from 'styled-components';
 
+const AddressBox = styled.div`
+display: block;
+padding: 1rem;
+margin-bottom: 1rem;
+background: rgba(0,0,0,0.6);
+font-size: 14px;
+> p {
+  margin-bottom: 5px;
+}
+`
 
 let monthOptions = [
     {key: 'ongoing', value: 'ongoing', text: 'Ongoing'},
@@ -55,7 +66,7 @@ export default class GrantDetails extends Component {
 
       let editButton  =  ""
       if(this.props.account && this.props.author && this.props.author.toLowerCase()==this.props.account.toLowerCase()){
-        editButton = <button className="btn btn-outline-primary" style={{marginBottom:50}} onClick={()=>{
+        editButton = <button className="btn btn-outline-primary" onClick={()=>{
           window.location = "/create/"+this.props.match.params.id
         }}>
           Edit Grant
@@ -91,11 +102,14 @@ export default class GrantDetails extends Component {
 
 
         funding = (
-          <div style={{position:"fixed",right:-2,top:100,width:450,padding:20,border:"1px solid #666666",backgroundColor:"#222222"}}>
-            <h2>Fund Grant:</h2>
+          <div style={{padding:20,background:"rgba(0,0,0,0.6)"}}>
+            <h3 className="mb-4 text-center">Fund This Grant:</h3>
 
-            <div className="form-field">
-              <label>Token:</label>
+            <div className="field is-horizontal">
+              <div className="field-label">
+                <label className="label">Token:</label>
+              </div>
+              <div className="field-body">
                 <Dropdown
                   selectOnNavigation={false}
                   selection
@@ -105,60 +119,105 @@ export default class GrantDetails extends Component {
                   placeholder='Choose Token'
                   onChange={handleInput}
                 />
+              </div>
             </div>
-            <div className="form-field">
-              <label>Amount:</label>
-              <input type="text" name="tokenAmount" value={tokenAmount} onChange={handleInput} />
+
+            <div className="field is-horizontal">
+              <div className="field-label">
+                <label className="label">Amount:</label>
+              </div>
+              <div className="field-body">
+                <input type="text" className="form-control"  name="tokenAmount" value={tokenAmount} onChange={handleInput} />
+              </div>
             </div>
-            <div className="form-field">
-              <label>Gas Price:</label>
-              <input
-                type="text" name="gasPrice" value={gasPrice} onChange={handleInput}
-              />({currentTokenName})
+
+            <div className="field is-horizontal">
+              <div className="field-label">
+                <label className="label">Gas Price:</label>
+              </div>
+              <div className="field-body">
+                <input
+                  type="text" className="form-control"  name="gasPrice" value={gasPrice} onChange={handleInput}
+                />
+                <p className="help">({currentTokenName})</p>
+              </div>
             </div>
-            <div className="form-field">
-              <label>Email (optional):</label>
-              <input
-                type="text" name="email" style={{width:240}} value={email} onChange={handleInput}
-              />
+
+            <div className="field is-horizontal mb-3">
+              <div className="field-label">
+                <label className="label">Email:</label>
+              </div>
+              <div className="field-body">
+                <input
+                  type="text" className="form-control"  name="email" value={email} onChange={handleInput}
+                />
+                <p className="help">(optional)</p>
+              </div>
             </div>
-            <button size="2" style={{marginTop:50}} onClick={()=>{
-                this.props.sendSubscription()
-              }}>
-              Sign
-            </button>
+            <div className="text-right">
+              <button onClick={()=>{
+                  this.props.sendSubscription()
+                }}>
+                Sign
+              </button>
+            </div>
           </div>
         )
       }
 
       return (
-        <div className="container" style={{padding:20}}>
-          {funding}
-          {editButton}
-          <h1 className="mb-4">{this.props.title}</h1>
-          <h3 className="mb-4">{this.props.pitch}</h3>
+        <div className="container-fluid">
 
-          <div style={{padding:10}}>
-            <Address
-              {...this.props}
-              address={this.props.toAddress.toLowerCase()}
-            />
+          <div className="mb-4">
+            {editButton}
           </div>
 
-          <div style={{padding:10}}>
-            <Address
-              {...this.props}
-              address={this.props.deployedAddress.toLowerCase()}
-            />
-          </div>
+          <div className="row">
+            <div className="col-md-7">
 
-          <ReactMarkdown source={this.props.desc} />
+              <div style={{padding: 20}}>
 
-          <div style={{padding:10}}>
-            <Address
-              {...this.props}
-              address={this.props.author.toLowerCase()}
-            />
+                <h1 className="mb-4">{this.props.title}</h1>
+                <h3 className="mb-4">{this.props.pitch}</h3>
+
+                <hr />
+
+                <div>
+                  <ReactMarkdown source={this.props.desc} />
+                </div>
+
+                <hr />
+
+                <AddressBox>
+                  <p>Grant Recipeint Address:</p>
+                  <Address
+                    {...this.props}
+                    address={this.props.toAddress.toLowerCase()}
+                  />
+                </AddressBox>
+
+                <AddressBox>
+                  <p>Grant Contract Address:</p>
+                  <Address
+                    {...this.props}
+                    address={this.props.deployedAddress.toLowerCase()}
+                  />
+                </AddressBox>
+
+                <AddressBox>
+                  <p>Grant Author Address:</p>
+                  <Address
+                    {...this.props}
+                    address={this.props.author.toLowerCase()}
+                  />
+                </AddressBox>
+
+              </div>
+
+            </div>
+            <div className="col-md-5">
+              {funding}
+            </div>
           </div>
 
         </div>

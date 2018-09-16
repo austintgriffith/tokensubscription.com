@@ -93,7 +93,7 @@ class CreateGrants extends Component {
                 address={this.props.toAddress.toLowerCase()}
                 config={{size:3}}
               />
-              <input type="text" style={{width: '415px'}} name="toAddress" value={this.props.toAddress} onChange={this.props.handleInput} />
+              <input type="text" style={{marginLeft: 15}} name="toAddress" value={this.props.toAddress} onChange={this.props.handleInput} />
             </div>
           </div>
 

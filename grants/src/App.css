@@ -23,6 +23,13 @@ a:focus {
   color: #6255d8;
   text-decoration: none;
 }
+
+hr {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.4)
+}
+
 .wrapper::after {
   content: "";
   background: url('assets/img/particles.png') center 80% no-repeat;
@@ -34,6 +41,7 @@ a:focus {
   position: absolute;
   z-index: -1;
 }
+
 
 .nav {
   padding: 20px;
@@ -121,6 +129,17 @@ button:focus {
 
 /* Forms */
 
+input[type="text"], select {
+  display: block;
+  width: 100%;
+  padding: 0 0 1px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid #5396fd;
+  outline: none;
+  color: #fff;
+}
+
 label {
   margin-bottom: 5px;
 }
@@ -145,6 +164,15 @@ textarea.form-control {
   border: 2px solid #5396fd;
 }
 
+.help {
+  font-size: 14px;
+  margin-top: .25rem;
+}
+
+.form-field {
+  margin-bottom: 40px;
+}
+
 /* Semantic UI */
 .ui.selection.dropdown {
   background: none;
@@ -152,8 +180,7 @@ textarea.form-control {
   border-radius: 0px;
   -webkit-appearance: none;
   -webkit-border-radius: 0px;
-  margin: 0 50px;
-  padding: 2px 0px;
+  padding: 3px 0px;
   min-height:auto;
   border:none;
   border-bottom: 2px solid #5396fd;
@@ -198,9 +225,6 @@ textarea.form-control {
     flex-basis: 0;
     flex-grow: 6;
     flex-shrink: 1;
+    flex-flow: column;
   }
-}
-
-.form-field {
-  padding: 10px 0px;
 }
