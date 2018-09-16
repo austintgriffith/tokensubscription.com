@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import { Address, Blockie, Scaler } from "dapparatus";
 import ReactMarkdown from 'react-markdown';
 import Loader from '../loader.gif';
@@ -6,6 +7,35 @@ import Loader from '../loader.gif';
 class CreateGrants extends Component {
   constructor(props) {
     super(props);
+  }
+  componentDidMount() {
+    this.getDetails();
+  }
+  getDetails = async () => {
+    try {
+      let id = this.props.match.params.id
+      console.log("ID+++++++++++++",id)
+      if(id){
+        const response = await axios.get(this.props.backendUrl+`grants/`+id);
+        console.log("RESPONSE DATA:",response.data)
+        if(response.data&&response.data[0]){
+          this.props.save(response.data[0])
+        }
+        /*this.setState(() => ({
+          isLoaded: true,
+          grantData: response.data
+        }),async ()=>{
+          console.log("At this point we have the grant contract address... dynamically load it...")
+          if(this.props.web3){
+            let tokenContract = this.props.customContractLoader("Subscription",this.state.grantData[0].deployedAddress)
+            this.setState({author:await tokenContract.author().call()})
+          }
+        });*/
+      }
+
+    } catch (error) {
+      this.setState(() => ({ error }))
+    }
   }
   render() {
 
