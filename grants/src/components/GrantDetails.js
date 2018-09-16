@@ -69,26 +69,28 @@ export default class GrantDetails extends Component {
 
       let funding = ""
       if(this.props.web3&&this.state.author){
-        let {coins,contract,items,tokenName,tokenAmount,tokenAddress,timeType,timeAmount,gasPrice,prefilledParams,email,requiredTokenAddress} = this.props
+        let {handleInput,coins,contract,items,tokenName,tokenAmount,tokenAddress,timeType,timeAmount,gasPrice,prefilledParams,email,requiredTokenAddress} = this.props
         console.log("timeType:",timeType)
 
         //hardcode toaddress to this.state.author for now but you need to add recipeint
         let toAddress = this.state.author
 
         let coinOptions = []
-
+        let currentTokenName = "Tokens"
         for(let i = 0; i < this.props.coins.length; i++){
-          if(this.props.coins[i].symbol!="*ANY*"){
-            coinOptions.push({
-               key: this.props.coins[i].address,
-               value: this.props.coins[i].address,
-               image:{
-                 avatar : true,
-                 src    : this.props.coins[i].imageUrl,
-               },
-               text: this.props.coins[i].symbol
-             })
+          if(this.props.coins[i].address==tokenAddress)
+          {
+            currentTokenName=this.props.coins[i].name
           }
+          coinOptions.push({
+             key: this.props.coins[i].address,
+             value: this.props.coins[i].address,
+             image:{
+               avatar : true,
+               src    : this.props.coins[i].imageUrl,
+             },
+             text: this.props.coins[i].symbol
+           })
         }
 
 
@@ -98,12 +100,11 @@ export default class GrantDetails extends Component {
             <h2>Fund Grant:</h2>
 
             <div className="form-field">
-              <label>To Address:</label>
-              <Blockie
-                address={toAddress.toLowerCase()}
-                config={{size:3}}
+              <label>Recipeint:</label>
+              <Address
+                {...this.props}
+                address={toAddress}
               />
-              <input type="text" style={{width: '415px'}} name="toAddress" value={toAddress} onChange={this.props.handleInput} />
             </div>
             <div className="form-field">
               <label>Token:</label>
@@ -114,21 +115,21 @@ export default class GrantDetails extends Component {
                   name='tokenAddress'
                   options={coinOptions}
                   placeholder='Choose Token'
-                  onChange={this.props.handleInput}
+                  onChange={handleInput}
                 />
 
                <label>Amount:</label>
-               <input type="text" name="tokenAmount" value={tokenAmount} onChange={this.props.handleInput} />
+               <input type="text" name="tokenAmount" value={tokenAmount} onChange={handleInput} />
             </div>
             <div className="form-field">
               <label>Recurring Every:</label>
-              <input type="text" name="timeAmount" value={timeAmount} onChange={this.props.handleInput} />
+              <input type="text" name="timeAmount" value={timeAmount} onChange={handleInput} />
               <Dropdown
                 selectOnNavigation={false}
                 selection
                 value={timeType}
                 name="timeType"
-                onChange={this.props.handleInput}
+                onChange={handleInput}
                 options={monthOptions}
                 placeholder='Choose Term'
               />
@@ -136,13 +137,13 @@ export default class GrantDetails extends Component {
             <div className="form-field">
               <label>Gas Price:</label>
               <input
-                type="text" name="gasPrice" value={gasPrice} onChange={this.props.handleInput}
-              />
+                type="text" name="gasPrice" value={gasPrice} onChange={handleInput}
+              />({currentTokenName})
             </div>
             <div className="form-field">
               <label>Email (optional):</label>
               <input
-                type="text" name="email" style={{width:240}} value={email} onChange={this.props.handleInput}
+                type="text" name="email" style={{width:240}} value={email} onChange={handleInput}
               />
             </div>
             <button size="2" style={{marginTop:50}} onClick={()=>{

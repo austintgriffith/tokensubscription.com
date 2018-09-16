@@ -32,8 +32,6 @@ class App extends Component {
       contractAddress: false,
       deployingGrantContract: false,
       ///SUBSCRIBE DEFUALTS:
-      toAddress: "",
-      prefilledParams:false,
       tokenAmount: 10,
       timeAmount: 1,
       timeType:"months",
@@ -159,12 +157,16 @@ class App extends Component {
     });
   }
 
-  handleInput(e){
+  handleInput(e,data){
     let update = {}
-    let value = e.target.value
-    if(e.target.name=="title") value = value.substring(0,82) //limit title characters
-    if(e.target.name=="pitch") value = value.substring(0,230) //limit pitch characters
-    update[e.target.name] = value
+    if(data){
+      update[data.name] = data.value
+    }else{
+      let value = e.target.value
+      if(e.target.name=="title") value = value.substring(0,82) //limit title characters
+      if(e.target.name=="pitch") value = value.substring(0,230) //limit pitch characters
+      update[e.target.name] = value
+    }
     this.setState(() => (update));
   }
 
@@ -186,7 +188,6 @@ class App extends Component {
               {...props}
               {...this.state}
               handleInput={this.handleInput}
-              deploySubscription={this.deploySubscription}
               submitGrant={this.submitGrant}
               backendUrl={backendUrl}
               save={this.save.bind(this)}
@@ -197,6 +198,8 @@ class App extends Component {
               {...props}
               {...this.state}
               backendUrl={backendUrl}
+              handleInput={this.handleInput}
+              deploySubscription={this.deploySubscription}
             />
           }} />
         </div>
@@ -277,7 +280,6 @@ class App extends Component {
             <li><Link to="/">Home</Link></li>
             <li><Link to="/list">Fund A Grant</Link></li>
             <li><Link to="/create">Create A Grant</Link></li>
-            <li><Link to="/view/1">Grant Details</Link></li>
           </ul>
 
           <Route exact path="/" component={Home} />
