@@ -159,6 +159,10 @@ class App extends Component {
     this.setState(() => (update));
   }
 
+  save(state){
+    this.setState(state)
+  }
+
   render() {
     console.log(this.state.title)
     let {web3,account,contracts,tx,gwei,block,avgBlockTime,etherscan} = this.state
@@ -246,16 +250,24 @@ class App extends Component {
 
           <Route exact path="/" component={Home} />
           <Route path="/list" render={(props) => <GrantsList {...props} backendUrl={backendUrl} />} />
-          <Route path="/create" render={(props) => {
+          <Route path="/create/:id?" render={(props) => {
             return <CreateGrants
               {...props}
               {...this.state}
               handleInput={this.handleInput}
               deploySubscription={this.deploySubscription}
               submitGrant={this.submitGrant}
+              backendUrl={backendUrl}
+              save={this.save.bind(this)}
             />
           }} />
-          <Route path="/view/:id" render={(props) => <GrantDetails {...props} backendUrl={backendUrl} />} />
+          <Route path="/view/:id" render={(props) => {
+            return <GrantDetails
+              {...props}
+              {...this.state}
+              backendUrl={backendUrl}
+            />
+          }} />
         </div>
       </Router>
     )
