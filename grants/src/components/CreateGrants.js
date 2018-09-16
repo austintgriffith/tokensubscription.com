@@ -14,25 +14,17 @@ class CreateGrants extends Component {
   getDetails = async () => {
     try {
       let id = this.props.match.params.id
-      console.log("ID+++++++++++++",id)
       if(id){
         const response = await axios.get(this.props.backendUrl+`grants/`+id);
         console.log("RESPONSE DATA:",response.data)
         if(response.data&&response.data[0]){
           this.props.save(response.data[0])
-        }
-        /*this.setState(() => ({
-          isLoaded: true,
-          grantData: response.data
-        }),async ()=>{
-          console.log("At this point we have the grant contract address... dynamically load it...")
           if(this.props.web3){
-            let tokenContract = this.props.customContractLoader("Subscription",this.state.grantData[0].deployedAddress)
-            this.setState({author:await tokenContract.author().call()})
+            let tokenContract = this.props.customContractLoader("Subscription",response.data[0].deployedAddress)
+            this.props.save({author:await tokenContract.author().call(),contract:tokenContract,toAddress:await tokenContract.requiredToAddress().call()})
           }
-        });*/
+        }
       }
-
     } catch (error) {
       this.setState(() => ({ error }))
     }
@@ -61,7 +53,7 @@ class CreateGrants extends Component {
       deployedContract = (
         <div>
           <button className="btn btn-outline-primary" onClick={()=>{
-              this.props.deploySubscription()
+              this.props.deployGrantContract(this.props.toAddress)
           }}>
             Deploy Grant Contract
           </button> {loader}
@@ -94,6 +86,20 @@ class CreateGrants extends Component {
 
           <div className="field is-horizontal">
             <div className="field-label">
+              <label className="label">Recipient:</label>
+            </div>
+            <div className="field-body">
+              <Blockie
+                address={this.props.toAddress.toLowerCase()}
+                config={{size:3}}
+              />
+              <input type="text" style={{width: '415px'}} name="toAddress" value={this.props.toAddress} onChange={this.props.handleInput} />
+            </div>
+          </div>
+
+
+          <div className="field is-horizontal">
+            <div className="field-label">
               <label className="label">Contract:</label>
             </div>
             <div className="field-body">
@@ -119,6 +125,10 @@ class CreateGrants extends Component {
             <div className="field-body">
               <ReactMarkdown source={this.props.desc} />
             </div>
+          </div>
+
+          <div className="field is-horizontal">
+
           </div>
 
 
