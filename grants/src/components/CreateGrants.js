@@ -2,11 +2,31 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Address, Blockie, Scaler } from "dapparatus";
 import ReactMarkdown from 'react-markdown';
+import styled from 'styled-components'
 import Loader from '../loader.gif';
+
+const Tab = styled.button`
+border-radius: 6px;
+padding: 5px 12px;
+margin-right: 10px;
+&.is-active {
+  color: #fff;
+  background-color: #5396fd;
+  border-color: #5396fd;
+}
+`
+const PreviewBox = styled.div`
+padding: 10px 20px;
+min-height: 550px;
+background: rgba(0,0,0,0.2);
+`
 
 class CreateGrants extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      descriptionPreview: false
+    }
   }
   componentDidMount() {
     this.getDetails();
@@ -38,6 +58,15 @@ class CreateGrants extends Component {
       this.setState(() => ({ error }))
     }
   }
+
+  togglePreview = (mode) => {
+    if (mode && mode === 'preview') {
+      this.setState(() => ({ descriptionPreview: true }));
+    } else {
+      this.setState(() => ({ descriptionPreview: false }));
+    }
+  }
+
   render() {
     const input = '# This is a header\n\nAnd this is a paragraph'
     let deployedContract
@@ -66,6 +95,14 @@ class CreateGrants extends Component {
           </button> {loader}
         </div>
       )
+    }
+
+    let descriptionContent;
+
+    if (this.state.descriptionPreview === true) {
+      descriptionContent = <PreviewBox><ReactMarkdown source={this.props.desc} /></PreviewBox>
+    } else {
+      descriptionContent = <div><textarea className="form-control" rows="20" name="desc" value={this.props.desc} onChange={this.props.handleInput}></textarea></div>
     }
 
     return (
@@ -112,30 +149,38 @@ class CreateGrants extends Component {
 
           <div className="field is-horizontal">
             <div className="field-label">
-              <label className="label mb-0">Description:</label>
-              <p><small>(Markdown)</small></p>
-            </div>
-            <div className="field-body">
-              <textarea className="form-control" rows="20" name="desc" value={this.props.desc} onChange={this.props.handleInput}></textarea>
-              <p className="help">A longer, more detailed description. Can be written in Markdown.</p>
-            </div>
-          </div>
-
-          <div className="field is-horizontal">
-            <div className="field-label">
-              <label className="label">Preview:</label>
-            </div>
-            <div className="field-body">
-              <ReactMarkdown source={this.props.desc} />
-            </div>
-          </div>
-
-          <div className="field is-horizontal">
-            <div className="field-label">
               <label className="label">Contract:</label>
             </div>
             <div className="field-body">
-              {deployedContract}
+              <div className="mb-2">
+                {deployedContract}
+              </div>
+              <p className="help">Deploy the grant contract.</p>
+            </div>
+          </div>
+
+          <div className="field is-horizontal">
+            <div className="field-label">
+              <label className="label">Description:</label>
+              <p><small>(Markdown)</small></p>
+            </div>
+            <div className="field-body">
+              <div className="mb-3">
+                <Tab
+                  className={`btn btn-sm btn-outline-primary ${this.state.descriptionPreview ? '' : 'is-active'}`}
+                  onClick={this.togglePreview}>
+                  Edit Mode
+                </Tab>
+                <Tab
+                  className={`btn btn-sm btn-outline-primary ${this.state.descriptionPreview ? 'is-active' : ''}`}
+                  onClick={() => {this.togglePreview('preview')}}>
+                  Preview Mode
+                </Tab>
+              </div>
+
+              {descriptionContent}
+
+              <p className="help">A longer, more detailed description. Can be written in Markdown.</p>
             </div>
           </div>
 
