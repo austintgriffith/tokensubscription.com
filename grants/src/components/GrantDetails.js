@@ -52,7 +52,7 @@ export default class GrantDetails extends Component {
   }
 
   async poll(){
-    console.log("polling for subscriptions on "+this.props.deployedAddress+"...")
+  //  console.log("polling for subscriptions on "+this.props.deployedAddress+"...")
     if(this.props.deployedAddress){
       const response = await axios.get(this.props.backendUrl+`subscriptionsByContract/`+this.props.deployedAddress);
       let subscriptions = response.data
@@ -60,7 +60,7 @@ export default class GrantDetails extends Component {
 
       let activeSubscriptions = {}
 
-      let totalRaisedUSD = 0
+      let totalRaisedUSD = {}
 
       for(let s in subscriptions){
 
@@ -90,10 +90,14 @@ export default class GrantDetails extends Component {
 
             if(symbol=="WETH") symbol="ETH"
 
+            if(!totalRaisedUSD[subscriptions[s].subscriptionContract]){
+              totalRaisedUSD[subscriptions[s].subscriptionContract]=0
+            }
+
             let thisPrice = this.props.prices[symbol]
             if(thisPrice){
               if(DEBUGPRICE) console.log("PRice of ",symbol," is ",thisPrice)
-              totalRaisedUSD += tokenAmount*thisPrice.USD
+              totalRaisedUSD[subscriptions[s].subscriptionContract] += tokenAmount*thisPrice.USD
             }
 
           }
@@ -194,7 +198,7 @@ export default class GrantDetails extends Component {
           Edit Grant
         </button>
       }
-
+      let allSubscriptions = ""
       let funding = ""
       if(this.props.web3&&this.props.author&&this.props.deployedAddress&&this.props.subscriptionContract){
         let {handleInput,coins,contract,items,tokenName,tokenAmount,tokenAddress,timeType,timeAmount,gasPrice,prefilledParams,email,requiredTokenAddress} = this.props
@@ -221,12 +225,13 @@ export default class GrantDetails extends Component {
            })
         }
 
-        let allSubscriptions = ""
+
 
         let mySubscription = ""
 
-        if(this.props.subscriptions&&this.props.subscriptions.length>0&&this.props.tokenBalances&&this.props.tokenContracts){
+        if(this.props.subscriptions&&this.props.subscriptions.length>0&&this.props.activeSubscriptions){
           //console.log("this.props.subscriptions",this.props.subscriptions)
+          console.log("LOADING ALL SUBS")
           allSubscriptions = this.props.subscriptions.map((sub)=>{
             let from = sub.parts[0]
             let to = sub.parts[1]
@@ -244,6 +249,7 @@ export default class GrantDetails extends Component {
 
             let thisSub = (
               <div key={"sub"+sub.subscriptionHash} style={{marginTop:10,borderTop:"1px solid #444444",paddingTop:20}}>
+                {this.props.activeSubscriptions[sub.subscriptionHash]?"🕰️ ":"🛑 "}
                 <Blockie
                   address={from.toLowerCase()}
                   config={{size:3}}
@@ -254,7 +260,7 @@ export default class GrantDetails extends Component {
               </div>
             )
 
-            if(from.toLowerCase()==this.props.account.toLowerCase()){
+            if(from.toLowerCase()==this.props.account.toLowerCase() &&this.props.tokenBalances&&this.props.tokenContracts){
 
               let approvedColor = "#fd9653"
               if(this.props.tokenAllowances[token]>0){
@@ -406,18 +412,26 @@ export default class GrantDetails extends Component {
                 </div>
               </div>
 
-
             </div>
           )
         }
 
         let cleanMonthlyGoal = this.props.monthlyGoal.replace(/[^0-9.]+/, '');
 
+        let activeFunding = ""
+        //console.log("this.props.totalRaisedUSD",this.props.totalRaisedUSD)
+        if(this.props.totalRaisedUSD){
+            activeFunding = (
+              <div>
+              Active Funding : {formatMoney(parseFloat(this.props.totalRaisedUSD[this.props.subscriptionContract._address]),2)} out of {formatMoney(parseFloat(cleanMonthlyGoal),2)}
+              </div>
+            )
+        }
+
         funding = (
           <div style={{padding:20,background:"rgba(0,0,0,0.6)"}}>
 
-              Active Funding : {formatMoney(parseFloat(this.props.totalRaisedUSD),2)} out of {formatMoney(parseFloat(cleanMonthlyGoal),2)}
-
+              {activeFunding}
               {fundBox}
               {eventLog}
               {allSubscriptions}
