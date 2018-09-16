@@ -105,12 +105,13 @@ class CreateGrants extends Component {
         </div>
       )
       recipient = (
-        <div>
-          <div className="ml-md-3 w-100">
+        <div className="field-body flex-row">
           <Blockie
             address={this.props.toAddress.toLowerCase()}
             config={{size:3}}
-          /> <input type="text" style={{width:420}} name="toAddress" value={this.props.toAddress} onChange={this.props.handleInput} />
+          />
+          <div className="ml-md-3 w-100">
+            <input type="text" name="toAddress" value={this.props.toAddress} onChange={this.props.handleInput} />
             <p className="help">The address that will receive the funding tokens.</p>
           </div>
         </div>
@@ -153,7 +154,7 @@ class CreateGrants extends Component {
             <div className="field-label">
               <label className="label">Recipient:</label>
             </div>
-            <div className="field-body flex-row">
+            <div className="field-body">
               {recipient}
             </div>
           </div>

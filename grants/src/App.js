@@ -7,6 +7,7 @@ import Web3 from 'web3';
 import './App.css';
 
 import Coins from './coins.js'
+import Nav from './components/Nav';
 import Home from './components/Home';
 import GrantsList from './components/GrantsList';
 import CreateGrants from './components/CreateGrants';
@@ -364,6 +365,8 @@ class App extends Component {
             }}
           />
           {connectedDisplay}
+
+          <Nav />
 
           <Route exact path="/" component={Home} />
           <Route path="/list" render={(props) => <GrantsList {...props} backendUrl={backendUrl} />} />
