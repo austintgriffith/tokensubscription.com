@@ -14,20 +14,23 @@ text-align: center;
   text-align: left;
 }
 `
+/*
+<a className="btn btn-outline-secondary" target="blank" href={`https://etherscan.io/address/${props.deployedAddress}`}>
+  View Contract
+</a>
+<Link className="btn btn-outline-primary ml-3" to={`/view/${props.id}`}>View Grant</Link>
+ */
 
 const GrantBox = (props) => {
   return (
-    <GrantBoxWrap>
+    <GrantBoxWrap style={{cursor:"pointer"}} onClick={()=>{window.location = `/view/${props.id}`}}>
       <div className="mb-3 mb-md-0">
         <h3>{props.title}</h3>
         <p className="lead mb-0">{props.pitch}</p>
       </div>
       <div className="ml-auto">
         <p className="mb-0">
-          <a className="btn btn-outline-secondary" target="blank" href={`https://etherscan.io/address/${props.deployedAddress}`}>
-            View Contract
-          </a>
-          <Link className="btn btn-outline-primary ml-3" to={`/view/${props.id}`}>View Grant</Link>
+          <button>View Grant</button>
         </p>
       </div>
     </GrantBoxWrap>
