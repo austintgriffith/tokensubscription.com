@@ -37,7 +37,7 @@ a:focus {
 
 .nav {
   padding: 20px;
-  margin: 0;
+  margin: 0 0 20px;
   list-style: none;
   text-align: left;
 }
@@ -71,6 +71,19 @@ a:focus {
   color: #fff;
   background-color: #5396fd;
   border-color: #5396fd;
+}
+
+.btn-outline-secondary {
+  color: #7973b3;
+  background-color: transparent;
+  background-image: none;
+  border-color: #7973b3;
+}
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+  color: #fff;
+  background-color: #7973b3;
+  border-color: #7973b3;
 }
 
 /* Forms */

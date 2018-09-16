@@ -6,11 +6,15 @@ import logo from '../assets/img/logo-icon.png';
 
 const Disclaimer = styled.div`
 display: inline-block;
-margin-top: 10rem;
 padding: 1.5rem;
 background: rgba(0,0,0,0.6);
 border: 1px solid #111;
-opacity:0.8
+opacity:0.8;
+font-size: 14px;
+@media (min-width: 768px) {
+    margin-top: 10rem;
+    font-size: 16px;
+}
 `
 
 const Home = () => (
