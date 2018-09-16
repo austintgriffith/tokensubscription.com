@@ -420,7 +420,11 @@ app.post('/grants/create', async (req, res) => {
     req.body.title,
     req.body.pitch,
     req.body.deployedAddress,
-    req.body.desc
+    req.body.desc,
+    req.body.monthlyGoal,
+    req.body.grantDuration,
+    req.body.contactName,
+    req.body.contactEmail,
   )
 
   console.log("hash compare",myHash,req.body.hash)
@@ -446,8 +450,8 @@ app.post('/grants/create', async (req, res) => {
          console.log(req.body)
 
          // This was a fight, because desc is a reserved keyword in MySQL
-         let queryParams = [req.body.title, req.body.pitch, req.body.desc, req.body.deployedAddress]
-         let query = 'UPDATE EthGrants SET `title` = ?, `pitch` = ?, `desc` = ? WHERE `deployedAddress` = ?'
+         let queryParams = [req.body.title, req.body.pitch, req.body.desc, req.body.deployedAddress, req.body.monthlyGoal, req.body.grantDuration, req.body.contactName, req.body.contactEmail]
+         let query = 'UPDATE EthGrants SET `title` = ?, `pitch` = ?, `desc` = ?, `monthlyGoal` = ?, `grantDuration` = ?, `contactName` = ?, `contactEmail` = ? WHERE `deployedAddress` = ?'
 
          console.log(query)
          console.log(queryParams)

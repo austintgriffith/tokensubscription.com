@@ -151,6 +151,7 @@ contract Subscription is Ownable {
         uint256 allowance = ERC20(tokenAddress).allowance(from, address(this));
         return (
             signer == from &&
+            from != to &&
             block.timestamp >= nextValidTimestamp[subscriptionHash] &&
             allowance >= tokenAmount.add(gasPrice)
         );
