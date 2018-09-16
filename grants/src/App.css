@@ -44,17 +44,20 @@ hr {
 
 
 .nav {
-  padding: 20px;
+  clear: both;
+  padding: 5px 15px;
   margin: 0 0 20px;
   list-style: none;
-  text-align: left;
+  text-align: center;
+  font-size: 15px;
+  background: rgba(0,0,0,0.3);
 }
 .nav li {
   display: inline-block;
 }
 .nav a {
   display: inline-block;
-  padding: 10px 20px;
+  padding: 5px 10px;
   color: #fff;
 }
 .nav a:hover, .nav a:focus {
@@ -212,6 +215,22 @@ textarea.form-control {
 }
 
 @media (min-width: 768px) {
+
+  .nav {
+    clear: none;
+    padding: 20px 20px;
+    margin-bottom: 40px;
+    text-align: left;
+  }
+  .nav li {
+    display: inline-block;
+  }
+  .nav a {
+    display: inline-block;
+    padding: 10px 20px;
+    color: #fff;
+  }
+
   .field.is-horizontal {
     display: flex;
   }
