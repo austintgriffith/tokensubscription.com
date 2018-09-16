@@ -245,8 +245,8 @@ class App extends Component {
     this.setState(() => (update));
   }
 
-  save(state){
-    this.setState(state)
+  save(state,cb){
+    this.setState(state,cb)
   }
 
   render() {
