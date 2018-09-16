@@ -32,7 +32,6 @@ class CreateGrants extends Component {
           toAddress: this.props.account,
           deployedAddress: "",
           desc: "",
-
         })
       }
     } catch (error) {
@@ -40,9 +39,7 @@ class CreateGrants extends Component {
     }
   }
   render() {
-
     const input = '# This is a header\n\nAnd this is a paragraph'
-
     let deployedContract
     if(this.props.deployedAddress){
       deployedContract = (

@@ -16,6 +16,9 @@ font-size: 14px;
 }
 `
 
+let pollInterval
+let pollIntervalTime = 1333
+
 let monthOptions = [
     {key: 'ongoing', value: 'ongoing', text: 'Ongoing'},
     {key: 'months', value: 'months', text: 'Month(s)'},
@@ -34,6 +37,21 @@ export default class GrantDetails extends Component {
 
   componentDidMount() {
     this.getDetails();
+    this.poll()
+    pollInterval = setInterval(this.poll.bind(this),pollIntervalTime)
+  }
+
+  compontentWillUnmount() {
+    clearInterval(pollInterval)
+  }
+
+  async poll(){
+    console.log("polling for subscriptions on "+this.props.deployedAddress+"...")
+    if(this.props.deployedAddress){
+      const response = await axios.get(this.props.backendUrl+`subscriptionsByContract/`+this.props.deployedAddress);
+      this.props.save({subscriptions:response.data})
+    }
+
   }
 
   getDetails = async () => {
@@ -43,7 +61,10 @@ export default class GrantDetails extends Component {
         const response = await axios.get(this.props.backendUrl+`grants/`+id);
         console.log("RESPONSE DATA:",response.data)
         if(response.data&&response.data[0]){
+
+          console.log("SAVING DATA FOR id",id,response.data[0])
           this.props.save(response.data[0])
+
           if(this.props.web3){
             let tokenContract = this.props.customContractLoader("Subscription",response.data[0].deployedAddress)
             this.props.save({author:await tokenContract.author().call(),contract:tokenContract,toAddress:await tokenContract.requiredToAddress().call()})
@@ -76,7 +97,7 @@ export default class GrantDetails extends Component {
       let funding = ""
       if(this.props.web3&&this.props.author){
         let {handleInput,coins,contract,items,tokenName,tokenAmount,tokenAddress,timeType,timeAmount,gasPrice,prefilledParams,email,requiredTokenAddress} = this.props
-        console.log("timeType:",timeType)
+        //console.log("timeType:",timeType)
 
         //hardcode toaddress to this.state.author for now but you need to add recipeint
         let toAddress = this.state.author
@@ -99,9 +120,99 @@ export default class GrantDetails extends Component {
            })
         }
 
+        let allSubscriptions = ""
 
+        let mySubscription = ""
+
+        if(this.props.subscriptions){
+          console.log("this.props.subscriptions",this.props.subscriptions)
+          allSubscriptions = this.props.subscriptions.map((sub)=>{
+            let from = sub.parts[0]
+            let to = sub.parts[1]
+            let token = sub.parts[2]
+            let tokenAmount = parseInt(this.props.web3.utils.toBN(sub.parts[3]).toString())/(10**18)
+            let periodSeconds = this.props.web3.utils.toBN(sub.parts[4]).toString()
+            let gasPrice = parseInt(this.props.web3.utils.toBN(sub.parts[5]).toString())/(10**18)
+
+            let tokenSymbol = "Tokens"
+            for(let i = 0; i < this.props.coins.length; i++){
+              if(this.props.coins[i].address==token){
+                tokenSymbol = this.props.coins[i].symbol
+              }
+            }
+
+            let thisSub = (
+              <div style={{margin:5,border:"1px solid #555555",padding:5}}>
+              <Blockie
+                address={from.toLowerCase()}
+                config={{size:3}}
+               /> => <Blockie
+                address={to.toLowerCase()}
+                config={{size:3}}
+               /> {tokenAmount} {tokenSymbol}
+              </div>
+            )
+
+            if(from.toLowerCase()==this.props.account.toLowerCase()){
+              mySubscription= (
+                <div>
+                  {thisSub}
+                  (approve)
+                </div>
+              )
+            }else{
+                return thisSub
+            }
+
+          })
+        }
+
+        let fundBox = ""
+        if(mySubscription){
+          fundBox = mySubscription
+        }else{
+          fundBox = (
+            <div>
+              <h2>Fund Grant:</h2>
+              <div className="form-field">
+                <label>Token:</label>
+                  <Dropdown
+                    selectOnNavigation={false}
+                    selection
+                    value={tokenAddress}
+                    name='tokenAddress'
+                    options={coinOptions}
+                    placeholder='Choose Token'
+                    onChange={handleInput}
+                  />
+              </div>
+              <div className="form-field">
+                <label>Amount:</label>
+                <input type="text" name="tokenAmount" value={tokenAmount} onChange={handleInput} />
+              </div>
+              <div className="form-field">
+                <label>Gas Price:</label>
+                <input
+                  type="text" name="gasPrice" value={gasPrice} onChange={handleInput}
+                />({currentTokenName})
+              </div>
+              <div className="form-field">
+                <label>Email (optional):</label>
+                <input
+                  type="text" name="email" style={{width:240}} value={email} onChange={handleInput}
+                />
+              </div>
+              <button size="2" style={{marginTop:50}} onClick={()=>{
+                  this.props.sendSubscription()
+                }}>
+                Sign
+              </button>
+            </div>
+          )
+        }
 
         funding = (
+<<<<<<< HEAD
           <div style={{padding:20,background:"rgba(0,0,0,0.6)"}}>
             <h3 className="mb-4 text-center">Fund This Grant:</h3>
 
@@ -161,6 +272,11 @@ export default class GrantDetails extends Component {
                 Sign
               </button>
             </div>
+=======
+          <div style={{position:"fixed",right:-2,top:100,width:450,padding:20,border:"1px solid #666666",backgroundColor:"#222222"}}>
+            {fundBox}
+            {allSubscriptions}
+>>>>>>> austin
           </div>
         )
       }
@@ -219,6 +335,8 @@ export default class GrantDetails extends Component {
               {funding}
             </div>
           </div>
+
+
 
         </div>
       )
