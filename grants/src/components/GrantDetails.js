@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
-import { Address, Blockie, Scaler } from "dapparatus";
+import { Address, Blockie, Scaler, Events } from "dapparatus";
 import { Dropdown } from 'semantic-ui-react'
 import styled from 'styled-components';
 import Loader from '../loader.gif';
@@ -58,28 +58,58 @@ export default class GrantDetails extends Component {
       let subscriptions = response.data
       this.props.save({subscriptions:subscriptions})
 
+      let activeSubscriptions = {}
+
+      let totalRaisedUSD = 0
+
       for(let s in subscriptions){
+
+        if(this.props.subscriptionContract){
+          let DEBUGPRICE = false
+          //console.log("Checking to see if subscription is active for ",subscriptions[s].subscriptionHash)
+          activeSubscriptions[subscriptions[s].subscriptionHash] = await this.props.subscriptionContract.isSubscriptionActive(subscriptions[s].subscriptionHash,86000).call()
+          //console.log("result active:",activeSubscriptions[subscriptions[s].subscriptionHash])
+          if(activeSubscriptions[subscriptions[s].subscriptionHash]){
+
+
+            if(DEBUGPRICE) console.log("FOUND ACTIVE",subscriptions[s])
+            let result = await this.loadAndCacheContract(subscriptions[s].parts[2])
+            let thisTokenContract = result[0]
+            let thisTokenDecimals = result[1]
+
+            let tokenAmount = parseInt(this.props.web3.utils.toBN(subscriptions[s].parts[3]).toString())/(10**thisTokenDecimals)
+            if(DEBUGPRICE) console.log("tokenAmount",tokenAmount)
+
+            let symbol = "ETH"
+            for(let i = 0; i < this.props.coins.length; i++){
+              if(this.props.coins[i].address.toLowerCase()==subscriptions[s].parts[2].toLowerCase()){
+                symbol=this.props.coins[i].symbol
+              }
+            }
+            if(DEBUGPRICE) console.log("active symbol:",symbol)
+
+            if(symbol=="WETH") symbol="ETH"
+
+            let thisPrice = this.props.prices[symbol]
+            if(thisPrice){
+              if(DEBUGPRICE) console.log("PRice of ",symbol," is ",thisPrice)
+              totalRaisedUSD += tokenAmount*thisPrice.USD
+            }
+
+          }
+        }
+        this.props.save({totalRaisedUSD:totalRaisedUSD})
+
 
         if(subscriptions[s].parts&&subscriptions[s].parts[0].toLowerCase()==this.props.account.toLowerCase()){
           //console.log("sub "+s+" )))))))))))",subscriptions[s])
-          let thisTokenContract
+
           let thisTokenAddress = subscriptions[s].parts[2]
-          let thisTokenDecimals = 18
-          if(this.props.tokenContracts && this.props.tokenContracts[thisTokenAddress] && this.props.tokenDecimals[thisTokenAddress]){
-            //console.log("CACHED")
-            thisTokenContract = this.props.tokenContracts[thisTokenAddress]
-            thisTokenDecimals = this.props.tokenDecimals[thisTokenAddress]
-          }else{
-            thisTokenContract = this.props.customContractLoader("WasteCoin",subscriptions[s].parts[2])
-            thisTokenDecimals = await thisTokenContract.decimals().call()
-            let tokenContracts = this.props.tokenContracts
-            let tokenDecimals = this.props.tokenDecimals
-            if(!tokenContracts) tokenContracts={}
-            if(!tokenDecimals) tokenDecimals={}
-            tokenContracts[thisTokenAddress] = thisTokenContract
-            tokenDecimals[thisTokenAddress] = thisTokenDecimals
-            this.props.save({tokenContracts,tokenDecimals})
-          }
+
+
+          let result = await this.loadAndCacheContract(thisTokenAddress)
+          let thisTokenContract = result[0]
+          let thisTokenDecimals = result[1]
 
           let tokenBalances = this.props.tokenBalances
           let tokenAllowances = this.props.tokenAllowances
@@ -99,8 +129,30 @@ export default class GrantDetails extends Component {
 
 
       }
+      this.props.save({activeSubscriptions})
     }
 
+  }
+
+  async loadAndCacheContract(thisTokenAddress){
+    let thisTokenContract
+    let thisTokenDecimals = 18
+    if(this.props.tokenContracts && this.props.tokenContracts[thisTokenAddress] && this.props.tokenDecimals[thisTokenAddress]){
+      //console.log("CACHED")
+      thisTokenContract = this.props.tokenContracts[thisTokenAddress]
+      thisTokenDecimals = this.props.tokenDecimals[thisTokenAddress]
+    }else{
+      thisTokenContract = this.props.customContractLoader("WasteCoin",thisTokenAddress)
+      thisTokenDecimals = await thisTokenContract.decimals().call()
+      let tokenContracts = this.props.tokenContracts
+      let tokenDecimals = this.props.tokenDecimals
+      if(!tokenContracts) tokenContracts={}
+      if(!tokenDecimals) tokenDecimals={}
+      tokenContracts[thisTokenAddress] = thisTokenContract
+      tokenDecimals[thisTokenAddress] = thisTokenDecimals
+      this.props.save({tokenContracts,tokenDecimals})
+    }
+    return [thisTokenContract,thisTokenDecimals]
   }
 
   getDetails = async () => {
@@ -124,10 +176,10 @@ export default class GrantDetails extends Component {
       this.setState(() => ({ error }))
     }
   }
-
   render() {
     const { error } = this.state;
-
+    let tokenSymbol = "Tokens"
+    let tokenDecimals = 18
     if (error) {
       return <div className="container">{error.message}</div>;
     } else if (!this.props.author || !this.props.deployedAddress) {
@@ -144,7 +196,7 @@ export default class GrantDetails extends Component {
       }
 
       let funding = ""
-      if(this.props.web3&&this.props.author&&this.props.deployedAddress){
+      if(this.props.web3&&this.props.author&&this.props.deployedAddress&&this.props.subscriptionContract){
         let {handleInput,coins,contract,items,tokenName,tokenAmount,tokenAddress,timeType,timeAmount,gasPrice,prefilledParams,email,requiredTokenAddress} = this.props
         //console.log("timeType:",timeType)
 
@@ -174,7 +226,7 @@ export default class GrantDetails extends Component {
         let mySubscription = ""
 
         if(this.props.subscriptions&&this.props.subscriptions.length>0&&this.props.tokenBalances&&this.props.tokenContracts){
-          console.log("this.props.subscriptions",this.props.subscriptions)
+          //console.log("this.props.subscriptions",this.props.subscriptions)
           allSubscriptions = this.props.subscriptions.map((sub)=>{
             let from = sub.parts[0]
             let to = sub.parts[1]
@@ -183,7 +235,7 @@ export default class GrantDetails extends Component {
             let periodSeconds = this.props.web3.utils.toBN(sub.parts[4]).toString()
             let gasPrice = parseInt(this.props.web3.utils.toBN(sub.parts[5]).toString())/(10**18)
 
-            let tokenSymbol = "Tokens"
+
             for(let i = 0; i < this.props.coins.length; i++){
               if(this.props.coins[i].address==token){
                 tokenSymbol = this.props.coins[i].symbol
@@ -195,7 +247,7 @@ export default class GrantDetails extends Component {
                 <Blockie
                   address={from.toLowerCase()}
                   config={{size:3}}
-                 /> => <Blockie
+                 /> -> <Blockie
                   address={to.toLowerCase()}
                   config={{size:3}}
                  /> {tokenAmount} {tokenSymbol}
@@ -214,7 +266,7 @@ export default class GrantDetails extends Component {
                  <img src={Loader} style={{width: '30px', height: '30px', verticalAlign: 'middle', margin:'12px 0 0 10px'}}/>
                )
               }
-
+              tokenDecimals=this.props.tokenDecimals[token]
               mySubscription= (
                 <div>
                   {thisSub}
@@ -262,11 +314,31 @@ export default class GrantDetails extends Component {
         }
 
         let fundBox = ""
+        let eventLog = ""
         if(mySubscription){
           fundBox = mySubscription
+          //console.log("current events:",this.state.events)
+          if(this.state.events){
+
+            let payments = []
+            for(let e in this.state.events){
+              payments.push(
+                <div key={"payment"+e}>
+                  Block #{this.state.events[e].blockNumber}: {parseInt(this.state.events[e].tokenAmount)/(10**tokenDecimals)} {tokenSymbol}
+                </div>
+              )
+            }
+
+            eventLog = (
+              <div style={{paddingLeft:5,backgroundColor:'#161616',padding:5,opacity:0.6}}>
+                <h5>Payment Log:</h5>
+                {payments}
+              </div>
+            )
+          }
         }else{
           fundBox = (
-            <div style={{zIndex:99,padding:20,background:"rgba(0,0,0,0.6)"}}>
+            <div style={{padding:20,background:"rgba(0,0,0,0.6)"}}>
               <h3 className="mb-4 text-center">Fund This Grant:</h3>
 
               <div className="field is-horizontal">
@@ -282,6 +354,7 @@ export default class GrantDetails extends Component {
                     options={coinOptions}
                     placeholder='Choose Token'
                     onChange={handleInput}
+                    style={{zIndex:100}}
                   />
                 </div>
               </div>
@@ -291,7 +364,7 @@ export default class GrantDetails extends Component {
                   <label className="label">Amount:</label>
                 </div>
                 <div className="field-body">
-                  <input type="text" className="form-control"  name="tokenAmount" value={tokenAmount} onChange={handleInput} />
+                  <input style={{zIndex:99}} type="text" className="form-control"  name="tokenAmount" value={tokenAmount} onChange={handleInput} />
                 </div>
               </div>
 
@@ -301,7 +374,7 @@ export default class GrantDetails extends Component {
                 </div>
                 <div className="field-body">
                   <input
-                    type="text" className="form-control"  name="gasPrice" value={gasPrice} onChange={handleInput}
+                    type="text" style={{zIndex:99}} className="form-control"  name="gasPrice" value={gasPrice} onChange={handleInput}
                   />
                   <p className="help">({currentTokenName})</p>
                 </div>
@@ -313,7 +386,7 @@ export default class GrantDetails extends Component {
                 </div>
                 <div className="field-body">
                   <input
-                    type="text" className="form-control"  name="email" value={email} onChange={handleInput}
+                    type="text" style={{zIndex:99}} className="form-control"  name="email" value={email} onChange={handleInput}
                   />
                   <p className="help">(optional)</p>
                 </div>
@@ -324,7 +397,7 @@ export default class GrantDetails extends Component {
                 </div>
                 <div className="field-body">
                   <div>
-                    <button onClick={()=>{
+                    <button style={{zIndex:99}} onClick={()=>{
                         this.props.sendSubscription()
                       }}>
                       Sign
@@ -338,13 +411,31 @@ export default class GrantDetails extends Component {
           )
         }
 
+        let cleanMonthlyGoal = this.props.monthlyGoal.replace(/[^0-9.]+/, '');
+
         funding = (
           <div style={{padding:20,background:"rgba(0,0,0,0.6)"}}>
+
+              Active Funding : {formatMoney(parseFloat(this.props.totalRaisedUSD),2)} out of {formatMoney(parseFloat(cleanMonthlyGoal),2)}
+
               {fundBox}
+              {eventLog}
               {allSubscriptions}
+              <Events
+                config={{hide:true,DEBUG:false}}
+                contract={this.props.subscriptionContract}
+                eventName={"ExecuteSubscription"}
+                block={this.props.block}
+                filter={{from:this.props.account}}
+                onUpdate={(eventData,allEvents)=>{
+                  console.log("EVENT DATA:",eventData)
+                  this.setState({events:allEvents})
+                }}
+              />
           </div>
         )
       }
+
 
       return (
         <div className="container-fluid">
@@ -366,6 +457,14 @@ export default class GrantDetails extends Component {
                 <div>
                   <ReactMarkdown source={this.props.desc} />
                 </div>
+
+                <hr />
+
+                <h5 className="mb-4">Monthly Goal: {this.props.monthlyGoal}</h5>
+                <h5 className="mb-4">Grant Duration: {this.props.grantDuration}</h5>
+
+                <h5 className="mb-4">Contact Name: {this.props.contactName}</h5>
+                <h5 className="mb-4">Contact Email: {this.props.contactEmail}</h5>
 
                 <hr />
 
@@ -403,8 +502,22 @@ export default class GrantDetails extends Component {
 
 
 
+
+
         </div>
       )
     }
   }
+}
+
+function formatMoney(number, places, symbol, thousand, decimal) {
+	number = number || 0;
+	places = !isNaN(places = Math.abs(places)) ? places : 2;
+	symbol = symbol !== undefined ? symbol : "$";
+	thousand = thousand || ",";
+	decimal = decimal || ".";
+	var negative = number < 0 ? "-" : "",
+	    i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
+	    j = (j = i.length) > 3 ? j % 3 : 0;
+	return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
 }

@@ -84,8 +84,8 @@ contract Subscription is Ownable {
         view
         returns (bool)
     {
-        return (block.timestamp >=
-                nextValidTimestamp[subscriptionHash].sub(gracePeriodSeconds)
+        return (block.timestamp <=
+                nextValidTimestamp[subscriptionHash].add(gracePeriodSeconds)
         );
     }
 

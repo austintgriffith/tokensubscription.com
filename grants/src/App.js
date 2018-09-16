@@ -48,6 +48,22 @@ class App extends Component {
     this.sendSubscription = this.sendSubscription.bind(this)
     this.submitGrant = this.submitGrant.bind(this)
   }
+  componentDidMount(){
+    let priceQuery = "https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH,DAI,ZRX,BAT,REP,GNT,SNT,BNT,MANA&tsyms=USD&extraParams=ethgrantscom"
+    console.log("Loading prices...",priceQuery)
+    axios.get(priceQuery)
+    .then((response) =>{
+      let data = response.data;
+      data.WC = {USD: 1} //add our fake coin in to test
+      this.setState({prices:data},()=>{
+        console.log("PRICES SET:",this.state.prices)
+      })
+      console.log("priceQuery",response);
+    })
+    .catch(function (error) {
+      console.log("priceQuery",error);
+    })
+  }
 
   async sendSubscription(){
     let {toAddress,timeType,tokenAmount,tokenAddress,gasPrice,account,web3} = this.state
@@ -239,8 +255,8 @@ class App extends Component {
       update[data.name] = data.value
     }else{
       let value = e.target.value
-      if(e.target.name=="title") value = value.substring(0,82) //limit title characters
-      if(e.target.name=="pitch") value = value.substring(0,230) //limit pitch characters
+      if(e.target.name=="title") value = value.substring(0,148) //limit title characters
+      if(e.target.name=="pitch") value = value.substring(0,298) //limit pitch characters
       update[e.target.name] = value
     }
     this.setState(() => (update));
