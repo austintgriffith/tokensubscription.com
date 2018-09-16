@@ -10,7 +10,7 @@ margin-top: 10rem;
 padding: 1.5rem;
 background: rgba(0,0,0,0.6);
 border: 1px solid #111;
-opacity:0.8
+opacity:0.6
 `
 
 const Home = () => (
