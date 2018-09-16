@@ -155,6 +155,8 @@ module.exports = {
         printTxResult(result)
         result = await clevis("sendTo","0.1","0","0x55ffbcd5f80a7e22660a3b564447a0c1d5396a5c")///<<<-------- change this to your metamask accounts
 
+        printTxResult(result)
+        result = await clevis("sendTo","0.1","0","0x707912a400af1cb2d00ffad766d8a675b8dce504")///<<<-------- change this to your metamask accounts
 
 
         printTxResult(result)

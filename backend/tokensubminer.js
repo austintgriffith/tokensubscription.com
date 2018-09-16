@@ -343,9 +343,36 @@ app.post('/saveSubscription', (req, res) => {
  * Get all Grants
  */
 app.get('/grants', (req, res) => {
-  console.log('/grants',req.params)
-  // @TODO need to implement pagination
-  mysqlPool.query('SELECT * FROM EthGrants', function (error, results, fields) {
+  console.log('/grants',req.query)
+
+  let query = 'SELECT * FROM EthGrants'
+  let limitstring = ''
+  let queryParams = []
+
+  if(req.query){
+    // Search
+    let search = req.query.s
+    if(search){
+      query += ' WHERE title LIKE ? OR pitch LIKE ?'
+      queryParams.push('%'+req.query.s+'%')
+      queryParams.push('%'+req.query.s+'%')
+    }
+
+    // Pagination
+    let page = parseInt(req.query.page)
+    let limit = parseInt(req.query.limit)
+    let offset = (limit * page) - limit;
+    if(Number.isInteger(offset) && offset >= 0){
+      limitstring += ' LIMIT ?, ?'
+      queryParams.push(offset)
+      queryParams.push(limit)
+    }
+  }
+
+  query += ' ORDER BY created DESC'
+  query += limitstring
+
+  mysqlPool.query(query, queryParams, function (error, results, fields) {
     if (error) throw error
     res.setHeader('Content-Type', 'application/json')
     res.end(JSON.stringify(results))
@@ -376,7 +403,7 @@ app.post('/grants/create', async (req, res) => {
     req.body.deployedAddress,
     req.body.desc
   )
-  
+
   console.log("hash compare",myHash,req.body.hash)
   let signer = web3.eth.accounts.recover(myHash,req.body.sig)
   console.log("Recovered address:",signer)
@@ -390,33 +417,44 @@ app.post('/grants/create', async (req, res) => {
   }else{
     delete req.body.hash
     delete req.body.sig
-    mysqlPool.query('INSERT INTO EthGrants SET ?', req.body, function (error, results, fields) {
-       if (error) throw error
-       res.setHeader('Content-Type', 'application/json')
-       res.end(JSON.stringify(results))
+
+    mysqlPool.query('SELECT * FROM EthGrants WHERE deployedAddress = ?', req.body.deployedAddress, function (existingerror, existingresults, existingfields) {
+       if (existingerror) throw existingerror
+
+       if(existingresults) {
+
+         console.log('found, updating')
+         console.log(req.body)
+
+         // This was a fight, because desc is a reserved keyword in MySQL
+         let queryParams = [req.body.title, req.body.pitch, req.body.desc, req.body.deployedAddress]
+         let query = 'UPDATE EthGrants SET `title` = ?, `pitch` = ?, `desc` = ? WHERE `deployedAddress` = ?'
+
+         console.log(query)
+         console.log(queryParams)
+
+         mysqlPool.query(query, queryParams, function (error, results, fields) {
+           if (error) throw error
+           res.setHeader('Content-Type', 'application/json')
+           res.end(JSON.stringify(results))
+         })
+       } else {
+         console.log('new record')
+         console.log(req.body)
+
+         mysqlPool.query('INSERT INTO EthGrants SET ?', req.body, function (newerror, newresults, newfields) {
+            if (newerror) throw newerror
+            res.setHeader('Content-Type', 'application/json')
+            res.end(JSON.stringify(newresults))
+         })
+
+       }
+
+       // res.setHeader('Content-Type', 'application/json')
+       // res.end(JSON.stringify(results))
     })
   }
 
-})
-
-/**
- * Update a Grant
- */
-app.put('/grants/update/:id', (req, res) => {
-  console.log('/grants/update', req.body)
-
-  // TODO will need to recover a sig from the hash of the details to make sure the signer matches the deployed contract's author
-  // let signer = web3.eth.accounts.recover(req.body.message,req.body.sig)
-
-  // @TODO need to figure out what fields are updateable
-  /*
-  mysqlPool.query('UPDATE EthGrants SET ', req.body, function (error, results, fields) {
-    if (error) throw error
-    res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify(results))
-  })
-  */
-  res.end(JSON.stringify('endpoint not implemented'))
 })
 ///////////////////------------------------------------------------------------------------------------ END JER's API
 
