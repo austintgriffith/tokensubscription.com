@@ -173,9 +173,13 @@ export default class GrantDetails extends Component {
         }else{
           fundBox = (
             <div>
-              <h2>Fund Grant:</h2>
-              <div className="form-field">
-                <label>Token:</label>
+              <h3 className="mb-4 text-center">Fund This Grant:</h3>
+
+              <div className="field is-horizontal">
+                <div className="field-label">
+                  <label className="label">Token:</label>
+                </div>
+                <div className="field-body">
                   <Dropdown
                     selectOnNavigation={false}
                     selection
@@ -185,98 +189,64 @@ export default class GrantDetails extends Component {
                     placeholder='Choose Token'
                     onChange={handleInput}
                   />
+                </div>
               </div>
-              <div className="form-field">
-                <label>Amount:</label>
-                <input type="text" name="tokenAmount" value={tokenAmount} onChange={handleInput} />
+
+              <div className="field is-horizontal">
+                <div className="field-label">
+                  <label className="label">Amount:</label>
+                </div>
+                <div className="field-body">
+                  <input type="text" className="form-control"  name="tokenAmount" value={tokenAmount} onChange={handleInput} />
+                </div>
               </div>
-              <div className="form-field">
-                <label>Gas Price:</label>
-                <input
-                  type="text" name="gasPrice" value={gasPrice} onChange={handleInput}
-                />({currentTokenName})
+
+              <div className="field is-horizontal">
+                <div className="field-label">
+                  <label className="label">Gas Price:</label>
+                </div>
+                <div className="field-body">
+                  <input
+                    type="text" className="form-control"  name="gasPrice" value={gasPrice} onChange={handleInput}
+                  />
+                  <p className="help">({currentTokenName})</p>
+                </div>
               </div>
-              <div className="form-field">
-                <label>Email (optional):</label>
-                <input
-                  type="text" name="email" style={{width:240}} value={email} onChange={handleInput}
-                />
+
+              <div className="field is-horizontal mb-4">
+                <div className="field-label">
+                  <label className="label">Email:</label>
+                </div>
+                <div className="field-body">
+                  <input
+                    type="text" className="form-control"  name="email" value={email} onChange={handleInput}
+                  />
+                  <p className="help">(optional)</p>
+                </div>
               </div>
-              <button size="2" style={{marginTop:50}} onClick={()=>{
-                  this.props.sendSubscription()
-                }}>
-                Sign
-              </button>
+
+              <div className="field is-horizontal mb-3">
+                <div className="field-label">
+                </div>
+                <div className="field-body">
+                  <div>
+                    <button onClick={()=>{
+                        this.props.sendSubscription()
+                      }}>
+                      Sign
+                    </button>
+                  </div>
+                </div>
+              </div>
+
             </div>
           )
         }
 
         funding = (
-<<<<<<< HEAD
           <div style={{padding:20,background:"rgba(0,0,0,0.6)"}}>
-            <h3 className="mb-4 text-center">Fund This Grant:</h3>
-
-            <div className="field is-horizontal">
-              <div className="field-label">
-                <label className="label">Token:</label>
-              </div>
-              <div className="field-body">
-                <Dropdown
-                  selectOnNavigation={false}
-                  selection
-                  value={tokenAddress}
-                  name='tokenAddress'
-                  options={coinOptions}
-                  placeholder='Choose Token'
-                  onChange={handleInput}
-                />
-              </div>
-            </div>
-
-            <div className="field is-horizontal">
-              <div className="field-label">
-                <label className="label">Amount:</label>
-              </div>
-              <div className="field-body">
-                <input type="text" className="form-control"  name="tokenAmount" value={tokenAmount} onChange={handleInput} />
-              </div>
-            </div>
-
-            <div className="field is-horizontal">
-              <div className="field-label">
-                <label className="label">Gas Price:</label>
-              </div>
-              <div className="field-body">
-                <input
-                  type="text" className="form-control"  name="gasPrice" value={gasPrice} onChange={handleInput}
-                />
-                <p className="help">({currentTokenName})</p>
-              </div>
-            </div>
-
-            <div className="field is-horizontal mb-3">
-              <div className="field-label">
-                <label className="label">Email:</label>
-              </div>
-              <div className="field-body">
-                <input
-                  type="text" className="form-control"  name="email" value={email} onChange={handleInput}
-                />
-                <p className="help">(optional)</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <button onClick={()=>{
-                  this.props.sendSubscription()
-                }}>
-                Sign
-              </button>
-            </div>
-=======
-          <div style={{position:"fixed",right:-2,top:100,width:450,padding:20,border:"1px solid #666666",backgroundColor:"#222222"}}>
-            {fundBox}
-            {allSubscriptions}
->>>>>>> austin
+              {fundBox}
+              {allSubscriptions}
           </div>
         )
       }
