@@ -18,9 +18,6 @@ export default class GrantDetails extends Component {
     super(props);
     this.state = {
       error: null,
-      isLoaded: false,
-      grantData: [],
-      author: ""
     }
   }
 
@@ -30,45 +27,43 @@ export default class GrantDetails extends Component {
 
   getDetails = async () => {
     try {
-      const response = await axios.get(this.props.backendUrl+`grants/${this.props.match.params.id}`);
-      this.setState(() => ({
-        isLoaded: true,
-        grantData: response.data
-      }),async ()=>{
-        console.log("At this point we have the grant contract address... dynamically load it...")
-        if(this.props.web3){
-          let tokenContract = this.props.customContractLoader("Subscription",this.state.grantData[0].deployedAddress)
-          this.setState({author:await tokenContract.author().call(),contract:tokenContract})
+      let id = this.props.match.params.id
+      if(id){
+        const response = await axios.get(this.props.backendUrl+`grants/`+id);
+        console.log("RESPONSE DATA:",response.data)
+        if(response.data&&response.data[0]){
+          this.props.save(response.data[0])
+          if(this.props.web3){
+            let tokenContract = this.props.customContractLoader("Subscription",response.data[0].deployedAddress)
+            this.props.save({author:await tokenContract.author().call(),contract:tokenContract,toAddress:await tokenContract.requiredToAddress().call()})
+          }
         }
-      });
+      }
     } catch (error) {
       this.setState(() => ({ error }))
     }
   }
 
   render() {
-    const { error, isLoaded, grantData } = this.state;
-    const grant = grantData[0];
-
-
+    const { error } = this.state;
 
     if (error) {
       return <div className="container">{error.message}</div>;
-    } else if (!isLoaded) {
-      return <div className="container">Loading Grants...</div>;
+    } else if (!this.props.author || !this.props.deployedAddress) {
+      return <div className="container">Loading...</div>;
     } else {
 
       let editButton  =  ""
-      if(this.props.account && this.state.author && this.state.author.toLowerCase()==this.props.account.toLowerCase()){
+      if(this.props.account && this.props.author && this.props.author.toLowerCase()==this.props.account.toLowerCase()){
         editButton = <button className="btn btn-outline-primary" style={{marginBottom:50}} onClick={()=>{
-          window.location = "/create/"+grant.id
+          window.location = "/create/"+this.props.match.params.id
         }}>
           Edit Grant
         </button>
       }
 
       let funding = ""
-      if(this.props.web3&&this.state.author){
+      if(this.props.web3&&this.props.author){
         let {handleInput,coins,contract,items,tokenName,tokenAmount,tokenAddress,timeType,timeAmount,gasPrice,prefilledParams,email,requiredTokenAddress} = this.props
         console.log("timeType:",timeType)
 
@@ -100,13 +95,6 @@ export default class GrantDetails extends Component {
             <h2>Fund Grant:</h2>
 
             <div className="form-field">
-              <label>Recipeint:</label>
-              <Address
-                {...this.props}
-                address={toAddress}
-              />
-            </div>
-            <div className="form-field">
               <label>Token:</label>
                 <Dropdown
                   selectOnNavigation={false}
@@ -117,22 +105,10 @@ export default class GrantDetails extends Component {
                   placeholder='Choose Token'
                   onChange={handleInput}
                 />
-
-               <label>Amount:</label>
-               <input type="text" name="tokenAmount" value={tokenAmount} onChange={handleInput} />
             </div>
             <div className="form-field">
-              <label>Recurring Every:</label>
-              <input type="text" name="timeAmount" value={timeAmount} onChange={handleInput} />
-              <Dropdown
-                selectOnNavigation={false}
-                selection
-                value={timeType}
-                name="timeType"
-                onChange={handleInput}
-                options={monthOptions}
-                placeholder='Choose Term'
-              />
+              <label>Amount:</label>
+              <input type="text" name="tokenAmount" value={tokenAmount} onChange={handleInput} />
             </div>
             <div className="form-field">
               <label>Gas Price:</label>
@@ -159,17 +135,31 @@ export default class GrantDetails extends Component {
         <div className="container" style={{padding:20}}>
           {funding}
           {editButton}
-          <h1 className="mb-4">{grant.title}</h1>
-          <h3 className="mb-4">{grant.pitch}</h3>
-          <p className="mb-4">{grant.description}</p>
+          <h1 className="mb-4">{this.props.title}</h1>
+          <h3 className="mb-4">{this.props.pitch}</h3>
+
           <div style={{padding:10}}>
             <Address
               {...this.props}
-              address={grant.deployedAddress.toLowerCase()}
+              address={this.props.toAddress.toLowerCase()}
             />
           </div>
 
-            <ReactMarkdown source={grant.desc} />
+          <div style={{padding:10}}>
+            <Address
+              {...this.props}
+              address={this.props.deployedAddress.toLowerCase()}
+            />
+          </div>
+
+          <ReactMarkdown source={this.props.desc} />
+
+          <div style={{padding:10}}>
+            <Address
+              {...this.props}
+              address={this.props.author.toLowerCase()}
+            />
+          </div>
 
         </div>
       )
