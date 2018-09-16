@@ -421,7 +421,7 @@ app.post('/grants/create', async (req, res) => {
     mysqlPool.query('SELECT * FROM EthGrants WHERE deployedAddress = ?', req.body.deployedAddress, function (existingerror, existingresults, existingfields) {
        if (existingerror) throw existingerror
 
-       if(existingresults) {
+       if(existingresults.length > 0) {
 
          console.log('found, updating')
          console.log(req.body)
@@ -443,9 +443,9 @@ app.post('/grants/create', async (req, res) => {
          console.log(req.body)
 
          mysqlPool.query('INSERT INTO EthGrants SET ?', req.body, function (newerror, newresults, newfields) {
-            if (newerror) throw newerror
-            res.setHeader('Content-Type', 'application/json')
-            res.end(JSON.stringify(newresults))
+           if (newerror) throw newerror
+           res.setHeader('Content-Type', 'application/json')
+           res.end(JSON.stringify(newresults))
          })
 
        }
