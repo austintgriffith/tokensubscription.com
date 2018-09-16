@@ -232,6 +232,7 @@ class App extends Component {
       }
     }).then((response)=>{
       console.log("SAVED INFO",response.data)
+
     })
     .catch((error)=>{
       console.log(error);

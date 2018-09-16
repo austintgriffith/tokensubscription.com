@@ -164,6 +164,7 @@ class CreateGrants extends Component {
                 let sig = await this.props.web3.eth.personal.sign(""+hash,this.props.account)
                 console.log("Sig:",sig)
                 this.props.submitGrant(hash,sig)
+
               }}>
                 Save
               </button>

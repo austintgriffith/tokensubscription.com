@@ -18,9 +18,6 @@ export default class GrantDetails extends Component {
     super(props);
     this.state = {
       error: null,
-      isLoaded: false,
-      grantData: [],
-      author: ""
     }
   }
 
@@ -30,13 +27,16 @@ export default class GrantDetails extends Component {
 
   getDetails = async () => {
     try {
-      const response = await axios.get(this.props.backendUrl+`grants/${this.props.match.params.id}`);
-      console.log("RESPONSE DATA:",response.data)
-      if(response.data&&response.data[0]){
-        this.props.save(response.data[0])
-        if(this.props.web3){
-          let tokenContract = this.props.customContractLoader("Subscription",response.data[0].deployedAddress)
-          this.props.save({author:await tokenContract.author().call(),contract:tokenContract,toAddress:await tokenContract.requiredToAddress().call()})
+      let id = this.props.match.params.id
+      if(id){
+        const response = await axios.get(this.props.backendUrl+`grants/`+id);
+        console.log("RESPONSE DATA:",response.data)
+        if(response.data&&response.data[0]){
+          this.props.save(response.data[0])
+          if(this.props.web3){
+            let tokenContract = this.props.customContractLoader("Subscription",response.data[0].deployedAddress)
+            this.props.save({author:await tokenContract.author().call(),contract:tokenContract,toAddress:await tokenContract.requiredToAddress().call()})
+          }
         }
       }
     } catch (error) {
@@ -45,26 +45,25 @@ export default class GrantDetails extends Component {
   }
 
   render() {
-    const { error, isLoaded, grantData } = this.state;
-    const grant = grantData[0];
+    const { error } = this.state;
 
     if (error) {
       return <div className="container">{error.message}</div>;
-    } else if (!isLoaded) {
-      return <div className="container">Loading Grants...</div>;
+    } else if (!this.props.author || !this.props.deployedAddress) {
+      return <div className="container">Loading...</div>;
     } else {
 
       let editButton  =  ""
-      if(this.props.account && this.state.author && this.state.author.toLowerCase()==this.props.account.toLowerCase()){
+      if(this.props.account && this.props.author && this.props.author.toLowerCase()==this.props.account.toLowerCase()){
         editButton = <button className="btn btn-outline-primary" style={{marginBottom:50}} onClick={()=>{
-          window.location = "/create/"+grant.id
+          window.location = "/create/"+this.props.match.params.id
         }}>
           Edit Grant
         </button>
       }
 
       let funding = ""
-      if(this.props.web3&&this.state.author){
+      if(this.props.web3&&this.props.author){
         let {handleInput,coins,contract,items,tokenName,tokenAmount,tokenAddress,timeType,timeAmount,gasPrice,prefilledParams,email,requiredTokenAddress} = this.props
         console.log("timeType:",timeType)
 
@@ -136,8 +135,8 @@ export default class GrantDetails extends Component {
         <div className="container" style={{padding:20}}>
           {funding}
           {editButton}
-          <h1 className="mb-4">{grant.title}</h1>
-          <h3 className="mb-4">{grant.pitch}</h3>
+          <h1 className="mb-4">{this.props.title}</h1>
+          <h3 className="mb-4">{this.props.pitch}</h3>
 
           <div style={{padding:10}}>
             <Address
@@ -149,11 +148,11 @@ export default class GrantDetails extends Component {
           <div style={{padding:10}}>
             <Address
               {...this.props}
-              address={grant.deployedAddress.toLowerCase()}
+              address={this.props.deployedAddress.toLowerCase()}
             />
           </div>
 
-          <ReactMarkdown source={grant.desc} />
+          <ReactMarkdown source={this.props.desc} />
 
           <div style={{padding:10}}>
             <Address
