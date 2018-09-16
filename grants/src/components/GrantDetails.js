@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import { Address, Blockie, Scaler } from "dapparatus";
 import { Dropdown } from 'semantic-ui-react'
 import styled from 'styled-components';
+import Loader from '../loader.gif';
 
 const AddressBox = styled.div`
 display: block;
@@ -17,7 +18,7 @@ font-size: 14px;
 `
 
 let pollInterval
-let pollIntervalTime = 1333
+let pollIntervalTime = 3333
 
 let monthOptions = [
     {key: 'ongoing', value: 'ongoing', text: 'Ongoing'},
@@ -37,10 +38,12 @@ export default class GrantDetails extends Component {
 
   componentDidMount() {
     console.log("MOUNT!!!!")
-    this.props.save({subscriptions:false,deployedAddress:""})
-    this.getDetails();
-    this.poll()
-    pollInterval = setInterval(this.poll.bind(this),pollIntervalTime)
+    this.props.save({tokenContract:false,subscriptions:false,deployedAddress:""},()=>{
+      this.getDetails();
+      setTimeout(this.poll.bind(this),333)
+      setTimeout(this.poll.bind(this),999)
+      pollInterval = setInterval(this.poll.bind(this),pollIntervalTime)
+    })
   }
 
   componentWillUnmount() {
@@ -52,7 +55,50 @@ export default class GrantDetails extends Component {
     console.log("polling for subscriptions on "+this.props.deployedAddress+"...")
     if(this.props.deployedAddress){
       const response = await axios.get(this.props.backendUrl+`subscriptionsByContract/`+this.props.deployedAddress);
-      this.props.save({subscriptions:response.data})
+      let subscriptions = response.data
+      this.props.save({subscriptions:subscriptions})
+
+      for(let s in subscriptions){
+
+        if(subscriptions[s].parts&&subscriptions[s].parts[0].toLowerCase()==this.props.account.toLowerCase()){
+          //console.log("sub "+s+" )))))))))))",subscriptions[s])
+          let thisTokenContract
+          let thisTokenAddress = subscriptions[s].parts[2]
+          let thisTokenDecimals = 18
+          if(this.props.tokenContracts && this.props.tokenContracts[thisTokenAddress] && this.props.tokenDecimals[thisTokenAddress]){
+            //console.log("CACHED")
+            thisTokenContract = this.props.tokenContracts[thisTokenAddress]
+            thisTokenDecimals = this.props.tokenDecimals[thisTokenAddress]
+          }else{
+            thisTokenContract = this.props.customContractLoader("WasteCoin",subscriptions[s].parts[2])
+            thisTokenDecimals = await thisTokenContract.decimals().call()
+            let tokenContracts = this.props.tokenContracts
+            let tokenDecimals = this.props.tokenDecimals
+            if(!tokenContracts) tokenContracts={}
+            if(!tokenDecimals) tokenDecimals={}
+            tokenContracts[thisTokenAddress] = thisTokenContract
+            tokenDecimals[thisTokenAddress] = thisTokenDecimals
+            this.props.save({tokenContracts,tokenDecimals})
+          }
+
+          let tokenBalances = this.props.tokenBalances
+          let tokenAllowances = this.props.tokenAllowances
+
+          if(!tokenBalances) tokenBalances={}
+          if(!tokenAllowances) tokenAllowances={}
+          //console.log("getting token balance ",thisTokenContract)
+          let balance = (await thisTokenContract.balanceOf(this.props.account).call()) / 10**thisTokenDecimals
+          //console.log(balance)
+          let allowance = (await thisTokenContract.allowance(this.props.account,this.props.deployedAddress).call()) / 10**thisTokenDecimals
+          //console.log(allowance)
+          tokenBalances[thisTokenAddress] = balance
+          tokenAllowances[thisTokenAddress] = allowance
+          this.props.save({tokenBalances,tokenAllowances})
+
+        }
+
+
+      }
     }
 
   }
@@ -69,8 +115,8 @@ export default class GrantDetails extends Component {
           this.props.save(response.data[0])
 
           if(this.props.web3){
-            let tokenContract = this.props.customContractLoader("Subscription",response.data[0].deployedAddress)
-            this.props.save({author:await tokenContract.author().call(),contract:tokenContract,toAddress:await tokenContract.requiredToAddress().call()})
+            let subscriptionContract = this.props.customContractLoader("Subscription",response.data[0].deployedAddress)
+            this.props.save({author:await subscriptionContract.author().call(),subscriptionContract:subscriptionContract,toAddress:await subscriptionContract.requiredToAddress().call()})
           }
         }
       }
@@ -127,7 +173,7 @@ export default class GrantDetails extends Component {
 
         let mySubscription = ""
 
-        if(this.props.subscriptions&&this.props.subscriptions.length>0){
+        if(this.props.subscriptions&&this.props.subscriptions.length>0&&this.props.tokenBalances&&this.props.tokenContracts){
           console.log("this.props.subscriptions",this.props.subscriptions)
           allSubscriptions = this.props.subscriptions.map((sub)=>{
             let from = sub.parts[0]
@@ -145,22 +191,67 @@ export default class GrantDetails extends Component {
             }
 
             let thisSub = (
-              <div key={"sub"+sub.subscriptionHash} style={{margin:5,border:"1px solid #555555",padding:5}}>
-              <Blockie
-                address={from.toLowerCase()}
-                config={{size:3}}
-               /> => <Blockie
-                address={to.toLowerCase()}
-                config={{size:3}}
-               /> {tokenAmount} {tokenSymbol}
+              <div key={"sub"+sub.subscriptionHash} style={{marginTop:10,borderTop:"1px solid #444444",paddingTop:20}}>
+                <Blockie
+                  address={from.toLowerCase()}
+                  config={{size:3}}
+                 /> => <Blockie
+                  address={to.toLowerCase()}
+                  config={{size:3}}
+                 /> {tokenAmount} {tokenSymbol}
               </div>
             )
 
             if(from.toLowerCase()==this.props.account.toLowerCase()){
+
+              let approvedColor = "#fd9653"
+              if(this.props.tokenAllowances[token]>0){
+                approvedColor = "#5396fd"
+              }
+              let loader = ""
+              if(this.props.approving){
+               loader = (
+                 <img src={Loader} style={{width: '30px', height: '30px', verticalAlign: 'middle', margin:'12px 0 0 10px'}}/>
+               )
+              }
+
               mySubscription= (
                 <div>
                   {thisSub}
-                  (approve)
+                  <div style={{marginTop:20}}>
+                    Your Balance: <span>{this.props.tokenBalances[token]}</span>
+                    <div style={{fontSize:12}}>
+                      (Amount of {tokenSymbol} you hodl)
+                    </div>
+                  </div>
+                  <div style={{marginTop:20,fontSize:28}}>
+                    Approved Tokens: <span style={{color:approvedColor}}>{this.props.tokenAllowances[token]}</span>
+                    <div style={{fontSize:12}}>
+                      (Max limit of {tokenSymbol} approved to send throughout the lifetime of funding)
+                    </div>
+                  </div>
+                  <div style={{marginTop:40}} className="form-field">
+                  Approve: <input
+                    type="text" name="approve" style={{width:100}} value={this.props.approve} onChange={this.props.handleInput}
+                  />
+                  <div style={{fontSize:12}}>
+                    (Use this to start, stop, and pause your funding.)
+                  </div>
+                    <button size="2" style={{marginTop:10}} onClick={async  ()=>{
+                        let amount = ""+(this.props.approve*(10**(this.props.tokenDecimals[token])))
+                        let address = ""+(this.props.deployedAddress)
+                        this.props.save({approving:true})
+                        this.props.tx(
+                          this.props.tokenContracts[token].approve(address,amount),
+                          75000,
+                          ()=>{
+                            this.props.save({approving:false,approve:""})
+                          }
+                        )
+                      }}>
+                      Approve Tokens
+                    </button> {loader}
+                  </div>
                 </div>
               )
             }else{
@@ -241,6 +332,7 @@ export default class GrantDetails extends Component {
                   </div>
                 </div>
               </div>
+
 
             </div>
           )
