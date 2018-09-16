@@ -52,6 +52,10 @@ class CreateGrants extends Component {
           toAddress: this.props.account,
           deployedAddress: "",
           desc: "",
+          monthlyGoal: "",
+          grantDuration: "",
+          contactName: "",
+          contactEmail: ""
         })
       }
     } catch (error) {
@@ -192,7 +196,7 @@ class CreateGrants extends Component {
 
               {descriptionContent}
 
-              <p className="help">A longer, more detailed description. Can be written in Markdown.</p>
+              <p className="help">A longer, more detailed description can be written in Markdown.</p>
             </div>
           </div>
 
