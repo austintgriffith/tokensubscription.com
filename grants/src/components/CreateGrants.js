@@ -24,6 +24,16 @@ class CreateGrants extends Component {
             this.props.save({author:await tokenContract.author().call(),contract:tokenContract,toAddress:await tokenContract.requiredToAddress().call()})
           }
         }
+      }else{
+        console.log("THIS IS A FRESH CREATE, CLEAR THE DATA")
+        this.props.save({
+          title: "",
+          pitch: "",
+          toAddress: this.props.account,
+          deployedAddress: "",
+          desc: "",
+
+        })
       }
     } catch (error) {
       this.setState(() => ({ error }))

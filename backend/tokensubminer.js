@@ -436,7 +436,10 @@ app.post('/grants/create', async (req, res) => {
          mysqlPool.query(query, queryParams, function (error, results, fields) {
            if (error) throw error
            res.setHeader('Content-Type', 'application/json')
-           res.end(JSON.stringify(results))
+           let endresult = results
+           endresult.updateId = existingresults[0].id
+           console.log("endresult:",endresult)
+           res.end(JSON.stringify(endresult))
          })
        } else {
          console.log('new record')
