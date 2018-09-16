@@ -168,6 +168,25 @@ app.get('/subscriptions', (req, res) => {
   })
 });
 
+app.get('/subscriptionsByContract/:contractAddress', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  console.log("/subscriptionsByContract",req.params)
+  redis.get(subscriptionListKey, function (err, result) {
+    let mysubs = []
+    try{
+      let allsubs = JSON.parse(result)
+      //console.log("allsubs:",allsubs)
+      for(let s in allsubs){
+        if(allsubs[s].subscriptionContract.toLowerCase()==req.params.contractAddress.toLowerCase()){
+          mysubs.push(allsubs[s])
+        }
+      }
+    }catch(e){console.log(e)}
+    res.set('Content-Type', 'application/json');
+    res.end(JSON.stringify(mysubs));
+  })
+});
+
 app.get('/subscription/:subscriptionHash', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   console.log("/subscription/"+req.params.subscriptionHash)

@@ -52,7 +52,7 @@ class App extends Component {
     let {toAddress,timeType,tokenAmount,tokenAddress,gasPrice,account,web3} = this.state
 
     let tokenContract = this.state.customContractLoader("WasteCoin",tokenAddress)
-    let subscriptionContract = this.state.customContractLoader("Subscription",this.props.deployedAddress)
+    let subscriptionContract = this.state.customContractLoader("Subscription",this.state.deployedAddress)
 
     let value = 0
     let txData = "0x02" //something like this to say, hardcoded VERSION 2, we're sending approved tokens
@@ -63,12 +63,11 @@ class App extends Component {
     if(!gasPrice) gasPrice = 0
 
     console.log("TOKEN CONTRACT ",tokenContract)
-    let decimals = await tokenContract.decimals().call()
+    let decimals = parseInt(await tokenContract.decimals().call())
     console.log("decimals",decimals)
-    return;
 
-    let realTokenAmount = tokenAmount*10**18
-    let realGasPrice = gasPrice*10**18
+    let realTokenAmount = tokenAmount*10**decimals
+    let realGasPrice = gasPrice*10**decimals
     /*
     address from, //the subscriber
     address to, //the publisher
@@ -92,10 +91,11 @@ class App extends Component {
     const subscriptionHash = await subscriptionContract.getSubscriptionHash(...parts).call()
     console.log("subscriptionHash",subscriptionHash)
 
+
     let signature = await web3.eth.personal.sign(""+subscriptionHash,account)
     console.log("signature",signature)
     let postData = {
-      subscriptionContract:subscriptionContract._address,
+      subscriptionContract:this.state.deployedAddress,
       parts:parts,
       subscriptionHash: subscriptionHash,
       signature:signature,
@@ -108,7 +108,6 @@ class App extends Component {
       }
     }).then((response)=>{
       console.log("TX RESULT",response.data.subscriptionHash)
-      window.location = "/"+response.data.subscriptionHash
     })
     .catch((error)=>{
       console.log(error);
@@ -122,8 +121,6 @@ class App extends Component {
     if(!web3){
       alert("Please install and unlock web3. (MetaMask, Trust, etc)")
     }else{
-
-
 
       //requiredToAddress,requiredTokenAddress,requiredTokenAmount,requiredPeriodSeconds,requiredGasPrice
       let requiredToAddress = "0x0000000000000000000000000000000000000000"
@@ -215,10 +212,6 @@ class App extends Component {
       });
     }
   }
-
-
-
-
   submitGrant(hash,sig){
     let {title,pitch,deployedAddress,desc} = this.state
     axios.post(backendUrl+'grants/create',{hash,sig,title,pitch,deployedAddress,desc}, {
@@ -257,9 +250,9 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state.title)
+    //console.log(this.state.title)
     let {web3,account,contracts,tx,gwei,block,avgBlockTime,etherscan} = this.state
-    console.log(this.state)
+    //console.log(this.state)
     let extraRoutes = ""
     let connectedDisplay = []
     if(web3){
