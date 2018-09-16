@@ -136,7 +136,7 @@ export default class GrantDetails extends Component {
 
       let editButton  =  ""
       if(this.props.account && this.props.author && this.props.author.toLowerCase()==this.props.account.toLowerCase()){
-        editButton = <button className="btn btn-outline-primary" onClick={()=>{
+        editButton = <button style={{marginLeft:50}} className="btn btn-outline-primary" onClick={()=>{
           window.location = "/create/"+this.props.match.params.id
         }}>
           Edit Grant
@@ -266,7 +266,7 @@ export default class GrantDetails extends Component {
           fundBox = mySubscription
         }else{
           fundBox = (
-            <div style={{padding:20,background:"rgba(0,0,0,0.6)"}}>
+            <div style={{zIndex:99,padding:20,background:"rgba(0,0,0,0.6)"}}>
               <h3 className="mb-4 text-center">Fund This Grant:</h3>
 
               <div className="field is-horizontal">

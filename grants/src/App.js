@@ -213,8 +213,8 @@ class App extends Component {
     }
   }
   submitGrant(hash,sig){
-    let {title,pitch,deployedAddress,desc} = this.state
-    axios.post(backendUrl+'grants/create',{hash,sig,title,pitch,deployedAddress,desc}, {
+    let {title,pitch,deployedAddress,desc,monthlyGoal,grantDuration,contactName,contactEmail} = this.state
+    axios.post(backendUrl+'grants/create',{hash,sig,title,pitch,deployedAddress,desc,monthlyGoal,grantDuration,contactName,contactEmail}, {
       headers: {
           'Content-Type': 'application/json',
       }
