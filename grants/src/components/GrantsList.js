@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import GrantBox from './GrantBox';
 import axios from 'axios';
+import Nav from './Nav';
 
 export default class GrantsList extends Component {
 
@@ -37,10 +38,13 @@ export default class GrantsList extends Component {
       return <div className="container">Loading Grants...</div>;
     } else {
       return (
-        <div className="container">
-          {grants.map((grant) => {
-            return <GrantBox key={grant.id} {...grant} />
-          })}
+        <div>
+          <Nav />
+          <div className="container">
+            {grants.map((grant) => {
+              return <GrantBox key={grant.id} {...grant} />
+            })}
+          </div>
         </div>
       )
     }

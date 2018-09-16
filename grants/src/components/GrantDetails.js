@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import { Address, Blockie, Scaler } from "dapparatus";
 import { Dropdown } from 'semantic-ui-react'
 import styled from 'styled-components';
+import Nav from './Nav';
 
 const AddressBox = styled.div`
 display: block;
@@ -255,62 +256,63 @@ export default class GrantDetails extends Component {
       }
 
       return (
-        <div className="container-fluid">
+        <div>
+          <Nav />
+          <div className="container-fluid">
 
-          <div className="mb-4">
-            {editButton}
-          </div>
+            <div className="mb-4">
+              {editButton}
+            </div>
 
-          <div className="row">
-            <div className="col-md-7">
+            <div className="row">
+              <div className="col-md-7">
 
-              <div style={{padding: 20}}>
+                <div style={{padding: 20}}>
 
-                <h1 className="mb-4">{this.props.title}</h1>
-                <h3 className="mb-4">{this.props.pitch}</h3>
+                  <h1 className="mb-4">{this.props.title}</h1>
+                  <h3 className="mb-4">{this.props.pitch}</h3>
 
-                <hr />
+                  <hr />
 
-                <div>
-                  <ReactMarkdown source={this.props.desc} />
+                  <div>
+                    <ReactMarkdown source={this.props.desc} />
+                  </div>
+
+                  <hr />
+
+                  <AddressBox>
+                    <p>Grant Recipeint Address:</p>
+                    <Address
+                      {...this.props}
+                      address={this.props.toAddress.toLowerCase()}
+                    />
+                  </AddressBox>
+
+                  <AddressBox>
+                    <p>Grant Contract Address:</p>
+                    <Address
+                      {...this.props}
+                      address={this.props.deployedAddress.toLowerCase()}
+                    />
+                  </AddressBox>
+
+                  <AddressBox>
+                    <p>Grant Author Address:</p>
+                    <Address
+                      {...this.props}
+                      address={this.props.author.toLowerCase()}
+                    />
+                  </AddressBox>
+
                 </div>
 
-                <hr />
-
-                <AddressBox>
-                  <p>Grant Recipeint Address:</p>
-                  <Address
-                    {...this.props}
-                    address={this.props.toAddress.toLowerCase()}
-                  />
-                </AddressBox>
-
-                <AddressBox>
-                  <p>Grant Contract Address:</p>
-                  <Address
-                    {...this.props}
-                    address={this.props.deployedAddress.toLowerCase()}
-                  />
-                </AddressBox>
-
-                <AddressBox>
-                  <p>Grant Author Address:</p>
-                  <Address
-                    {...this.props}
-                    address={this.props.author.toLowerCase()}
-                  />
-                </AddressBox>
-
               </div>
+              <div className="col-md-5">
+                {funding}
+              </div>
+            </div>
 
-            </div>
-            <div className="col-md-5">
-              {funding}
-            </div>
           </div>
-
-
-
         </div>
       )
     }

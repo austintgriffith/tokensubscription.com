@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Metamask, Gas, ContractLoader, Transactions, Button, Scaler } from "dapparatus"
 import RLP from 'rlp';
 import axios from 'axios'
@@ -364,12 +364,6 @@ class App extends Component {
             }}
           />
           {connectedDisplay}
-
-          <ul className="nav">
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/list">Fund A Grant</Link></li>
-            <li><Link to="/create">Create A Grant</Link></li>
-          </ul>
 
           <Route exact path="/" component={Home} />
           <Route path="/list" render={(props) => <GrantsList {...props} backendUrl={backendUrl} />} />
