@@ -53,6 +53,39 @@ a:focus {
   color: #ccc;
 }
 
+button {
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: .5rem 1.5rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,-webkit-box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,-webkit-box-shadow 0.15s ease-in-out;
+  -o-transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,box-shadow 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,box-shadow 0.15s ease-in-out,-webkit-box-shadow 0.15s ease-in-out;
+  color: #5396fd;
+  background-color: transparent;
+  background-image: none;
+  border-color: #5396fd;
+}
+button:hover,
+button:focus {
+  color: #fff;
+  background-color: #5396fd;
+  border-color: #5396fd;
+  cursor: pointer;
+}
+
 .btn {
   padding: .5rem 1.5rem;
   border-radius: 30px;

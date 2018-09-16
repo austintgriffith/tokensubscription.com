@@ -2,11 +2,17 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import styled from 'styled-components';
 
-const GrantBoxWrap = styled.div`
+const GrantBoxWrap = styled(Link)`
+display: block;
 padding: 1rem;
 margin-bottom: 2rem;
 background: rgba(0,0,0,0.5);
+color: #fff;
 text-align: center;
+&:hover {
+  background: rgba(83, 150, 253,0.3);
+  color: #fff;
+}
 @media (min-width: 768px) {
   display: flex;
   align-items: center;
@@ -23,7 +29,7 @@ text-align: center;
 
 const GrantBox = (props) => {
   return (
-    <GrantBoxWrap style={{cursor:"pointer"}} onClick={()=>{window.location = `/view/${props.id}`}}>
+    <GrantBoxWrap to={`/view/${props.id}`}>
       <div className="mb-3 mb-md-0">
         <h3>{props.title}</h3>
         <p className="lead mb-0">{props.pitch}</p>
