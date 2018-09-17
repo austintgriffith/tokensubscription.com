@@ -16,7 +16,7 @@ border: 1px solid #111;
 opacity:0.6;
 font-size: 14px;
 @media (min-width: 768px) {
-    margin-top: 10rem;
+    margin-top: 8rem;
     font-size: 16px;
 }
 `
