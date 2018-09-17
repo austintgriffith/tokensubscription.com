@@ -5,6 +5,7 @@ import { Address, Blockie, Scaler, Events } from "dapparatus";
 import { Dropdown } from 'semantic-ui-react'
 import styled from 'styled-components';
 import Loader from '../loader.gif';
+import ProgressBar from './ProgressBar';
 
 const AddressBox = styled.div`
 display: block;
@@ -430,6 +431,8 @@ export default class GrantDetails extends Component {
 
         funding = (
           <div style={{padding:20,background:"rgba(0,0,0,0.6)"}}>
+
+              <ProgressBar percentage={33} />
 
               {activeFunding}
               {fundBox}
