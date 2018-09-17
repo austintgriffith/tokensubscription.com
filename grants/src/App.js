@@ -14,7 +14,7 @@ import CreateGrants from './components/CreateGrants';
 import GrantDetails from './components/GrantDetails';
 
 let backendUrl = "http://localhost:10003/"
-if(window.location.href.indexOf("tokensubscription.com")>=0 || window.location.href.indexOf("ethgrants.com")>=0 || )
+if(window.location.href.indexOf("tokensubscription.com")>=0 || window.location.href.indexOf("ethgrants.com")>=0)
 {
   backendUrl = "https://relay.tokensubscription.com/"
 }
