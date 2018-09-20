@@ -251,13 +251,15 @@ export default class GrantDetails extends Component {
             let thisSub = (
               <div key={"sub"+sub.subscriptionHash} style={{marginTop:10,borderTop:"1px solid #444444",paddingTop:20}}>
                 {this.props.activeSubscriptions[sub.subscriptionHash]?"🕰️ ":"🛑 "}
-                <Blockie
-                  address={from.toLowerCase()}
-                  config={{size:3}}
-                 /> -> <Blockie
-                  address={to.toLowerCase()}
-                  config={{size:3}}
-                 /> {tokenAmount} {tokenSymbol}
+                <Address
+                  {...this.props}
+                  config={{showBalance:false,showAddress:false,blockieSize:3}}
+                  address={from}
+                /> -> <Address
+                  {...this.props}
+                  config={{showBalance:false,showAddress:false,blockieSize:3}}
+                  address={to}
+                /> {tokenAmount} {tokenSymbol}
               </div>
             )
 
@@ -489,6 +491,7 @@ export default class GrantDetails extends Component {
                   <p>Grant Recipeint Address:</p>
                   <Address
                     {...this.props}
+                    config={{showBalance:false}}
                     address={this.props.toAddress.toLowerCase()}
                   />
                 </AddressBox>
@@ -497,6 +500,7 @@ export default class GrantDetails extends Component {
                   <p>Grant Contract Address:</p>
                   <Address
                     {...this.props}
+                    config={{showBalance:false}}
                     address={this.props.deployedAddress.toLowerCase()}
                   />
                 </AddressBox>
@@ -505,6 +509,7 @@ export default class GrantDetails extends Component {
                   <p>Grant Author Address:</p>
                   <Address
                     {...this.props}
+                    config={{showBalance:false}}
                     address={this.props.author.toLowerCase()}
                   />
                 </AddressBox>
