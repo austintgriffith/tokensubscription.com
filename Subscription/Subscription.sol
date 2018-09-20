@@ -24,11 +24,10 @@ pragma solidity ^0.4.24;
 
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
 
-contract Subscription is Ownable {
+contract Subscription {
     using ECDSA for bytes32;
     using SafeMath for uint256;
 
