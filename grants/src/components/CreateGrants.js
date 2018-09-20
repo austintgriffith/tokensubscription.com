@@ -205,7 +205,7 @@ class CreateGrants extends Component {
               <label className="label">Monthly Goal:</label>
             </div>
             <div className="field-body">
-              <input className="form-control" style={{width:400}} type="text" name="monthlyGoal" value={this.props.monthlyGoal} onChange={this.props.handleInput} />
+              <input className="form-control" style={{width:400}} type="text" name="monthlyGoal" value={this.props.monthlyGoal} onChange={this.props.handleInput} placeholder="$1.00" />
               <p className="help">Amount in (USD) you would like to receive each month.</p>
             </div>
           </div>

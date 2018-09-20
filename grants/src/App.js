@@ -13,10 +13,18 @@ import GrantsList from './components/GrantsList';
 import CreateGrants from './components/CreateGrants';
 import GrantDetails from './components/GrantDetails';
 
-let backendUrl = "http://localhost:10003/"
-if(window.location.href.indexOf("tokensubscription.com")>=0 || window.location.href.indexOf("ethgrants.com")>=0 )
-{
-  backendUrl = "https://relay.tokensubscription.com/"
+
+let backendUrl = ""
+let setBackendUrl = (network)=>{
+  backendUrl = "http://localhost:10003/"
+  if(network == "Rinkeby"){
+    backendUrl = "https://rinkeby.tokensubscription.com/"
+  }
+  else if(window.location.href.indexOf("tokensubscription.com")>=0 || window.location.href.indexOf("ethgrants.com")>=0)
+  {
+    backendUrl = "https://relay.tokensubscription.com/"
+  }
+
 }
 
 class App extends Component {
@@ -378,6 +386,9 @@ class App extends Component {
              })
              if(state.web3Provider) {
                state.web3 = new Web3(state.web3Provider)
+               console.log("WEB3",state)
+               setBackendUrl(state.network)
+               console.log("backendUrl",backendUrl)
                this.setState(state)
              }
             }}
