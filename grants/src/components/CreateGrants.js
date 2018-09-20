@@ -41,7 +41,7 @@ class CreateGrants extends Component {
           this.props.save(response.data[0])
           if(this.props.web3){
             let tokenContract = this.props.customContractLoader("Subscription",response.data[0].deployedAddress)
-            this.props.save({author:await tokenContract.author().call(),contract:tokenContract,toAddress:await tokenContract.requiredToAddress().call()})
+            this.props.save({author:await tokenContract.author().call(),contract:tokenContract,grantToAddress:await tokenContract.requiredToAddress().call()})
           }
         }
       }else{
@@ -49,7 +49,7 @@ class CreateGrants extends Component {
         this.props.save({
           title: "",
           pitch: "",
-          toAddress: this.props.account,
+          grantToAddress: this.props.account,
           deployedAddress: "",
           desc: "",
           monthlyGoal: "",
@@ -88,7 +88,7 @@ class CreateGrants extends Component {
         <div style={{padding:10}}>
           <Address
             {...this.props}
-            address={this.props.toAddress.toLowerCase()}
+            address={this.props.grantToAddress.toLowerCase()}
           />
         </div>
       )
@@ -102,7 +102,7 @@ class CreateGrants extends Component {
       deployedContract = (
         <div>
           <button className="btn btn-outline-primary" onClick={()=>{
-              this.props.deployGrantContract(this.props.toAddress)
+              this.props.deployGrantContract(this.props.grantToAddress)
           }}>
             Deploy Grant Contract
           </button> {loader}
@@ -111,11 +111,11 @@ class CreateGrants extends Component {
       recipient = (
         <div className="field-body flex-row">
           <Blockie
-            address={this.props.toAddress.toLowerCase()}
+            address={this.props.grantToAddress.toLowerCase()}
             config={{size:3}}
           />
           <div className="ml-md-3 w-100">
-            <input type="text" name="toAddress" value={this.props.toAddress} onChange={this.props.handleInput} />
+            <input type="text" name="grantToAddress" value={this.props.grantToAddress} onChange={this.props.handleInput} />
             <p className="help">The address that will receive the funding tokens.</p>
           </div>
         </div>
