@@ -93,6 +93,8 @@ class App extends Component {
     let decimals = parseInt(await tokenContract.decimals().call())
     console.log("decimals",decimals)
 
+    let nonce = parseInt(await subscriptionContract.extraNonce(account).call())+1
+
     let realTokenAmount = tokenAmount*10**decimals
     let realGasPrice = gasPrice*10**decimals
     /*
@@ -111,6 +113,7 @@ class App extends Component {
       web3.utils.toTwosComplement(realTokenAmount),
       web3.utils.toTwosComplement(periodSeconds),
       web3.utils.toTwosComplement(realGasPrice),
+      web3.utils.toTwosComplement(nonce)
     ]
     /*web3.utils.padLeft("0x"+nonce,64),*/
     console.log("PARTS",parts)

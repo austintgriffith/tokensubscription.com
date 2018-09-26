@@ -422,7 +422,13 @@ export default class GrantDetails extends Component {
         let cleanMonthlyGoal = this.props.monthlyGoal.replace(/[^0-9.]+/, '');
 
         let activeFunding = ""
+        //let percent = (100*parseFloat(this.props.totalRaisedUSD[this.props.subscriptionContract._address]))/parseFloat(cleanMonthlyGoal)
+        //if(!percent) percent=0
         //console.log("this.props.totalRaisedUSD",this.props.totalRaisedUSD)
+        /*
+        <div style={{marginBottom:10,marginTop:10}}>
+          <ProgressBar percentage={percent} />
+        </div>*/
         if(this.props.totalRaisedUSD){
             activeFunding = (
               <div>
@@ -434,7 +440,7 @@ export default class GrantDetails extends Component {
         funding = (
           <div style={{padding:20,background:"rgba(0,0,0,0.6)"}}>
 
-              <ProgressBar percentage={33} />
+
 
               {activeFunding}
               {fundBox}
