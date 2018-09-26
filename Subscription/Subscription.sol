@@ -250,7 +250,7 @@ contract Subscription {
         ERC20(tokenAddress).transferFrom(from,to,tokenAmount);
         require(
             checkSuccess(),
-            "TokenInteract#transferFrom: TransferFrom failed"
+            "Subscription::executeSubscription TransferFrom failed"
         );
 
         emit ExecuteSubscription(
@@ -269,10 +269,10 @@ contract Subscription {
             // this must all be setup in the constructor
             // if not, the subscriber chooses all the params including what goes
             // to the publisher and what goes to the relayer
-
+            ERC20(tokenAddress).transferFrom(from, msg.sender, gasPrice);
             require(
-                ERC20(tokenAddress).transferFrom(from, msg.sender, gasPrice),
-                "Failed to pay gas as from account"
+                checkSuccess(),
+                "Subscription::executeSubscription Failed to pay gas as from account"
             );
         }
 
