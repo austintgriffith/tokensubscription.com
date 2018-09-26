@@ -25,7 +25,7 @@ class SubscriberApprove extends Component {
       console.log("subscription:",response.data)
       this.setState({subscription:response.data})
       //let subscriptionContract = this.props.customContractLoader("Subscription",this.props.contract)
-      let tokenContract = this.props.customContractLoader("TokenExampleSubscriptionToken",response.data.parts[2])
+      let tokenContract = this.props.customContractLoader("WasteCoin",response.data.parts[2])
       let decimals = await tokenContract.decimals().call()
       let foundToken
       for(let i = 0; i < this.props.coins.length; i++){

@@ -89,6 +89,7 @@ class Subscriber extends Component {
 
     if(!gasPrice) gasPrice = 0
 
+    let nonce = parseInt(await subscriptionContract.extraNonce(account).call())+1
 
     //TODO know decimals and convert here
     let realTokenAmount = tokenAmount*10**18
@@ -109,6 +110,7 @@ class Subscriber extends Component {
       web3.utils.toTwosComplement(realTokenAmount),
       web3.utils.toTwosComplement(periodSeconds),
       web3.utils.toTwosComplement(realGasPrice),
+      web3.utils.toTwosComplement(nonce)
     ]
     /*web3.utils.padLeft("0x"+nonce,64),*/
     console.log("PARTS",parts)

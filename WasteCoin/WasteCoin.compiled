@@ -7,7 +7,6 @@ pragma solidity ^0.4.24;
 
 
 
-
 /**
  * @title ERC20 interface
  * @dev see https://github.com/ethereum/EIPs/issues/20
@@ -40,7 +39,6 @@ interface IERC20 {
     uint256 value
   );
 }
-
 
 
 /**
@@ -106,7 +104,6 @@ library SafeMath {
     return a % b;
   }
 }
-
 
 
 /**
@@ -312,7 +309,6 @@ contract ERC20 is IERC20 {
 
 
 
-
 /**
  * @title Roles
  * @dev Library for managing addresses assigned to a Role.
@@ -353,7 +349,6 @@ library Roles {
 }
 
 
-
 contract MinterRole {
   using Roles for Roles.Role;
 
@@ -389,7 +384,6 @@ contract MinterRole {
     emit MinterRemoved(account);
   }
 }
-
 
 
 /**
