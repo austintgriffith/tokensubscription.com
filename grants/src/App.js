@@ -366,6 +366,21 @@ class App extends Component {
           }}
         />
       )
+    }else{
+      extraRoutes = (
+        <div>
+          <Route path="/create/:id?" render={(props) => {
+            return (
+              <div style={{padding:100}}><h2>Please Unlock MetaMask</h2></div>
+            )
+          }} />
+          <Route path="/view/:id" render={(props) => {
+            return (
+              <div style={{padding:100}}><h2>Please Unlock MetaMask</h2></div>
+            )
+          }} />
+        </div>
+      )
     }
     return (
       <Router>

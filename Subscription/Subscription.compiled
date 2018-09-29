@@ -23,6 +23,7 @@ pragma solidity ^0.4.24;
  */
 
 
+
 /**
  * @title Elliptic curve signature operations
  * @dev Based on https://gist.github.com/axic/5b33912c6f61ae6fd96d6c4a47afde6d
@@ -94,6 +95,7 @@ library ECDSA {
 }
 
 
+
 /**
  * @title SafeMath
  * @dev Math operations with safety checks that revert on error
@@ -160,6 +162,7 @@ library SafeMath {
 
 
 
+
 /**
  * @title ERC20 interface
  * @dev see https://github.com/ethereum/EIPs/issues/20
@@ -194,6 +197,7 @@ interface IERC20 {
 }
 
 
+
 /**
  * @title Standard ERC20 token
  *
@@ -219,7 +223,7 @@ contract ERC20 is IERC20 {
 
   /**
   * @dev Gets the balance of the specified address.
-  * @param owner The address to query the balance of.
+  * @param owner The address to query the the balance of.
   * @return An uint256 representing the amount owned by the passed address.
   */
   function balanceOf(address owner) public view returns (uint256) {

@@ -32,7 +32,8 @@ export default class GrantsList extends Component {
   render() {
     const { error, isLoaded, grants } = this.state;
     if (error) {
-      return <div className="container">{error.message}</div>;
+      window.location = "/"
+      return <div className="container">{"Please unlock MetaMask: "+error.message}</div>;
     } else if (!isLoaded) {
       return <div className="container">Loading Grants...</div>;
     } else {

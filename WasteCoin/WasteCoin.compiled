@@ -7,6 +7,7 @@ pragma solidity ^0.4.24;
 
 
 
+
 /**
  * @title ERC20 interface
  * @dev see https://github.com/ethereum/EIPs/issues/20
@@ -39,6 +40,7 @@ interface IERC20 {
     uint256 value
   );
 }
+
 
 
 /**
@@ -106,6 +108,7 @@ library SafeMath {
 }
 
 
+
 /**
  * @title Standard ERC20 token
  *
@@ -131,7 +134,7 @@ contract ERC20 is IERC20 {
 
   /**
   * @dev Gets the balance of the specified address.
-  * @param owner The address to query the balance of.
+  * @param owner The address to query the the balance of.
   * @return An uint256 representing the amount owned by the passed address.
   */
   function balanceOf(address owner) public view returns (uint256) {
@@ -309,6 +312,7 @@ contract ERC20 is IERC20 {
 
 
 
+
 /**
  * @title Roles
  * @dev Library for managing addresses assigned to a Role.
@@ -349,6 +353,7 @@ library Roles {
 }
 
 
+
 contract MinterRole {
   using Roles for Roles.Role;
 
@@ -384,6 +389,7 @@ contract MinterRole {
     emit MinterRemoved(account);
   }
 }
+
 
 
 /**

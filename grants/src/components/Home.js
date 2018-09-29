@@ -41,8 +41,9 @@ class Home extends Component {
           <p className="mb-5"><Link className="btn btn-lg btn-outline-primary mx-3" to="/create">Create A Grant</Link> <Link className="btn btn-lg btn-outline-primary mx-3" to="/list">Fund A Grant</Link></p>
           <Disclaimer>
               <p className="mb-1">Disclaimer: We built this in a weekend!</p>
-              <p className="mb-1">You should inspect <a href="https://etherscan.io/address/0x49748b0380d9370795CbD6809E52C927072107dC" target="blank">our smart contract</a> before using.</p>
+              <p className="mb-1">You should inspect <a href="https://etherscan.io/address/0x9123a4b90E3a1F468102C08ee78fa2224d88F496" target="blank">our smart contract</a> before using.</p>
               <p className="mb-1">100% free and open source! Please <a href="https://github.com/austintgriffith/tokensubscription.com" target="blank">contribute</a>!</p>
+              <p className="mb-1">UPDATE! <a href="https://zklabs.io/audits/tokensub.html" target="blank">Contract Audited!</a></p>
           </Disclaimer>
         </div>
       </HomeWrap>
