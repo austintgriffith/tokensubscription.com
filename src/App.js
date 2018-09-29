@@ -121,7 +121,7 @@ class App extends Component {
 
     console.log("ARGS",args)
 
-    tx(contracts.Subscription._contract.deploy({data:code,arguments:args}),1000000,(receipt)=>{
+    tx(contracts.Subscription._contract.deploy({data:code,arguments:args}),1500000,(receipt)=>{
       console.log("~~~~~~ DEPLOY FROM DAPPARATUS:",receipt)
       if(receipt.contractAddress){
         console.log("CONTRACT DEPLOYED:",receipt.contractAddress)

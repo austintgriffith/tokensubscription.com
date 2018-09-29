@@ -221,7 +221,7 @@ class App extends Component {
 
       this.setState({deployingGrantContract:true})
 
-      tx(contracts.Subscription._contract.deploy({data:code,arguments:args}),1000000,(receipt)=>{
+      tx(contracts.Subscription._contract.deploy({data:code,arguments:args}),1500000,(receipt)=>{
         console.log("~~~~~~ DEPLOY FROM DAPPARATUS:",receipt)
         if(receipt.contractAddress){
           console.log("CONTRACT DEPLOYED:",receipt.contractAddress)
