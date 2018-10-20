@@ -1,8 +1,13 @@
 {
   "provider": "http://localhost:8545",
-  "gasprice": 7.5,
-  "ethprice": 216.07860655,
+  "gasprice": 3.2,
+  "ethprice": 205.253058024,
   "deploygas": 5500000,
   "xfergas": 1300000,
-  "DEBUG": true
+  "DEBUG": true,
+  "USE_INFURA": false,
+  "ROOT_FOLDER": "/Users/austingriffith/tokensubscription.com",
+  "CRA_FOLDER": "./src",
+  "TESTS_FOLDER": "tests",
+  "CONTRACTS_FOLDER": "."
 }

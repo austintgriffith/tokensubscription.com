@@ -319,4 +319,18 @@ contract Subscription {
 
         return returnValue != 0;
     }
+
+    //we would like a way for the author to completly destroy the subscription
+    // contract to prevent further transfers
+    function endContract()
+        external
+    {
+      require(msg.sender==author);
+      selfdestruct(author);
+    }
+
+    // let's go ahead and revert any ETH send directly to the contract too
+    function () public payable {
+       revert ();
+    }
 }
