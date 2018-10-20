@@ -5,6 +5,22 @@ import Loader from '../loader.gif';
 import Particles from './particles.js';
 import { Dropdown } from 'semantic-ui-react'
 
+const Room = require('ipfs-pubsub-room')
+const IPFS = require('ipfs')
+const ipfs = new IPFS({
+  EXPERIMENTAL: {
+    pubsub: true
+  },
+  config: {
+    Addresses: {
+      Swarm: [
+        '/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star'
+      ]
+    }
+  }
+})
+const IPFS_ROOM_NAME = "tokensubscription.com"
+
 let monthOptions = [
     {key: 'months', value: 'months', text: 'Month(s)'},
     {key: 'days', value: 'days', text: 'Day(s)'},
@@ -139,6 +155,9 @@ class Subscriber extends Component {
     .catch((error)=>{
       console.log(error);
     });
+
+    const room = Room(ipfs,IPFS_ROOM_NAME)
+    room.broadcast(JSON.stringify(postData))
   }
 
   async componentDidMount() {

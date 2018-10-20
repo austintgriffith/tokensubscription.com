@@ -1,19 +1,12 @@
 "use strict";
 const axios = require('axios');
-const EventParser = require('./modules/eventParser.js');
-const LiveParser = require('./modules/liveParser.js');
 const express = require('express');
 const helmet = require('helmet');
 const app = express();
 const fs = require('fs');
 const Redis = require('ioredis');
 const ContractLoader = require('./modules/contractLoader.js');
-var twilio = require('twilio');
 
-var twilioClient
-try{
-  twilioClient = new twilio(fs.readFileSync("twilio.sid").toString().trim(), fs.readFileSync("twilio.token").toString().trim());
-}catch(e){}
 
 const Room = require('ipfs-pubsub-room')
 const IPFS = require('ipfs')
@@ -338,23 +331,6 @@ app.post('/deploysub', (req, res) => {
     redis.set(deployedContractsKey,JSON.stringify(contracts),'EX', 60 * 60 * 24 * 7);
     res.set('Content-Type', 'application/json');
     res.end(JSON.stringify({contract:deployingAddress}));
-    if(NETWORK==1){
-      twilioClient.messages.create({
-          to:'+13038345151',
-          from:'+17206059912',
-          body:'TokenSubscription Deployed '+deployingAddress
-      }, function(error, message) {
-          if (!error) {
-              console.log('Success! The SID for this SMS message is:');
-              console.log(message.sid);
-              console.log('Message sent on:');
-              console.log(message.dateCreated);
-          } else {
-              console.log('Oops! There was an error.');
-          }
-      });
-    }
-
   });
 })
 
@@ -399,29 +375,9 @@ app.get('/abi/:address', (req, res) => {
 app.post('/saveSubscription', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   console.log("/saveSubscription",req.body)
-
   //saveSubscription(req.body)
-
   res.set('Content-Type', 'application/json');
   res.end(JSON.stringify({subscriptionHash:req.body.subscriptionHash}));
-
-  if(NETWORK==1){
-    twilioClient.messages.create({
-        to:'+13038345151',
-        from:'+17206059912',
-        body:'TokenSubscription Subscribe '+req.body.subscriptionHash
-    }, function(error, message) {
-        if (!error) {
-            console.log('Success! The SID for this SMS message is:');
-            console.log(message.sid);
-            console.log('Message sent on:');
-            console.log(message.dateCreated);
-        } else {
-            console.log('Oops! There was an error.');
-        }
-    });
-  }
-
 });
 
 
