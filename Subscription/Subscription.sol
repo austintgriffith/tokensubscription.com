@@ -259,7 +259,14 @@ contract Subscription {
         }
 
         // now, let make the transfer from the subscriber to the publisher
+        uint256 startingBalance = ERC20(tokenAddress).balanceOf(to);
         ERC20(tokenAddress).transferFrom(from,to,tokenAmount);
+        require(
+          (startingBalance+tokenAmount) == ERC20(tokenAddress).balanceOf(to),
+          "ERC20 Balance did not change correctly"
+        );
+
+
         require(
             checkSuccess(),
             "Subscription::executeSubscription TransferFrom failed"
