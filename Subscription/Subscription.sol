@@ -62,6 +62,16 @@ contract Subscription {
         uint256 nonce // to allow multiple subscriptions with the same parameters
     );
 
+    event CancelSubscription(
+        address indexed from, //the subscriber
+        address indexed to, //the publisher
+        address tokenAddress, //the token address paid to the publisher
+        uint256 tokenAmount, //the token amount paid to the publisher
+        uint256 periodSeconds, //the period in seconds between payments
+        uint256 gasPrice, //the amount of tokens to pay relayer (0 for free)
+        uint256 nonce // to allow multiple subscriptions with the same parameters
+    );
+
     constructor(
         address _toAddress,
         address _tokenAddress,
@@ -200,12 +210,16 @@ contract Subscription {
         //the signature must be valid
         require(signer == from, "Invalid Signature for subscription cancellation");
 
-        //make sure it's the subscriber 
+        //make sure it's the subscriber
         require(from == msg.sender, 'msg.sender is not the subscriber');
 
         //nextValidTimestamp should be a timestamp that will never
         //be reached during the brief window human existence
         nextValidTimestamp[subscriptionHash]=uint256(-1);
+
+        emit CancelSubscription(
+            from, to, tokenAddress, tokenAmount, periodSeconds, gasPrice, nonce
+        );
 
         return true;
     }
