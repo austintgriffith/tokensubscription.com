@@ -9,7 +9,7 @@ class MainUI extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      contractLink: "0x9123a4b90E3a1F468102C08ee78fa2224d88F496"
+      contractLink: "0x3847033426C5c9AdD7D95E60d32dFb7Cb7304837"
     };
   }
   render() {
