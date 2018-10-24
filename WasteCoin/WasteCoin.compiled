@@ -164,7 +164,12 @@ contract ERC20 is IERC20 {
   * @param value The amount to be transferred.
   */
   function transfer(address to, uint256 value) public returns (bool) {
-    _transfer(msg.sender, to, value);
+    require(value <= _balances[msg.sender]);
+    require(to != address(0));
+
+    _balances[msg.sender] = _balances[msg.sender].sub(value);
+    _balances[to] = _balances[to].add(value);
+    emit Transfer(msg.sender, to, value);
     return true;
   }
 
@@ -199,10 +204,14 @@ contract ERC20 is IERC20 {
     public
     returns (bool)
   {
+    require(value <= _balances[from]);
     require(value <= _allowed[from][msg.sender]);
+    require(to != address(0));
 
+    _balances[from] = _balances[from].sub(value);
+    _balances[to] = _balances[to].add(value);
     _allowed[from][msg.sender] = _allowed[from][msg.sender].sub(value);
-    _transfer(from, to, value);
+    emit Transfer(from, to, value);
     return true;
   }
 
@@ -252,21 +261,6 @@ contract ERC20 is IERC20 {
       _allowed[msg.sender][spender].sub(subtractedValue));
     emit Approval(msg.sender, spender, _allowed[msg.sender][spender]);
     return true;
-  }
-
-  /**
-  * @dev Transfer token for a specified addresses
-  * @param from The address to transfer from.
-  * @param to The address to transfer to.
-  * @param value The amount to be transferred.
-  */
-  function _transfer(address from, address to, uint256 value) internal {
-    require(value <= _balances[from]);
-    require(to != address(0));
-
-    _balances[from] = _balances[from].sub(value);
-    _balances[to] = _balances[to].add(value);
-    emit Transfer(from, to, value);
   }
 
   /**
@@ -369,7 +363,7 @@ contract MinterRole {
   Roles.Role private minters;
 
   constructor() public {
-    _addMinter(msg.sender);
+    minters.add(msg.sender);
   }
 
   modifier onlyMinter() {
@@ -382,16 +376,12 @@ contract MinterRole {
   }
 
   function addMinter(address account) public onlyMinter {
-    _addMinter(account);
+    minters.add(account);
+    emit MinterAdded(account);
   }
 
   function renounceMinter() public {
-    _removeMinter(msg.sender);
-  }
-
-  function _addMinter(address account) internal {
-    minters.add(account);
-    emit MinterAdded(account);
+    minters.remove(msg.sender);
   }
 
   function _removeMinter(address account) internal {
@@ -407,6 +397,22 @@ contract MinterRole {
  * @dev ERC20 minting logic
  */
 contract ERC20Mintable is ERC20, MinterRole {
+  event MintingFinished();
+
+  bool private _mintingFinished = false;
+
+  modifier onlyBeforeMintingFinished() {
+    require(!_mintingFinished);
+    _;
+  }
+
+  /**
+   * @return true if the minting is finished.
+   */
+  function mintingFinished() public view returns(bool) {
+    return _mintingFinished;
+  }
+
   /**
    * @dev Function to mint tokens
    * @param to The address that will receive the minted tokens.
@@ -419,9 +425,25 @@ contract ERC20Mintable is ERC20, MinterRole {
   )
     public
     onlyMinter
+    onlyBeforeMintingFinished
     returns (bool)
   {
     _mint(to, amount);
+    return true;
+  }
+
+  /**
+   * @dev Function to stop minting new tokens.
+   * @return True if the operation was successful.
+   */
+  function finishMinting()
+    public
+    onlyMinter
+    onlyBeforeMintingFinished
+    returns (bool)
+  {
+    _mintingFinished = true;
+    emit MintingFinished();
     return true;
   }
 }
