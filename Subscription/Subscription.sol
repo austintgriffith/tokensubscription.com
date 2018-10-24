@@ -200,7 +200,7 @@ contract Subscription {
         //the signature must be valid
         require(signer == from, "Invalid Signature for subscription cancellation");
 
-        //make sure it's right right user cancelling
+        //make sure it's the subscriber 
         require(from == msg.sender, 'msg.sender is not the subscriber');
 
         //nextValidTimestamp should be a timestamp that will never

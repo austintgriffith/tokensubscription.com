@@ -639,7 +639,6 @@ contract Subscription {
         }
 
         // now, let make the transfer from the subscriber to the publisher
-
         uint256 startingBalance = ERC20(tokenAddress).balanceOf(to);
         ERC20(tokenAddress).transferFrom(from,to,tokenAmount);
         require(
