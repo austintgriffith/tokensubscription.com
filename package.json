@@ -5,7 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "chai": "^4.1.2",
-    "clevis": "0.0.94",
+    "clevis": "0.0.103",
     "cors": "^2.8.4",
     "dapparatus": "^1.0.21",
     "express": "^4.16.3",
