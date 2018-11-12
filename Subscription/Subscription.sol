@@ -122,6 +122,14 @@ contract Subscription {
         view
         returns (bytes32)
     {
+        // if there are requirements from the deployer, let's make sure
+        // those are met exactly
+        require( requiredToAddress == address(0) || to == requiredToAddress, "requiredToAddress Failure" );
+        require( requiredTokenAddress == address(0) || tokenAddress == requiredTokenAddress, "requiredTokenAddress Failure"  );
+        require( requiredTokenAmount == 0 || tokenAmount == requiredTokenAmount, "requiredTokenAmount Failure"  );
+        require( requiredPeriodSeconds == 0 || periodSeconds == requiredPeriodSeconds, "requiredPeriodSeconds Failure"  );
+        require( requiredGasPrice == 0 || gasPrice == requiredGasPrice, "requiredGasPrice Failure"  );
+
         return keccak256(
             abi.encodePacked(
                 byte(0x19),
@@ -173,11 +181,6 @@ contract Subscription {
         uint256 balance = ERC20(tokenAddress).balanceOf(from);
 
         return (
-            ( requiredToAddress == address(0) || to == requiredToAddress ) &&
-            ( requiredTokenAddress == address(0) || tokenAddress == requiredTokenAddress ) &&
-            ( requiredTokenAmount == 0 || tokenAmount == requiredTokenAmount ) &&
-            ( requiredPeriodSeconds == 0 || periodSeconds == requiredPeriodSeconds ) &&
-            ( requiredGasPrice == 0 || gasPrice == requiredGasPrice ) &&
             signer == from &&
             from != to &&
             block.timestamp >= nextValidTimestamp[subscriptionHash] &&
@@ -240,29 +243,7 @@ contract Subscription {
         returns (bool success)
     {
         // make sure the subscription is valid and ready
-        // pulled this out so I have the hash, should be exact code as "isSubscriptionReady"
-        bytes32 subscriptionHash = getSubscriptionHash(
-            from, to, tokenAddress, tokenAmount, periodSeconds, gasPrice, nonce
-        );
-        address signer = getSubscriptionSigner(subscriptionHash, signature);
-
-        //make sure they aren't sending to themselves
-        require(to != from, "Can not send to the from address");
-        //the signature must be valid
-        require(signer == from, "Invalid Signature");
-        //timestamp must be equal to or past the next period
-        require(
-            block.timestamp >= nextValidTimestamp[subscriptionHash],
-            "Subscription is not ready"
-        );
-
-        // if there are requirements from the deployer, let's make sure
-        // those are met exactly
-        require( requiredToAddress == address(0) || to == requiredToAddress );
-        require( requiredTokenAddress == address(0) || tokenAddress == requiredTokenAddress );
-        require( requiredTokenAmount == 0 || tokenAmount == requiredTokenAmount );
-        require( requiredPeriodSeconds == 0 || periodSeconds == requiredPeriodSeconds );
-        require( requiredGasPrice == 0 || gasPrice == requiredGasPrice );
+        require(isSubscriptionReady(from, to, tokenAddress, tokenAmount, periodSeconds, gasPrice, nonce, signature), "Subscription is not ready or conditions of transction are not met")
 
         //increment the timestamp by the period so it wont be valid until then
         nextValidTimestamp[subscriptionHash] = block.timestamp.add(periodSeconds);
@@ -280,11 +261,11 @@ contract Subscription {
           "ERC20 Balance did not change correctly"
         );
 
-
         require(
-            checkSuccess(),
-            "Subscription::executeSubscription TransferFrom failed"
-        );
+          checkSuccess(),
+          "Subscription::executeSubscription TransferFrom failed"
+          );
+
 
         emit ExecuteSubscription(
             from, to, tokenAddress, tokenAmount, periodSeconds, gasPrice, nonce
@@ -362,7 +343,7 @@ contract Subscription {
       selfdestruct(author);
     }
 
-    // let's go ahead and revert any ETH send directly to the contract too
+    // let's go ahead and revert any ETH sent directly to the contract
     function () public payable {
        revert ();
     }
